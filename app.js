@@ -7,8 +7,8 @@ window.addEventListener('DOMContentLoaded', () => {
   toggleSection('skills');
   toggleSection('contact');
 
-  // Add bottom padding to prevent content behind nav
-  document.body.classList.add('pb-28');
+  // Add space for bottom nav + safe area
+  document.body.style.paddingBottom = 'calc(5rem + env(safe-area-inset-bottom))';
 });
 
 // (2) Theme toggle
