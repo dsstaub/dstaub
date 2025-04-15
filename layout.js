@@ -2,7 +2,11 @@
 
 // Apply saved theme immediately to avoid flash
 const savedTheme = localStorage.getItem('theme') || 'dark';
-document.documentElement.classList.toggle('dark', savedTheme === 'dark');
+  if (savedTheme === 'dark') {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
 
 document.addEventListener("DOMContentLoaded", () => {
   // Inject header + menu + backdrop
