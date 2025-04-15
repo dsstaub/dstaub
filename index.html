@@ -181,8 +181,13 @@
   <script>
     // Fade-in on load
     window.addEventListener('DOMContentLoaded', () => {
-      document.body.classList.remove('opacity-0');
-    });
+  document.body.classList.remove('opacity-0');
+
+  // OPEN THESE SECTIONS BY DEFAULT:
+  toggleSection('summary');
+  toggleSection('skills');
+  toggleSection('contact');
+});
 
     // Dark/light theme toggle
     const toggleBtn = document.getElementById('toggleTheme');
