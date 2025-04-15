@@ -7,6 +7,7 @@
   <meta name="theme-color" content="#111111" />
   <title>D Staub</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="/layout.js" defer></script>
   <script src="/app.js" defer></script>
@@ -37,7 +38,7 @@
         Professional Summary
       </button>
     </div>
-    <div id="summary" class="collapsible mt-2" style="max-height: 0;">
+    <div id="summary" class="collapsible mt-2">
       <p>Dynamic operations leader with over a decade of experience driving results across aviation, logistics, and retail sectors. Recognized for simplifying complex workflows, leading cross-functional teams of up to 200 associates, and elevating performance through strategic coaching and process innovation. Thrives in environments where developing others is the mission — consistently empowering associates, peers, and even leaders to grow into roles beyond his own.</p>
     </div>
   </section>
@@ -52,7 +53,8 @@
         Experience
       </button>
     </div>
-    <div id="experience" class="collapsible mt-2 text-zinc-700 dark:text-zinc-300" style="max-height: 0;">
+    <div id="experience" class="collapsible mt-2 text-zinc-700 dark:text-zinc-300">
+      <!-- Jetstream -->
       <div class="mt-4">
         <h3 class="text-xl font-bold">Ramp Agent / Lav & Water Agent</h3>
         <p class="text-sm italic text-zinc-500 dark:text-zinc-400">Jetstream Ground Services – PIT | Oct 2024 – Present</p>
@@ -63,6 +65,7 @@
           <li>Communicates with gate and flight crews</li>
         </ul>
       </div>
+      <!-- Amazon -->
       <div class="mt-4">
         <h3 class="text-xl font-bold">Shift/Operations Assistant</h3>
         <p class="text-sm italic text-zinc-500 dark:text-zinc-400">Amazon Logistics | 2019 – 2024</p>
@@ -73,6 +76,7 @@
           <li>Advanced leadership readiness philosophy</li>
         </ul>
       </div>
+      <!-- Kroger -->
       <div class="mt-4">
         <h3 class="text-xl font-bold">Assistant Operations Manager</h3>
         <p class="text-sm italic text-zinc-500 dark:text-zinc-400">The Kroger Co | 2013 – 2019</p>
@@ -98,7 +102,7 @@
         Education & Training
       </button>
     </div>
-    <div id="education" class="collapsible mt-2 text-zinc-700 dark:text-zinc-300" style="max-height: 0;">
+    <div id="education" class="collapsible mt-2 text-zinc-700 dark:text-zinc-300">
       <ul class="list-disc pl-6">
         <li>Wheeling Park High School — Diploma, 1992</li>
         <li>Dale Carnegie Leadership Course — Completed</li>
@@ -116,7 +120,7 @@
         Skills
       </button>
     </div>
-    <div id="skills" class="collapsible mt-2 text-zinc-700 dark:text-zinc-300" style="max-height: 0;">
+    <div id="skills" class="collapsible mt-2 text-zinc-700 dark:text-zinc-300">
       <ul class="list-disc pl-6 grid grid-cols-1 sm:grid-cols-2 gap-x-6">
         <li>Team Leadership (20–200 associates)</li>
         <li>Process Improvement</li>
@@ -142,7 +146,7 @@
         Contact Me
       </button>
     </div>
-    <div id="contact" class="collapsible mt-2 text-sm text-zinc-500 dark:text-zinc-400 space-y-1" style="max-height: 0;">
+    <div id="contact" class="collapsible mt-2 text-sm text-zinc-500 dark:text-zinc-400 space-y-1">
       <p>Email: <a href="mailto:resume@dstaub.app" class="text-cyan-500 underline">resume@dstaub.app</a></p>
       <p>Phone: <a href="tel:+18787871376" class="text-cyan-500 underline">87.87.87.1376</a></p>
       <p>Telegram: <a href="https://t.me/DStaub" class="text-cyan-500 underline">@DStaub</a></p>
@@ -151,13 +155,13 @@
     </div>
   </section>
 
-  <!-- BOTTOM NAV -->
+  <!-- Bottom Menu Spacer -->
   <div class="h-[7rem]" style="padding-bottom: env(safe-area-inset-bottom);"></div>
-  <nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-around p-3 text-sm bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md"
-       style="padding-bottom: calc(1rem + env(safe-area-inset-bottom));">
-    <a href="#summary" class="text-black dark:text-white hover:text-cyan-500">Summary</a>
-    <a href="#experience" class="text-black dark:text-white hover:text-cyan-500">Experience</a>
-    <a href="#skills" class="text-black dark:text-white hover:text-cyan-500">Skills</a>
-    <a href="#contact" class="text-black dark:text-white hover:text-cyan-500">Contact</a>
+  <nav class="bottom-menu">
+    <a href="#summary">Summary</a>
+    <a href="#experience">Experience</a>
+    <a href="#skills">Skills</a>
+    <a href="#contact">Contact</a>
   </nav>
 </body>
+</html>
