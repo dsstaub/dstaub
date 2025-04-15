@@ -1,80 +1,78 @@
-// (1) Page fade-in and default expanded sections
-window.addEventListener('DOMContentLoaded', () => {
-  document.body.classList.remove('opacity-0');
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    document.body.classList.remove('opacity-0');
 
-  // Open sections by default
-  toggleSection('summary');
-  toggleSection('skills');
-  toggleSection('contact');
+    toggleSection('summary');
+    toggleSection('skills');
+    toggleSection('contact');
 
-  // Add space for bottom nav + safe area
-  document.body.style.paddingBottom = 'calc(7rem + env(safe-area-inset-bottom))';
-});
+    // Hamburger Menu
+    const menuToggle = document.getElementById('menuToggle');
+    const sideMenu = document.getElementById('sideMenu');
+    const backdrop = document.getElementById('backdrop');
 
-// (2) Theme toggle
-const toggleBtn = document.getElementById('toggleTheme');
-const themeLabel = document.getElementById('themeLabel');
-const html = document.documentElement;
-const currentTheme = localStorage.getItem('theme') || 'dark';
+    if (menuToggle && sideMenu && backdrop) {
+      menuToggle.addEventListener('click', () => {
+        sideMenu.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
+      });
 
-function applyTheme(theme) {
-  html.classList.toggle('dark', theme === 'dark');
-  themeLabel.textContent = theme === 'dark' ? 'Light' : 'Dark';
-  localStorage.setItem('theme', theme);
-}
+      backdrop.addEventListener('click', () => {
+        sideMenu.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+      });
+    }
+  });
 
-toggleBtn.addEventListener('click', () => {
-  const newTheme = html.classList.contains('dark') ? 'light' : 'dark';
-  applyTheme(newTheme);
-});
+  // Theme toggle
+  const toggleBtn = document.getElementById('toggleTheme');
+  const themeLabel = document.getElementById('themeLabel');
+  const html = document.documentElement;
+  const currentTheme = localStorage.getItem('theme') || 'dark';
 
-applyTheme(currentTheme);
-
-// (3) Collapsible slide transition
-function toggleSection(id) {
-  const section = document.getElementById(id);
-  const arrow = document.getElementById('arrow-' + id);
-  const isOpen = section.style.maxHeight && section.style.maxHeight !== '0px';
-
-  if (isOpen) {
-    section.style.maxHeight = '0';
-    arrow.style.transform = 'rotate(0deg)';
-  } else {
-    section.style.maxHeight = section.scrollHeight + 'px';
-    arrow.style.transform = 'rotate(180deg)';
+  function applyTheme(theme) {
+    html.classList.toggle('dark', theme === 'dark');
+    themeLabel.textContent = theme === 'dark' ? 'Light' : 'Dark';
+    localStorage.setItem('theme', theme);
   }
-}
 
-// (4) PWA auto-update handling
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./service-worker.js').then(registration => {
-    registration.onupdatefound = () => {
-      const installingWorker = registration.installing;
-      installingWorker.onstatechange = () => {
-        if (installingWorker.state === 'installed') {
-          if (navigator.serviceWorker.controller) {
-            console.log('New content is available; please refresh.');
-            installingWorker.postMessage({ action: 'skipWaiting' });
-          } else {
-            console.log('Content is cached for offline use.');
+  toggleBtn?.addEventListener('click', () => {
+    const newTheme = html.classList.contains('dark') ? 'light' : 'dark';
+    applyTheme(newTheme);
+  });
+
+  applyTheme(currentTheme);
+
+  function toggleSection(id) {
+    const section = document.getElementById(id);
+    const arrow = document.getElementById('arrow-' + id);
+    const isOpen = section.style.maxHeight && section.style.maxHeight !== '0px';
+
+    if (isOpen) {
+      section.style.maxHeight = '0';
+      arrow.style.transform = 'rotate(0deg)';
+    } else {
+      section.style.maxHeight = section.scrollHeight + 'px';
+      arrow.style.transform = 'rotate(180deg)';
+    }
+  }
+
+  // PWA
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./service-worker.js').then(registration => {
+      registration.onupdatefound = () => {
+        const installingWorker = registration.installing;
+        installingWorker.onstatechange = () => {
+          if (installingWorker.state === 'installed') {
+            if (navigator.serviceWorker.controller) {
+              console.log('New content available');
+              installingWorker.postMessage({ action: 'skipWaiting' });
+            } else {
+              console.log('Content cached for offline use');
+            }
           }
-        }
+        };
       };
-    };
-  }).catch(err => console.error('Service Worker failed:', err));
-}
-
-const menuToggle = document.getElementById('menuToggle');
-const sideMenu = document.getElementById('sideMenu');
-const backdrop = document.getElementById('backdrop');
-
-menuToggle.addEventListener('click', () => {
-  sideMenu.classList.remove('-translate-x-full');
-  backdrop.classList.remove('hidden');
-});
-
-backdrop.addEventListener('click', () => {
-  sideMenu.classList.add('-translate-x-full');
-  backdrop.classList.add('hidden');
-});
-
+    }).catch(err => console.error('Service Worker failed:', err));
+  }
+</script>
