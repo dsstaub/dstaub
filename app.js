@@ -8,7 +8,7 @@ window.addEventListener('DOMContentLoaded', () => {
   toggleSection('contact');
 
   // Add space for bottom nav + safe area
-  document.body.style.paddingBottom = 'calc(5rem + env(safe-area-inset-bottom))';
+  document.body.style.paddingBottom = 'calc(7rem + env(safe-area-inset-bottom))';
 });
 
 // (2) Theme toggle
