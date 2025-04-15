@@ -107,6 +107,16 @@
     Telegram: <a href="https://t.me/DStaub" style="color:#61dafb;">@DStaub</a><br>
     App: DStaub.app</p>
   </div>
-
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+    .then(function(registration) {
+      console.log('ServiceWorker registration successful:', registration);
+    })
+    .catch(function(error) {
+      console.log('ServiceWorker registration failed:', error);
+    });
+  }
+</script>
 </body>
 </html>
