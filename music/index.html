@@ -7,36 +7,34 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="/layout.js" defer></script>
   <script src="/app.js" defer></script>
+  <style>
+    .aspect-4-5 {
+      aspect-ratio: 4 / 5;
+    }
+  </style>
 </head>
 <body class="opacity-0 bg-white text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100 font-sans leading-relaxed pt-20 pb-32 px-6 max-w-4xl mx-auto">
   <main class="text-center animate-fade-in">
     <h1 class="text-4xl font-bold mb-6">Music</h1>
     <p class="mb-8 text-lg text-zinc-600 dark:text-zinc-400">Explore my latest music — available on all streaming platforms.</p>
 
-    <section class="space-y-10">
-      <!-- Album 1 -->
-      <div>
-        <h2 class="text-2xl font-semibold mb-1">Up</h2>
-        <p class="text-sm italic text-zinc-500 dark:text-zinc-400 mb-3">
-          A hard pop-country fusion with a modern edge.
-        </p>
-        <a href="https://distrokid.com/hyperfollow/walterhartwell/up" target="_blank"
-           class="inline-block bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-medium px-5 py-2 rounded transition">
-          Listen on Streaming Services
-        </a>
+    <section class="space-y-14">
+      <!-- Album Card: UP -->
+      <div class="max-w-md mx-auto bg-white dark:bg-zinc-800 rounded-lg shadow-lg overflow-hidden border border-zinc-200 dark:border-zinc-700">
+        <div class="aspect-4-5 overflow-hidden">
+          <img src="/music/cards/card_up.jpg" alt="Up album cover" class="w-full h-full object-cover">
+        </div>
+        <div class="p-6">
+          <h2 class="text-2xl font-semibold mb-1">Up</h2>
+          <p class="text-sm italic text-zinc-500 dark:text-zinc-400 mb-4">
+            A hard pop-country fusion with a modern edge.
+          </p>
+          <a href="https://distrokid.com/hyperfollow/walterhartwell/up" target="_blank"
+             class="inline-block bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-medium px-5 py-2 rounded transition">
+            Listen on Streaming Services
+          </a>
+        </div>
       </div>
-
-      <!-- Add more albums below this -->
-      <!--
-      <div>
-        <h2 class="text-2xl font-semibold mb-1">[Title]</h2>
-        <p class="text-sm italic text-zinc-500 dark:text-zinc-400 mb-3">[Description]</p>
-        <a href="[HYPERFOLLOW LINK]" target="_blank"
-           class="inline-block bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-medium px-5 py-2 rounded transition">
-          Listen Now
-        </a>
-      </div>
-      -->
     </section>
   </main>
 </body>
