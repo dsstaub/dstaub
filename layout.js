@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
-      <h1 class="text-xl font-bold">DStaub</h1>
+      <a href="/" class="text-xl font-bold hover:text-cyan-500 transition">DStaub</a>
       <div class="w-6"></div>
     </header>
 
