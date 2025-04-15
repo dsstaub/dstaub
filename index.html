@@ -7,10 +7,8 @@
   <meta name="theme-color" content="#111111" />
   <title>D Staub – Resume</title>
 
-  <!-- Google Fonts: Inter -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-
-  <!-- Tailwind + Config -->
+  <!-- Font + Tailwind -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -19,17 +17,33 @@
         extend: {
           fontFamily: {
             sans: ['Inter', 'sans-serif']
+          },
+          keyframes: {
+            fadeIn: {
+              from: { opacity: '0' },
+              to: { opacity: '1' }
+            }
+          },
+          animation: {
+            'fade-in': 'fadeIn 1s ease-out forwards'
           }
         }
       }
     };
   </script>
+  <style>
+    .collapsible {
+      overflow: hidden;
+      transition: max-height 0.5s ease;
+    }
+  </style>
 </head>
-<body class="bg-white text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100 font-sans leading-relaxed transition-colors duration-300 px-6 py-10 max-w-4xl mx-auto">
 
-  <!-- Header + Theme Toggle -->
-  <div class="flex justify-between items-center mb-8">
-    <h1 class="text-4xl font-bold">D Staub – Resume</h1>
+<body class="opacity-0 bg-white text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100 font-sans leading-relaxed transition-colors duration-300 px-6 py-10 max-w-4xl mx-auto">
+
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-8 animate-fade-in">
+    <h1 class="text-4xl font-bold tracking-tight">D Staub – Resume</h1>
     <button id="toggleTheme" class="flex items-center gap-2 px-3 py-1 border border-zinc-300 dark:border-zinc-600 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 text-sm transition">
       <span id="themeLabel">Light</span>
       <svg id="themeIcon" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -38,29 +52,25 @@
     </button>
   </div>
 
-  <!-- Section: Professional Summary -->
+  <!-- Summary -->
   <section class="mb-6">
     <button onclick="toggleSection('summary')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
-      <svg id="arrow-summary" style="transform: rotate(180deg);" class="w-5 h-5 mr-2 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-      </svg>
+      <svg id="arrow-summary" style="transform: rotate(180deg);" class="w-5 h-5 mr-2 transition-transform duration-500 ease-in-out" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
       Professional Summary
     </button>
-    <div id="summary" class="mt-2 text-zinc-700 dark:text-zinc-300 text-justify">
+    <div id="summary" class="mt-2 text-zinc-700 dark:text-zinc-300 text-justify collapsible" style="max-height: 1000px;">
       <p>Dynamic operations leader with over a decade of experience driving results across aviation, logistics, and retail sectors. Recognized for simplifying complex workflows, leading cross-functional teams of up to 200 associates, and elevating performance through strategic coaching and process innovation. Thrives in environments where developing others is the mission — consistently empowering associates, peers, and even leaders to grow into roles beyond his own.</p>
     </div>
   </section>
 
-  <!-- Section: Experience -->
+  <!-- Experience -->
   <section class="mb-6">
     <button onclick="toggleSection('experience')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
-      <svg id="arrow-experience" style="transform: rotate(0deg);" class="w-5 h-5 mr-2 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-      </svg>
+      <svg id="arrow-experience" style="transform: rotate(0deg);" class="w-5 h-5 mr-2 transition-transform duration-500 ease-in-out" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
       Experience
     </button>
-    <div id="experience" style="display: none;" class="mt-2 text-zinc-700 dark:text-zinc-300 space-y-4">
-      <div>
+    <div id="experience" class="mt-2 text-zinc-700 dark:text-zinc-300 collapsible" style="max-height: 0;">
+      <div class="mt-4">
         <h3 class="text-xl font-bold">Ramp Agent / Lav & Water Agent</h3>
         <p class="text-sm italic text-zinc-500 dark:text-zinc-400">Jetstream Ground Services – PIT | Oct 2024 – Present</p>
         <ul class="list-disc pl-6 mt-1">
@@ -70,7 +80,7 @@
           <li class="hover:text-cyan-400 transition">Communicates with gate and flight crews</li>
         </ul>
       </div>
-      <div>
+      <div class="mt-4">
         <h3 class="text-xl font-bold">Shift/Operations Assistant</h3>
         <p class="text-sm italic text-zinc-500 dark:text-zinc-400">Amazon Logistics | 2019 – 2024</p>
         <ul class="list-disc pl-6 mt-1">
@@ -80,7 +90,7 @@
           <li class="hover:text-cyan-400 transition">Advanced leadership readiness philosophy</li>
         </ul>
       </div>
-      <div>
+      <div class="mt-4">
         <h3 class="text-xl font-bold">Assistant Operations Manager</h3>
         <p class="text-sm italic text-zinc-500 dark:text-zinc-400">The Kroger Co | 2013 – 2019</p>
         <ul class="list-disc pl-6 mt-1">
@@ -95,15 +105,13 @@
     </div>
   </section>
 
-  <!-- Section: Education -->
+  <!-- Education -->
   <section class="mb-6">
     <button onclick="toggleSection('education')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
-      <svg id="arrow-education" style="transform: rotate(0deg);" class="w-5 h-5 mr-2 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-      </svg>
+      <svg id="arrow-education" style="transform: rotate(0deg);" class="w-5 h-5 mr-2 transition-transform duration-500 ease-in-out" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
       Education & Training
     </button>
-    <div id="education" style="display: none;" class="mt-2 text-zinc-700 dark:text-zinc-300">
+    <div id="education" class="mt-2 text-zinc-700 dark:text-zinc-300 collapsible" style="max-height: 0;">
       <ul class="list-disc pl-6">
         <li class="hover:text-cyan-400 transition">Wheeling Park High School — Diploma, 1992</li>
         <li class="hover:text-cyan-400 transition">Dale Carnegie Leadership Course — Completed</li>
@@ -111,15 +119,13 @@
     </div>
   </section>
 
-  <!-- Section: Skills -->
+  <!-- Skills -->
   <section class="mb-6">
     <button onclick="toggleSection('skills')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
-      <svg id="arrow-skills" style="transform: rotate(0deg);" class="w-5 h-5 mr-2 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-      </svg>
+      <svg id="arrow-skills" style="transform: rotate(0deg);" class="w-5 h-5 mr-2 transition-transform duration-500 ease-in-out" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
       Skills
     </button>
-    <div id="skills" style="display: none;" class="mt-2 text-zinc-700 dark:text-zinc-300 grid grid-cols-1 sm:grid-cols-2 gap-x-6">
+    <div id="skills" class="mt-2 text-zinc-700 dark:text-zinc-300 grid grid-cols-1 sm:grid-cols-2 gap-x-6 collapsible" style="max-height: 0;">
       <ul class="list-disc pl-6">
         <li class="hover:text-cyan-400 transition">Team Leadership (20–200 associates)</li>
         <li class="hover:text-cyan-400 transition">Process Improvement</li>
@@ -140,15 +146,21 @@
   <!-- Contact -->
   <section class="text-sm text-zinc-500 dark:text-zinc-400 mt-8 space-y-1">
     <p>Oakdale, PA</p>
-    <p>Email: <a href="mailto:resume@dstaub.app" class="text-cyan-500 underline">resume@dstaub.app</a></p>
-    <p>Cell: <a href="tel:+18787871376" class="text-cyan-500 underline">87.87.87.1376</a></p>
-    <p>Telegram: <a href="https://t.me/DStaub" class="text-cyan-500 underline">@DStaub</a></p>
-    <p>Web App: Visit <a href="https://dstaub.app" target="_blank" class="underline text-cyan-500">DStaub.app</a> and choose "Add to Home Screen"</p>
-    <p>Download: <a href="https://github.com/dsstaub/dstaub/raw/main/documents/David_Staub_Resume_2024-04_v1.1.0.pdf" class="text-cyan-500 underline" target="_blank">Resume (PDF)</a></p>
+    <p>Email: <a href="mailto:resume@dstaub.app" class="text-cyan-500 underline hover:-translate-y-0.5 inline-block transition">resume@dstaub.app</a></p>
+    <p>Cell: <a href="tel:+18787871376" class="text-cyan-500 underline hover:-translate-y-0.5 inline-block transition">87.87.87.1376</a></p>
+    <p>Telegram: <a href="https://t.me/DStaub" class="text-cyan-500 underline hover:-translate-y-0.5 inline-block transition">@DStaub</a></p>
+    <p>Web App: <a href="https://dstaub.app" target="_blank" class="underline text-cyan-500 hover:-translate-y-0.5 inline-block transition">DStaub.app</a> and choose "Add to Home Screen"</p>
+    <p>Download: <a href="https://github.com/dsstaub/dstaub/raw/main/documents/David_Staub_Resume_2024-04_v1.1.0.pdf" class="text-cyan-500 underline hover:-translate-y-0.5 inline-block transition" target="_blank">Resume (PDF)</a></p>
   </section>
 
   <!-- Scripts -->
   <script>
+    // (1) Page fade-in
+    window.addEventListener('DOMContentLoaded', () => {
+      document.body.classList.remove('opacity-0');
+    });
+
+    // (2) Theme toggle
     const toggleBtn = document.getElementById('toggleTheme');
     const themeLabel = document.getElementById('themeLabel');
     const html = document.documentElement;
@@ -167,23 +179,27 @@
 
     applyTheme(currentTheme);
 
+    // (3) Collapsible section transitions
     function toggleSection(id) {
       const section = document.getElementById(id);
       const arrow = document.getElementById('arrow-' + id);
-      const isOpen = section.style.display !== 'none';
-      section.style.display = isOpen ? 'none' : 'block';
-      arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
-    }
-  </script>
+      const isOpen = section.style.maxHeight && section.style.maxHeight !== '0px';
 
-  <!-- PWA Support -->
-  <script>
+      if (isOpen) {
+        section.style.maxHeight = '0';
+        arrow.style.transform = 'rotate(0deg)';
+      } else {
+        section.style.maxHeight = section.scrollHeight + 'px';
+        arrow.style.transform = 'rotate(180deg)';
+      }
+    }
+
+    // (5) Service Worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/service-worker.js')
         .then(reg => console.log('Service Worker registered:', reg))
         .catch(err => console.error('Service Worker failed:', err));
     }
   </script>
-
 </body>
 </html>
