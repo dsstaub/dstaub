@@ -53,3 +53,11 @@ self.addEventListener('fetch', event => {
     })
   );
 });
+
+// Inside service-worker.js
+
+self.addEventListener('message', event => {
+  if (event.data.action === 'skipWaiting') {
+    self.skipWaiting();
+  }
+});
