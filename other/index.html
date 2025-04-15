@@ -1,14 +1,66 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="transition-colors duration-300 dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Other | DStaub</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Photos | DStaub</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-white text-black dark:bg-zinc-900 dark:text-white min-h-screen flex flex-col justify-center items-center px-6 py-12">
-  <h1 class="text-4xl font-bold mb-4">Other</h1>
-  <p class="text-center max-w-lg">Catch-all zone. Notes, ideas, drafts, or whatever else doesn’t fit neatly into Photos or Tools.</p>
-  <a href="/" class="mt-8 text-cyan-500 underline hover:text-cyan-400">Back to Home</a>
+<body class="bg-white text-black dark:bg-zinc-900 dark:text-white pt-20 pb-32 px-6 font-sans transition-all duration-300">
+
+  <!-- TOP NAV -->
+  <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+    <button id="menuToggle" class="text-black dark:text-white">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+    <h1 class="text-xl font-bold">DStaub</h1>
+    <div class="w-6"></div>
+  </header>
+
+  <!-- SLIDE MENU -->
+  <div id="sideMenu" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-zinc-900 text-black dark:text-white shadow-lg transform -translate-x-full transition-transform duration-300 z-40">
+    <div class="p-5 border-b border-zinc-200 dark:border-zinc-800 font-bold text-lg">Menu</div>
+    <nav class="flex flex-col p-4 space-y-3">
+      <a href="/tools/">Work Tools</a>
+      <a href="/photos/">Photos</a>
+      <a href="/other/">Other</a>
+      <a href="/" class="text-cyan-500 hover:text-cyan-400">← Back to Home</a>
+    </nav>
+  </div>
+
+  <!-- BACKDROP -->
+  <div id="backdrop" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 hidden"></div>
+
+  <!-- MAIN PAGE CONTENT -->
+  <main class="mt-12 max-w-xl mx-auto text-center">
+    <h1 class="text-4xl font-bold mb-4">Other</h1>
+    <p>This is just a placeholder page.</p>
+  </main>
+
+  <!-- JS -->
+  <script>
+    const menuToggle = document.getElementById('menuToggle');
+    const sideMenu = document.getElementById('sideMenu');
+    const backdrop = document.getElementById('backdrop');
+
+    function closeMenu() {
+      sideMenu.classList.add('-translate-x-full');
+      backdrop.classList.add('hidden');
+    }
+
+    function openMenu() {
+      sideMenu.classList.remove('-translate-x-full');
+      backdrop.classList.remove('hidden');
+    }
+
+    menuToggle.addEventListener('click', () => {
+      const isOpen = !sideMenu.classList.contains('-translate-x-full');
+      isOpen ? closeMenu() : openMenu();
+    });
+
+    backdrop.addEventListener('click', closeMenu);
+  </script>
 </body>
 </html>
