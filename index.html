@@ -2,11 +2,10 @@
 <html lang="en" class="transition-colors duration-300">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#111111" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
   <title>D Staub</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
@@ -39,9 +38,9 @@
     }
   </style>
 </head>
-</main>
+
 <body class="opacity-0 bg-white text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100 font-sans leading-relaxed transition-colors duration-300 px-6 pt-20 pb-28 max-w-4xl mx-auto">
-  <!-- TOP NAV BAR -->
+ <!-- TOP NAV BAR -->
 <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
   <button id="menuToggle" class="text-zinc-800 dark:text-zinc-100 focus:outline-none">
     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -49,9 +48,10 @@
     </svg>
   </button>
   <h1 class="text-xl font-bold">DStaub</h1>
-  <div class="w-6"></div> <!-- spacer for symmetry -->
-  
-  <!-- SLIDE-OUT MENU -->
+  <div class="w-6"></div>
+</header>
+
+<!-- SLIDE-OUT MENU -->
 <div id="sideMenu" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white shadow-lg transform -translate-x-full transition-transform duration-300 z-40">
   <div class="p-5 border-b border-zinc-200 dark:border-zinc-800 font-bold text-lg">Menu</div>
   <nav class="flex flex-col p-4 space-y-3">
@@ -253,11 +253,10 @@
         .catch(err => console.error('Service Worker failed:', err));
     }
   </script>
-  <div id="bottom-spacer"
-     class="h-[7rem] sm:h-[5rem]"
-     style="padding-bottom: env(safe-area-inset-bottom);">
-</div>
-  <nav class="bottom-menu fixed bottom-0 left-0 right-0 z-50 flex justify-around p-3 text-sm
+  <!-- BOTTOM MENU -->
+<div id="bottom-spacer" class="h-[7rem] sm:h-[5rem]" style="padding-bottom: env(safe-area-inset-bottom);"></div>
+
+<nav class="bottom-menu fixed bottom-0 left-0 right-0 z-50 flex justify-around p-3 text-sm
             bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md"
      style="padding-bottom: calc(1rem + env(safe-area-inset-bottom));">
   <a href="#summary" class="text-black dark:text-white hover:text-cyan-500">Summary</a>
