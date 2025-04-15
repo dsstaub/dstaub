@@ -1,11 +1,11 @@
 // layout.js
 
-// Apply saved theme ASAP to prevent flash
+// Apply saved theme ASAP before the DOM loads
 const savedTheme = localStorage.getItem('theme') || 'dark';
 document.documentElement.classList.toggle('dark', savedTheme === 'dark');
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Inject header, menu, backdrop
+  // Inject header + menu + backdrop
   document.body.insertAdjacentHTML("afterbegin", `
     <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
       <button id="menuToggle" class="text-black dark:text-white">
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <a href="/other/">Other</a>
         <a href="/" class="text-cyan-500 hover:text-cyan-400">← Back to Home</a>
         <button id="toggleTheme" class="mt-6 px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800">
-          <span id="themeLabel"></span> Mode
+          <span id="themeLabel">${savedTheme === 'dark' ? 'Light' : 'Dark'}</span> Mode
         </button>
       </nav>
     </div>
@@ -33,10 +33,10 @@ document.addEventListener("DOMContentLoaded", () => {
     <div id="backdrop" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 hidden"></div>
   `);
 
-  // Theme logic
-  const html = document.documentElement;
+  // Theme toggle logic
   const toggleBtn = document.getElementById('toggleTheme');
   const themeLabel = document.getElementById('themeLabel');
+  const html = document.documentElement;
 
   function applyTheme(theme) {
     html.classList.toggle('dark', theme === 'dark');
@@ -45,14 +45,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   toggleBtn?.addEventListener('click', () => {
-    const isDark = html.classList.contains('dark');
-    applyTheme(isDark ? 'light' : 'dark');
+    const newTheme = html.classList.contains('dark') ? 'light' : 'dark';
+    applyTheme(newTheme);
   });
 
-  // Ensure label shows correct state
-  applyTheme(savedTheme);
-
-  // Menu toggle logic
+  // Hamburger menu logic
   const menuToggle = document.getElementById('menuToggle');
   const sideMenu = document.getElementById('sideMenu');
   const backdrop = document.getElementById('backdrop');
