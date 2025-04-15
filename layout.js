@@ -1,13 +1,5 @@
 // layout.js
 
-// Apply saved theme immediately to avoid flash
-const savedTheme = localStorage.getItem('theme') || 'dark';
-  if (savedTheme === 'dark') {
-    document.documentElement.classList.add('dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-  }
-
 document.addEventListener("DOMContentLoaded", () => {
   // Inject header + menu + backdrop
   document.body.insertAdjacentHTML("afterbegin", `
