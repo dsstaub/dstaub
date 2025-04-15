@@ -6,14 +6,26 @@
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#111111" />
   <title>D Staub – Resume</title>
+
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Tailwind + Config -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      darkMode: 'class'
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif']
+          }
+        }
+      }
     };
   </script>
 </head>
-<body class="bg-white text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100 transition-colors duration-300 font-sans px-6 py-10 max-w-4xl mx-auto">
+<body class="bg-white text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100 font-sans leading-relaxed transition-colors duration-300 px-6 py-10 max-w-4xl mx-auto">
 
   <!-- Header + Theme Toggle -->
   <div class="flex justify-between items-center mb-8">
@@ -26,7 +38,7 @@
     </button>
   </div>
 
-  <!-- PROFESSIONAL SUMMARY -->
+  <!-- Section: Professional Summary -->
   <section class="mb-6">
     <button onclick="toggleSection('summary')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
       <svg id="arrow-summary" style="transform: rotate(180deg);" class="w-5 h-5 mr-2 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -39,7 +51,7 @@
     </div>
   </section>
 
-  <!-- EXPERIENCE -->
+  <!-- Section: Experience -->
   <section class="mb-6">
     <button onclick="toggleSection('experience')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
       <svg id="arrow-experience" style="transform: rotate(0deg);" class="w-5 h-5 mr-2 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -52,38 +64,38 @@
         <h3 class="text-xl font-bold">Ramp Agent / Lav & Water Agent</h3>
         <p class="text-sm italic text-zinc-500 dark:text-zinc-400">Jetstream Ground Services – PIT | Oct 2024 – Present</p>
         <ul class="list-disc pl-6 mt-1">
-          <li>Service aircraft potable water & lavatory systems</li>
-          <li>Supports ramp ops incl. marshaling, baggage, pushback</li>
-          <li>Conducts safety inspections on GSE</li>
-          <li>Communicates with gate and flight crews</li>
+          <li class="hover:text-cyan-400 transition">Service aircraft potable water & lavatory systems</li>
+          <li class="hover:text-cyan-400 transition">Supports ramp ops incl. marshaling, baggage, pushback</li>
+          <li class="hover:text-cyan-400 transition">Conducts safety inspections on GSE</li>
+          <li class="hover:text-cyan-400 transition">Communicates with gate and flight crews</li>
         </ul>
       </div>
       <div>
         <h3 class="text-xl font-bold">Shift/Operations Assistant</h3>
         <p class="text-sm italic text-zinc-500 dark:text-zinc-400">Amazon Logistics | 2019 – 2024</p>
         <ul class="list-disc pl-6 mt-1">
-          <li>Led teams of 20–200 during peak periods</li>
-          <li>Created workflow simplifications adopted network-wide</li>
-          <li>Delivered daily peer coaching & training</li>
-          <li>Advanced leadership readiness philosophy</li>
+          <li class="hover:text-cyan-400 transition">Led teams of 20–200 during peak periods</li>
+          <li class="hover:text-cyan-400 transition">Created workflow simplifications adopted network-wide</li>
+          <li class="hover:text-cyan-400 transition">Delivered daily peer coaching & training</li>
+          <li class="hover:text-cyan-400 transition">Advanced leadership readiness philosophy</li>
         </ul>
       </div>
       <div>
         <h3 class="text-xl font-bold">Assistant Operations Manager</h3>
         <p class="text-sm italic text-zinc-500 dark:text-zinc-400">The Kroger Co | 2013 – 2019</p>
         <ul class="list-disc pl-6 mt-1">
-          <li>Oversaw Fuel Centers, Pharmacies, and Perishable Depts across multiple locations</li>
-          <li>Managed regulatory compliance for EPA, FDA, USDA, OSHA, and Health Code</li>
-          <li>Tracked product recalls and ensured accurate Country-of-Origin labeling</li>
-          <li>Acted as site-level OSHA Officer and supported internal safety training</li>
-          <li>Coordinated truck delivery schedules and staffing for minimal shrink</li>
-          <li>Mentored team leads and associates to grow into leadership roles</li>
+          <li class="hover:text-cyan-400 transition">Oversaw Fuel Centers, Pharmacies, and Perishable Depts</li>
+          <li class="hover:text-cyan-400 transition">Managed regulatory compliance for EPA, FDA, USDA, OSHA, Health Code</li>
+          <li class="hover:text-cyan-400 transition">Tracked product recalls and Country-of-Origin labeling</li>
+          <li class="hover:text-cyan-400 transition">Acted as OSHA Officer and supported internal training</li>
+          <li class="hover:text-cyan-400 transition">Coordinated delivery schedules with minimal shrink</li>
+          <li class="hover:text-cyan-400 transition">Mentored leads and associates toward advancement</li>
         </ul>
       </div>
     </div>
   </section>
 
-  <!-- EDUCATION -->
+  <!-- Section: Education -->
   <section class="mb-6">
     <button onclick="toggleSection('education')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
       <svg id="arrow-education" style="transform: rotate(0deg);" class="w-5 h-5 mr-2 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -93,13 +105,13 @@
     </button>
     <div id="education" style="display: none;" class="mt-2 text-zinc-700 dark:text-zinc-300">
       <ul class="list-disc pl-6">
-        <li>Wheeling Park High School — Diploma, 1992</li>
-        <li>Dale Carnegie Leadership Course — Completed</li>
+        <li class="hover:text-cyan-400 transition">Wheeling Park High School — Diploma, 1992</li>
+        <li class="hover:text-cyan-400 transition">Dale Carnegie Leadership Course — Completed</li>
       </ul>
     </div>
   </section>
 
-  <!-- SKILLS -->
+  <!-- Section: Skills -->
   <section class="mb-6">
     <button onclick="toggleSection('skills')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
       <svg id="arrow-skills" style="transform: rotate(0deg);" class="w-5 h-5 mr-2 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -109,23 +121,23 @@
     </button>
     <div id="skills" style="display: none;" class="mt-2 text-zinc-700 dark:text-zinc-300 grid grid-cols-1 sm:grid-cols-2 gap-x-6">
       <ul class="list-disc pl-6">
-        <li>Team Leadership (20–200 associates)</li>
-        <li>Process Improvement</li>
-        <li>Audit & Regulatory Management</li>
-        <li>Labor Cost Analysis</li>
-        <li>Recall Compliance</li>
+        <li class="hover:text-cyan-400 transition">Team Leadership (20–200 associates)</li>
+        <li class="hover:text-cyan-400 transition">Process Improvement</li>
+        <li class="hover:text-cyan-400 transition">Audit & Regulatory Management</li>
+        <li class="hover:text-cyan-400 transition">Labor Cost Analysis</li>
+        <li class="hover:text-cyan-400 transition">Recall Compliance</li>
       </ul>
       <ul class="list-disc pl-6">
-        <li>Technical Proficiency</li>
-        <li>Coaching & Development</li>
-        <li>Communication Across Levels</li>
-        <li>Ownership Culture</li>
-        <li>Leadership via Empowerment</li>
+        <li class="hover:text-cyan-400 transition">Technical Proficiency</li>
+        <li class="hover:text-cyan-400 transition">Coaching & Development</li>
+        <li class="hover:text-cyan-400 transition">Communication Across Levels</li>
+        <li class="hover:text-cyan-400 transition">Ownership Culture</li>
+        <li class="hover:text-cyan-400 transition">Leadership via Empowerment</li>
       </ul>
     </div>
   </section>
 
-  <!-- CONTACT -->
+  <!-- Contact -->
   <section class="text-sm text-zinc-500 dark:text-zinc-400 mt-8 space-y-1">
     <p>Oakdale, PA</p>
     <p>Email: <a href="mailto:resume@dstaub.app" class="text-cyan-500 underline">resume@dstaub.app</a></p>
@@ -137,7 +149,6 @@
 
   <!-- Scripts -->
   <script>
-    // Theme toggle
     const toggleBtn = document.getElementById('toggleTheme');
     const themeLabel = document.getElementById('themeLabel');
     const html = document.documentElement;
@@ -156,7 +167,6 @@
 
     applyTheme(currentTheme);
 
-    // Collapsible sections
     function toggleSection(id) {
       const section = document.getElementById(id);
       const arrow = document.getElementById('arrow-' + id);
@@ -166,7 +176,7 @@
     }
   </script>
 
-  <!-- PWA Service Worker -->
+  <!-- PWA Support -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/service-worker.js')
