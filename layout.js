@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="p-5 border-b border-zinc-200 dark:border-zinc-800 font-bold text-lg">Menu</div>
       <nav class="flex flex-col p-4 space-y-3">
         <a href="/tools/">Work Tools</a>
-        <a href="/photos/">Photos</a>
+        <a href="/music/">My Music</a>
         <a href="/other/">Other</a>
         <a href="/" class="text-cyan-500 hover:text-cyan-400">← Back to Home</a>
       </nav>
