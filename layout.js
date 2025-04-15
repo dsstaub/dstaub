@@ -62,7 +62,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const html = document.documentElement;
 
     function applyTheme(theme) {
-      html.classList.toggle('dark', theme === 'dark');
+      if (theme === 'dark') {
+        html.classList.add('dark');
+      } else {
+        html.classList.remove('dark');
+      }
       localStorage.setItem('theme', theme);
       if (themeLabel) themeLabel.textContent = theme === 'dark' ? 'Light' : 'Dark';
     }
