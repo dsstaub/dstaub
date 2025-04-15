@@ -37,6 +37,30 @@ function toggleSection(id) {
   }
 }
 
+// (4) Version Auto Refresher
+// In your main JavaScript file (e.g., app.js)
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./service-worker.js').then(registration => {
+    registration.onupdatefound = () => {
+      const installingWorker = registration.installing;
+      installingWorker.onstatechange = () => {
+        if (installingWorker.state === 'installed') {
+          if (navigator.serviceWorker.controller) {
+            // New update available
+            console.log('New content is available; please refresh.');
+            // Optionally, you can force the update:
+            installingWorker.postMessage({ action: 'skipWaiting' });
+          } else {
+            // Content is cached for offline use
+            console.log('Content is cached for offline use.');
+          }
+        }
+      };
+    };
+  });
+}
+
 // (5) PWA service worker
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/service-worker.js')
