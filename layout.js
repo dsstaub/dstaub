@@ -1,7 +1,7 @@
-// layout.js
+// layout.js — with no dark/light toggle, uses system theme
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Inject header + menu + backdrop
+  // Inject header + sidebar + backdrop
   document.body.insertAdjacentHTML("afterbegin", `
     <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
       <button id="menuToggle" class="text-black dark:text-white">
@@ -20,16 +20,13 @@ document.addEventListener("DOMContentLoaded", () => {
         <a href="/photos/">Photos</a>
         <a href="/other/">Other</a>
         <a href="/" class="text-cyan-500 hover:text-cyan-400">← Back to Home</a>
-        <button id="toggleTheme" class="mt-6 px-3 py-2 border border-zinc-300 dark:border-zinc-700 rounded text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800">
-          <span id="themeLabel">${savedTheme === 'dark' ? 'Light' : 'Dark'}</span> Mode
-        </button>
       </nav>
     </div>
 
     <div id="backdrop" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 hidden"></div>
   `);
 
-  // Hamburger menu logic
+  // Menu logic
   const menuToggle = document.getElementById('menuToggle');
   const sideMenu = document.getElementById('sideMenu');
   const backdrop = document.getElementById('backdrop');
@@ -50,28 +47,4 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   backdrop?.addEventListener('click', closeMenu);
-
-  // Defer theme toggle binding until after DOM inject
-  setTimeout(() => {
-    const toggleBtn = document.getElementById('toggleTheme');
-    const themeLabel = document.getElementById('themeLabel');
-    const html = document.documentElement;
-
-    function applyTheme(theme) {
-      if (theme === 'dark') {
-        html.classList.add('dark');
-      } else {
-        html.classList.remove('dark');
-      }
-      localStorage.setItem('theme', theme);
-      if (themeLabel) themeLabel.textContent = theme === 'dark' ? 'Light' : 'Dark';
-    }
-
-    toggleBtn?.addEventListener('click', () => {
-      const newTheme = html.classList.contains('dark') ? 'light' : 'dark';
-      applyTheme(newTheme);
-    });
-
-    applyTheme(savedTheme);
-  }, 0);
 });
