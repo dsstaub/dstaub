@@ -1,6 +1,6 @@
 // layout.js
 
-// Apply saved theme immediately (before DOM renders)
+// Apply saved theme immediately to avoid flash
 const savedTheme = localStorage.getItem('theme') || 'dark';
 document.documentElement.classList.toggle('dark', savedTheme === 'dark');
 
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   backdrop?.addEventListener('click', closeMenu);
 
-  // Theme toggle logic (after DOM has hydrated)
+  // Defer theme toggle binding until after DOM inject
   setTimeout(() => {
     const toggleBtn = document.getElementById('toggleTheme');
     const themeLabel = document.getElementById('themeLabel');
