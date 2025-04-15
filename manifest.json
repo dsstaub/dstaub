@@ -3,14 +3,20 @@
   "name": "D Staub – Resume",
   "short_name": "DStaub",
   "description": "A mobile-friendly interactive resume for D Staub with PWA features.",
+  "lang": "en-US",
+  "dir": "ltr",
   "start_url": "/index.html",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#111111",
   "theme_color": "#111111",
-  "orientation": "portrait",
+  "categories": ["business", "productivity", "portfolio"],
   "launch_handler": {
     "client_mode": "focus-existing"
   },
+  "prefer_related_applications": false,
+  "related_applications": [],
   "icons": [
     {
       "src": "icons/icon-192x192.png",
@@ -32,5 +38,6 @@
       "sizes": "1280x720",
       "label": "Main Resume View"
     }
-  ]
+  ],
+  "iarc_rating_id": ""
 }
