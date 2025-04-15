@@ -43,3 +43,9 @@ body {
 .bottom-menu button:hover {
   color: #0ff;
 }
+
+main {
+  padding: 24px;
+  padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+}
+
