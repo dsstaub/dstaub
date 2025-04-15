@@ -26,7 +26,7 @@
     </button>
   </div>
 
-  <!-- PROFESSIONAL SUMMARY (OPEN) -->
+  <!-- PROFESSIONAL SUMMARY -->
   <section class="mb-6">
     <button onclick="toggleSection('summary')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
       <svg id="arrow-summary" style="transform: rotate(180deg);" class="w-5 h-5 mr-2 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -39,7 +39,7 @@
     </div>
   </section>
 
-  <!-- EXPERIENCE (COLLAPSED) -->
+  <!-- EXPERIENCE -->
   <section class="mb-6">
     <button onclick="toggleSection('experience')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
       <svg id="arrow-experience" style="transform: rotate(0deg);" class="w-5 h-5 mr-2 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -83,7 +83,7 @@
     </div>
   </section>
 
-  <!-- EDUCATION (COLLAPSED) -->
+  <!-- EDUCATION -->
   <section class="mb-6">
     <button onclick="toggleSection('education')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
       <svg id="arrow-education" style="transform: rotate(0deg);" class="w-5 h-5 mr-2 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -99,7 +99,7 @@
     </div>
   </section>
 
-  <!-- SKILLS (COLLAPSED) -->
+  <!-- SKILLS -->
   <section class="mb-6">
     <button onclick="toggleSection('skills')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
       <svg id="arrow-skills" style="transform: rotate(0deg);" class="w-5 h-5 mr-2 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -132,10 +132,12 @@
     <p>Cell: <a href="tel:+18787871376" class="text-cyan-500 underline">87.87.87.1376</a></p>
     <p>Telegram: <a href="https://t.me/DStaub" class="text-cyan-500 underline">@DStaub</a></p>
     <p>Web App: Visit <a href="https://dstaub.app" target="_blank" class="underline text-cyan-500">DStaub.app</a> and choose "Add to Home Screen"</p>
+    <p>Download: <a href="https://github.com/dsstaub/dstaub/raw/main/documents/David_Staub_Resume_2024-04_v1.1.0.pdf" class="text-cyan-500 underline" target="_blank">Resume (PDF)</a></p>
   </section>
 
-  <!-- Theme and Section Toggle Script -->
+  <!-- Scripts -->
   <script>
+    // Theme toggle
     const toggleBtn = document.getElementById('toggleTheme');
     const themeLabel = document.getElementById('themeLabel');
     const html = document.documentElement;
@@ -154,6 +156,7 @@
 
     applyTheme(currentTheme);
 
+    // Collapsible sections
     function toggleSection(id) {
       const section = document.getElementById(id);
       const arrow = document.getElementById('arrow-' + id);
