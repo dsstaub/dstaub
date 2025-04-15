@@ -1,0 +1,45 @@
+/* Reset basic styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Enable safe-area awareness for iOS */
+body {
+  font-family: sans-serif;
+  background: #000;
+  color: #fff;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Bottom menu bar */
+.bottom-menu {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #111;
+  color: white;
+  padding: 12px 16px;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+  z-index: 999;
+  text-align: center;
+  display: flex;
+  justify-content: space-around;
+  border-top: 1px solid #333;
+}
+
+/* Buttons or links in menu */
+.bottom-menu button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.bottom-menu button:hover {
+  color: #0ff;
+}
