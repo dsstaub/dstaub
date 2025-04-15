@@ -1,7 +1,8 @@
-{
+  {
   "name": "D Staub – Resume",
   "short_name": "DStaub",
-  "start_url": "/index.html"
+  "description": "A mobile-friendly interactive resume for D Staub with PWA features.",
+  "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#111111",
   "theme_color": "#111111",
