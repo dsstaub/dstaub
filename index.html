@@ -105,27 +105,9 @@
     Email: <a href="mailto:resume@dstaub.app" style="color:#61dafb;">resume@dstaub.app</a><br>
     Cell: <a href="tel:+18787871376" style="color:#61dafb;">87.87.87.1376</a><br>
     Telegram: <a href="https://t.me/DStaub" style="color:#61dafb;">@DStaub</a><br>
-    App: DStaub.app</p>
-    <button id="installButton">Install App</button>
+    Web App: Visit DStaub.app and choose "Add/Save to Home Screen"</p>
   </div>
 <script>
-    let deferredPrompt;
-  const installButton = document.getElementById('installButton');
-
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    installButton.style.display = 'block';
-  });
-
-  installButton.addEventListener('click', () => {
-    installButton.style.display = 'none';
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then((choiceResult) => {
-      deferredPrompt = null;
-    });
-  });
-
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/service-worker.js')
     .then(function(registration) {
