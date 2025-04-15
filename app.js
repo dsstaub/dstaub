@@ -1,6 +1,14 @@
-// (1) Page fade-in
+// (1) Page fade-in and default expanded sections
 window.addEventListener('DOMContentLoaded', () => {
   document.body.classList.remove('opacity-0');
+
+  // Open sections by default
+  toggleSection('summary');
+  toggleSection('skills');
+  toggleSection('contact');
+
+  // Add bottom padding to prevent content behind nav
+  document.body.classList.add('pb-28');
 });
 
 // (2) Theme toggle
@@ -37,9 +45,7 @@ function toggleSection(id) {
   }
 }
 
-// (4) Version Auto Refresher
-// In your main JavaScript file (e.g., app.js)
-
+// (4) PWA auto-update handling
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./service-worker.js').then(registration => {
     registration.onupdatefound = () => {
@@ -47,23 +53,13 @@ if ('serviceWorker' in navigator) {
       installingWorker.onstatechange = () => {
         if (installingWorker.state === 'installed') {
           if (navigator.serviceWorker.controller) {
-            // New update available
             console.log('New content is available; please refresh.');
-            // Optionally, you can force the update:
             installingWorker.postMessage({ action: 'skipWaiting' });
           } else {
-            // Content is cached for offline use
             console.log('Content is cached for offline use.');
           }
         }
       };
     };
-  });
-}
-
-// (5) PWA service worker
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/service-worker.js')
-    .then(reg => console.log('Service Worker registered:', reg))
-    .catch(err => console.error('Service Worker failed:', err));
+  }).catch(err => console.error('Service Worker failed:', err));
 }
