@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="transition-colors duration-300">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,82 +7,103 @@
   <meta name="theme-color" content="#111111" />
   <title>D Staub – Resume</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    // Enable dark mode classes
+    tailwind.config = {
+      darkMode: 'class',
+    };
+  </script>
 </head>
-<body class="bg-zinc-900 text-zinc-100 px-6 py-10 max-w-4xl mx-auto font-sans">
+<body class="bg-zinc-900 text-zinc-100 px-6 py-10 max-w-4xl mx-auto font-sans transition-colors duration-300">
 
-  <h1 class="text-4xl font-bold text-white mb-4">D. Staub – Resume</h1>
+  <!-- Header + Dark Mode Toggle -->
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-4xl font-bold text-white">D. Staub – Resume</h1>
+    <button id="toggleTheme" class="bg-zinc-800 text-zinc-200 px-3 py-1 rounded text-sm hover:bg-zinc-700 border border-zinc-600">
+      Toggle Theme
+    </button>
+  </div>
 
-  <section class="mb-8">
-    <h2 class="text-2xl font-semibold text-cyan-400 mb-2">Professional Summary</h2>
-    <p class="text-zinc-300">
-      Dynamic operations leader with over a decade of experience driving results across aviation, logistics, and retail sectors.
+  <!-- Collapsible Section Template -->
+  <section class="mb-6">
+    <h2 class="text-2xl font-semibold text-cyan-400 cursor-pointer select-none" onclick="toggleSection('summary')">Professional Summary</h2>
+    <div id="summary" class="mt-2 text-zinc-300">
+      <p>Dynamic operations leader with over a decade of experience driving results across aviation, logistics, and retail sectors.
       Recognized for simplifying complex workflows, leading cross-functional teams of up to 200 associates, and elevating performance through strategic coaching and process innovation.
-      Thrives in environments where developing others is the mission — consistently empowering associates, peers, and even leaders to grow into roles beyond his own.
-    </p>
-  </section>
-
-  <section class="mb-8">
-    <h2 class="text-2xl font-semibold text-cyan-400 mb-2">Experience</h2>
-
-    <div class="mb-4">
-      <h3 class="text-xl font-bold text-white">Ramp Agent / Lav & Water Agent</h3>
-      <p class="text-sm italic text-zinc-400">Jetstream Ground Services – Pittsburgh International Airport | Oct 2024 – Present</p>
-      <ul class="list-disc pl-6 text-zinc-300 mt-1">
-        <li>Service aircraft potable water & lavatory systems</li>
-        <li>Supports ramp ops incl. marshaling, baggage, pushback</li>
-        <li>Conducts safety inspections on GSE</li>
-        <li>Communicates with gate and flight crews</li>
-      </ul>
-    </div>
-
-    <div class="mb-4">
-      <h3 class="text-xl font-bold text-white">Shift Assistant</h3>
-      <p class="text-sm italic text-zinc-400">Amazon Logistics | 2019 – 2024</p>
-      <ul class="list-disc pl-6 text-zinc-300 mt-1">
-        <li>Led teams of 20–200 during peak periods</li>
-        <li>Created workflow simplifications adopted network-wide</li>
-        <li>Delivered daily peer coaching & training</li>
-        <li>Advanced leadership readiness philosophy</li>
-      </ul>
-    </div>
-
-    <div>
-      <h3 class="text-xl font-bold text-white">Assistant Operations Manager</h3>
-      <p class="text-sm italic text-zinc-400">The Kroger Co | 2013 – 2019</p>
-      <ul class="list-disc pl-6 text-zinc-300 mt-1">
-        <li>Oversaw Fuel Centers, Pharmacies, Perishables</li>
-        <li>Managed EPA, FDA, USDA, Health Code, OSHA compliance</li>
-        <li>Handled product recalls and labeling enforcement</li>
-        <li>Mentored leads to build ownership culture</li>
-      </ul>
+      Thrives in environments where developing others is the mission — consistently empowering associates, peers, and even leaders to grow into roles beyond his own.</p>
     </div>
   </section>
 
-  <section class="mb-8">
-    <h2 class="text-2xl font-semibold text-cyan-400 mb-2">Education & Training</h2>
-    <ul class="list-disc pl-6 text-zinc-300">
-      <li>Wheeling Park High School — Diploma, 1992</li>
-      <li>Dale Carnegie Leadership Course — Completed</li>
-    </ul>
+  <section class="mb-6">
+    <h2 class="text-2xl font-semibold text-cyan-400 cursor-pointer select-none" onclick="toggleSection('experience')">Experience</h2>
+    <div id="experience" class="mt-2 text-zinc-300 space-y-4">
+
+      <div>
+        <h3 class="text-xl font-bold text-white">Ramp Agent / Lav & Water Agent</h3>
+        <p class="text-sm italic text-zinc-400">Jetstream Ground Services – PIT | Oct 2024 – Present</p>
+        <ul class="list-disc pl-6 mt-1">
+          <li>Service aircraft potable water & lavatory systems</li>
+          <li>Supports ramp ops incl. marshaling, baggage, pushback</li>
+          <li>Conducts safety inspections on GSE</li>
+          <li>Communicates with gate and flight crews</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-bold text-white">Shift Assistant</h3>
+        <p class="text-sm italic text-zinc-400">Amazon Logistics | 2019 – 2024</p>
+        <ul class="list-disc pl-6 mt-1">
+          <li>Led teams of 20–200 during peak periods</li>
+          <li>Created workflow simplifications adopted network-wide</li>
+          <li>Delivered daily peer coaching & training</li>
+          <li>Advanced leadership readiness philosophy</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-bold text-white">Assistant Operations Manager</h3>
+        <p class="text-sm italic text-zinc-400">The Kroger Co | 2013 – 2019</p>
+        <ul class="list-disc pl-6 mt-1">
+          <li>Oversaw Fuel Centers, Pharmacies, Perishables</li>
+          <li>Managed EPA, FDA, USDA, OSHA compliance</li>
+          <li>Handled product recalls and labeling enforcement</li>
+          <li>Mentored leads to build ownership culture</li>
+        </ul>
+      </div>
+    </div>
   </section>
 
-  <section class="mb-8">
-    <h2 class="text-2xl font-semibold text-cyan-400 mb-2">Skills</h2>
-    <ul class="list-disc pl-6 text-zinc-300 columns-2 gap-8">
-      <li>Team Leadership (20–200 associates)</li>
-      <li>Process Improvement</li>
-      <li>Regulatory & Audit Management</li>
-      <li>Labor Cost Analysis</li>
-      <li>Recall Procedures & Compliance</li>
-      <li>Technical Proficiency</li>
-      <li>On-the-Job Coaching</li>
-      <li>Cross-Level Communication</li>
-      <li>Ownership Culture Building</li>
-      <li>Leadership by Empowerment</li>
-    </ul>
+  <section class="mb-6">
+    <h2 class="text-2xl font-semibold text-cyan-400 cursor-pointer select-none" onclick="toggleSection('education')">Education & Training</h2>
+    <div id="education" class="mt-2 text-zinc-300">
+      <ul class="list-disc pl-6">
+        <li>Wheeling Park High School — Diploma, 1992</li>
+        <li>Dale Carnegie Leadership Course — Completed</li>
+      </ul>
+    </div>
   </section>
 
-  <section class="text-sm text-zinc-400">
+  <section class="mb-6">
+    <h2 class="text-2xl font-semibold text-cyan-400 cursor-pointer select-none" onclick="toggleSection('skills')">Skills</h2>
+    <div id="skills" class="mt-2 text-zinc-300 grid grid-cols-1 sm:grid-cols-2 gap-x-6">
+      <ul class="list-disc pl-6">
+        <li>Team Leadership (20–200 associates)</li>
+        <li>Process Improvement</li>
+        <li>Regulatory & Audit Management</li>
+        <li>Labor Cost Analysis</li>
+        <li>Recall Compliance</li>
+      </ul>
+      <ul class="list-disc pl-6">
+        <li>Technical Proficiency</li>
+        <li>Coaching & Development</li>
+        <li>Cross-Level Communication</li>
+        <li>Ownership Culture</li>
+        <li>Empowerment Leadership</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="text-sm text-zinc-400 mt-8">
     <p>Oakdale, PA</p>
     <p>Email: <a href="mailto:resume@dstaub.app" class="text-cyan-400 underline">resume@dstaub.app</a></p>
     <p>Cell: <a href="tel:+18787871376" class="text-cyan-400 underline">87.87.87.1376</a></p>
@@ -90,6 +111,31 @@
     <p>Web App: Visit <span class="underline text-cyan-400">DStaub.app</span> and choose "Add to Home Screen"</p>
   </section>
 
+  <script>
+    // Theme toggle
+    const toggle = document.getElementById('toggleTheme');
+    const root = document.documentElement;
+    const stored = localStorage.getItem('theme');
+
+    if (stored === 'dark') {
+      root.classList.add('dark');
+    } else if (stored === 'light') {
+      root.classList.remove('dark');
+    }
+
+    toggle.addEventListener('click', () => {
+      root.classList.toggle('dark');
+      localStorage.setItem('theme', root.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    // Section collapse/expand
+    function toggleSection(id) {
+      const el = document.getElementById(id);
+      el.style.display = el.style.display === 'none' ? 'block' : 'none';
+    }
+  </script>
+
+  <!-- Service Worker -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/service-worker.js')
