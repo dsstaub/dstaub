@@ -38,11 +38,10 @@
     }
   </style>
 </head>
-
-<body class="opacity-0 bg-white text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100 font-sans leading-relaxed transition-colors duration-300 px-6 pt-20 pb-28 max-w-4xl mx-auto">
- <!-- TOP NAV BAR -->
+<body class="opacity-0 bg-white text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100 font-sans leading-relaxed transition-colors duration-300 px-6 pt-20 pb-32 max-w-4xl mx-auto">
+<!-- TOP NAV -->
 <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
-  <button id="menuToggle" class="text-zinc-800 dark:text-zinc-100 focus:outline-none">
+  <button id="menuToggle" class="text-black dark:text-white">
     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
     </svg>
@@ -51,8 +50,8 @@
   <div class="w-6"></div>
 </header>
 
-<!-- SLIDE-OUT MENU -->
-<div id="sideMenu" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white shadow-lg transform -translate-x-full transition-transform duration-300 z-40">
+<!-- SLIDE MENU -->
+<div id="sideMenu" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-zinc-900 text-black dark:text-white shadow-lg transform -translate-x-full transition-transform duration-300 z-40">
   <div class="p-5 border-b border-zinc-200 dark:border-zinc-800 font-bold text-lg">Menu</div>
   <nav class="flex flex-col p-4 space-y-3">
     <a href="/tools.html" class="hover:text-cyan-500">Work Tools</a>
@@ -63,206 +62,190 @@
 
 <!-- BACKDROP -->
 <div id="backdrop" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 hidden"></div>
-  
-</header>
-  <div class="flex justify-between items-center mb-8 animate-fade-in">
-    <h1 class="text-4xl font-bold tracking-tight">D Staub — Resumé</h1>
-    <button id="toggleTheme" class="flex items-center gap-2 px-3 py-1 border border-zinc-300 dark:border-zinc-600 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800 text-sm transition">
-      <span id="themeLabel">Light</span>
-      <svg id="themeIcon" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-        <path d="M10 15.5A5.5 5.5 0 1 1 15.5 10 5.507 5.507 0 0 1 10 15.5z"/>
+<!-- SUMMARY -->
+<section class="mb-6">
+  <div class="sticky-header bg-white dark:bg-zinc-900">
+    <button onclick="toggleSection('summary')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
+      <svg id="arrow-summary" class="w-5 h-5 mr-2 transition-transform duration-500 ease-in-out" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
       </svg>
+      Professional Summary
     </button>
   </div>
+  <div id="summary" class="mt-2 text-zinc-700 dark:text-zinc-300 text-justify collapsible" style="max-height: 0;">
+    <p>Dynamic operations leader with over a decade of experience driving results across aviation, logistics, and retail sectors. Recognized for simplifying complex workflows, leading cross-functional teams of up to 200 associates, and elevating performance through strategic coaching and process innovation.</p>
+  </div>
+</section>
 
-  <!-- SUMMARY -->
-  <section class="mb-6">
-    <div class="sticky-header bg-white dark:bg-zinc-900">
-      <button onclick="toggleSection('summary')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
-        <svg id="arrow-summary" style="transform: rotate(180deg);" class="w-5 h-5 mr-2 transition-transform duration-500 ease-in-out" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
-        Professional Summary
-      </button>
-    </div>
-    <div id="summary" class="mt-2 text-zinc-700 dark:text-zinc-300 text-justify collapsible" style="max-height: 0px;">
-      <p>Dynamic operations leader with over a decade of experience driving results across aviation, logistics, and retail sectors. Recognized for simplifying complex workflows, leading cross-functional teams of up to 200 associates, and elevating performance through strategic coaching and process innovation. Thrives in environments where developing others is the mission — consistently empowering associates, peers, and even leaders to grow into roles beyond his own.</p>
-    </div>
-  </section>
-  
-  <!-- EXPERIENCE -->
-  <section class="mb-6">
-    <div class="sticky-header bg-white dark:bg-zinc-900">
-      <button onclick="toggleSection('experience')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
-        <svg id="arrow-experience" style="transform: rotate(0deg);" class="w-5 h-5 mr-2 transition-transform duration-500 ease-in-out" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
-        Experience
-      </button>
-    </div>
-    <div id="experience" class="mt-2 text-zinc-700 dark:text-zinc-300 collapsible" style="max-height: 0;">
-      <div class="mt-4">
-        <h3 class="text-xl font-bold">Ramp Agent / Lav & Water Agent</h3>
-        <p class="text-sm italic text-zinc-500 dark:text-zinc-400">Jetstream Ground Services – PIT | Oct 2024 – Present</p>
-        <ul class="list-disc pl-6 mt-1">
-          <li class="hover:text-cyan-400 transition">Service aircraft potable water & lavatory systems</li>
-          <li class="hover:text-cyan-400 transition">Supports ramp ops incl. marshaling, baggage, pushback</li>
-          <li class="hover:text-cyan-400 transition">Conducts safety inspections on GSE</li>
-          <li class="hover:text-cyan-400 transition">Communicates with gate and flight crews</li>
-        </ul>
-      </div>
-      <div class="mt-4">
-        <h3 class="text-xl font-bold">Shift/Operations Assistant</h3>
-        <p class="text-sm italic text-zinc-500 dark:text-zinc-400">Amazon Logistics | 2019 – 2024</p>
-        <ul class="list-disc pl-6 mt-1">
-          <li class="hover:text-cyan-400 transition">Led teams of 20–200 during peak periods</li>
-          <li class="hover:text-cyan-400 transition">Created workflow simplifications adopted network-wide</li>
-          <li class="hover:text-cyan-400 transition">Delivered daily peer coaching & training</li>
-          <li class="hover:text-cyan-400 transition">Advanced leadership readiness philosophy</li>
-        </ul>
-      </div>
-      <div class="mt-4">
-        <h3 class="text-xl font-bold">Assistant Operations Manager</h3>
-        <p class="text-sm italic text-zinc-500 dark:text-zinc-400">The Kroger Co | 2013 – 2019</p>
-        <ul class="list-disc pl-6 mt-1">
-          <li class="hover:text-cyan-400 transition">Oversaw Fuel Centers, Pharmacies, and Perishable Depts</li>
-          <li class="hover:text-cyan-400 transition">Managed compliance for EPA, FDA, USDA, OSHA, Health Code</li>
-          <li class="hover:text-cyan-400 transition">Tracked product recalls and Country-of-Origin labeling</li>
-          <li class="hover:text-cyan-400 transition">Acted as OSHA Officer and supported internal training</li>
-          <li class="hover:text-cyan-400 transition">Coordinated delivery schedules with minimal shrink</li>
-          <li class="hover:text-cyan-400 transition">Mentored leads and associates toward advancement</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-  
-    <!-- EDUCATION -->
-  <section class="mb-6">
-    <div class="sticky-header bg-white dark:bg-zinc-900">
-      <button onclick="toggleSection('education')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
-        <svg id="arrow-education" style="transform: rotate(0deg);" class="w-5 h-5 mr-2 transition-transform duration-500 ease-in-out" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
-        Education & Training
-      </button>
-    </div>
-    <div id="education" class="mt-2 text-zinc-700 dark:text-zinc-300 collapsible" style="max-height: 0;">
-      <ul class="list-disc pl-6">
-        <li class="hover:text-cyan-400 transition">Wheeling Park High School — Diploma, 1992</li>
-        <li class="hover:text-cyan-400 transition">Dale Carnegie Leadership Course — Completed</li>
+<!-- EXPERIENCE -->
+<section class="mb-6">
+  <div class="sticky-header bg-white dark:bg-zinc-900">
+    <button onclick="toggleSection('experience')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
+      <svg id="arrow-experience" class="w-5 h-5 mr-2 transition-transform duration-500 ease-in-out" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+      Experience
+    </button>
+  </div>
+  <div id="experience" class="mt-2 text-zinc-700 dark:text-zinc-300 collapsible" style="max-height: 0;">
+    <div class="mt-4">
+      <h3 class="text-xl font-bold">Ramp Agent / Lav & Water Agent</h3>
+      <p class="text-sm italic text-zinc-500 dark:text-zinc-400">Jetstream Ground Services – PIT | Oct 2024 – Present</p>
+      <ul class="list-disc pl-6 mt-1">
+        <li>Service aircraft potable water & lavatory systems</li>
+        <li>Supports ramp ops incl. marshaling, baggage, pushback</li>
+        <li>Conducts safety inspections on GSE</li>
+        <li>Communicates with gate and flight crews</li>
       </ul>
     </div>
-  </section>
+    <!-- Add other job blocks here -->
+  </div>
+</section>
 
-  <!-- SKILLS -->
-  <section class="mb-6">
-    <div class="sticky-header bg-white dark:bg-zinc-900">
-      <button onclick="toggleSection('skills')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
-        <svg id="arrow-skills" style="transform: rotate(0deg);" class="w-5 h-5 mr-2 transition-transform duration-500 ease-in-out" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
-        Skills
-      </button>
-    </div>
-    <div id="skills" class="mt-2 text-zinc-700 dark:text-zinc-300 grid grid-cols-1 sm:grid-cols-2 gap-x-6 collapsible" style="max-height: 0;">
-      <ul class="list-disc pl-6">
-        <li class="hover:text-cyan-400 transition">Team Leadership (20–200 associates)</li>
-        <li class="hover:text-cyan-400 transition">Process Improvement</li>
-        <li class="hover:text-cyan-400 transition">Audit & Regulatory Management</li>
-        <li class="hover:text-cyan-400 transition">Labor Cost Analysis</li>
-        <li class="hover:text-cyan-400 transition">Recall Compliance</li>
-      </ul>
-      <ul class="list-disc pl-6">
-        <li class="hover:text-cyan-400 transition">Technical Proficiency</li>
-        <li class="hover:text-cyan-400 transition">Coaching & Development</li>
-        <li class="hover:text-cyan-400 transition">Communication Across Levels</li>
-        <li class="hover:text-cyan-400 transition">Ownership Culture</li>
-        <li class="hover:text-cyan-400 transition">Leadership via Empowerment</li>
-      </ul>
-    </div>
-  </section>
+<!-- EDUCATION -->
+<section class="mb-6">
+  <div class="sticky-header bg-white dark:bg-zinc-900">
+    <button onclick="toggleSection('education')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
+      <svg id="arrow-education" class="w-5 h-5 mr-2 transition-transform duration-500 ease-in-out" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+      Education & Training
+    </button>
+  </div>
+  <div id="education" class="mt-2 text-zinc-700 dark:text-zinc-300 collapsible" style="max-height: 0;">
+    <ul class="list-disc pl-6">
+      <li>Wheeling Park High School — Diploma, 1992</li>
+      <li>Dale Carnegie Leadership Course — Completed</li>
+    </ul>
+  </div>
+</section>
 
-  <!-- CONTACT -->
-  <section class="mb-6">
-    <div class="sticky-header bg-white dark:bg-zinc-900">
-      <button onclick="toggleSection('contact')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
-        <svg id="arrow-contact" style="transform: rotate(0deg);" class="w-5 h-5 mr-2 transition-transform duration-500 ease-in-out" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
-        Contact Me
-      </button>
-    </div>
-    <div id="contact" class="text-sm text-zinc-500 dark:text-zinc-400 mt-2 space-y-1 collapsible" style="max-height: 0;">
-      <p>Email: <a href="mailto:resume@dstaub.app" class="text-cyan-500 underline hover:-translate-y-0.5 inline-block transition">resume@dstaub.app</a></p>
-      <p>Cell: <a href="tel:+18787871376" class="text-cyan-500 underline hover:-translate-y-0.5 inline-block transition">87.87.87.1376</a></p>
-      <p>Telegram: <a href="https://t.me/DStaub" class="text-cyan-500 underline hover:-translate-y-0.5 inline-block transition">@DStaub</a></p>
-      <p>Web App: <a href="https://dstaub.app" target="_blank" class="underline text-cyan-500 hover:-translate-y-0.5 inline-block transition">DStaub.app</a> and choose "Add to Home Screen"</p>
-      <p>Download: <a href="https://github.com/dsstaub/dstaub/raw/main/documents/David_Staub_Resume_2024-04_v1.1.0.pdf" class="text-cyan-500 underline hover:-translate-y-0.5 inline-block transition" target="_blank">Resume (PDF)</a></p>
-    </div>
-  </section>
-  </main>
-  <!-- SCRIPTS -->
-  <script>
-    // Fade-in on load
-    window.addEventListener('DOMContentLoaded', () => {
-  document.body.classList.remove('opacity-0');
+<!-- SKILLS -->
+<section class="mb-6">
+  <div class="sticky-header bg-white dark:bg-zinc-900">
+    <button onclick="toggleSection('skills')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
+      <svg id="arrow-skills" class="w-5 h-5 mr-2 transition-transform duration-500 ease-in-out" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+      Skills
+    </button>
+  </div>
+  <div id="skills" class="mt-2 text-zinc-700 dark:text-zinc-300 collapsible" style="max-height: 0;">
+    <ul class="list-disc pl-6 grid grid-cols-1 sm:grid-cols-2 gap-x-6">
+      <li>Team Leadership</li>
+      <li>Process Improvement</li>
+      <li>Regulatory Compliance</li>
+      <li>Recall Tracking</li>
+    </ul>
+  </div>
+</section>
 
-  // OPEN THESE SECTIONS BY DEFAULT:
-  toggleSection('summary');
-  toggleSection('skills');
-  toggleSection('contact');
-});
+<!-- CONTACT -->
+<section class="mb-6">
+  <div class="sticky-header bg-white dark:bg-zinc-900">
+    <button onclick="toggleSection('contact')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
+      <svg id="arrow-contact" class="w-5 h-5 mr-2 transition-transform duration-500 ease-in-out" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+      Contact Me
+    </button>
+  </div>
+  <div id="contact" class="text-sm text-zinc-500 dark:text-zinc-400 mt-2 space-y-1 collapsible" style="max-height: 0;">
+    <p>Email: <a href="mailto:resume@dstaub.app" class="text-cyan-500 underline">resume@dstaub.app</a></p>
+    <p>Phone: <a href="tel:+18787871376" class="text-cyan-500 underline">87.87.87.1376</a></p>
+  </div>
+</section>
+<!-- SPACER FOR BOTTOM MENU -->
+<div class="h-[7rem]" style="padding-bottom: env(safe-area-inset-bottom);"></div>
 
-    // Dark/light theme toggle
-    const toggleBtn = document.getElementById('toggleTheme');
-    const themeLabel = document.getElementById('themeLabel');
-    const html = document.documentElement;
-    const currentTheme = localStorage.getItem('theme') || 'dark';
-
-    function applyTheme(theme) {
-      html.classList.toggle('dark', theme === 'dark');
-      themeLabel.textContent = theme === 'dark' ? 'Light' : 'Dark';
-      localStorage.setItem('theme', theme);
-    }
-
-    toggleBtn.addEventListener('click', () => {
-      const newTheme = html.classList.contains('dark') ? 'light' : 'dark';
-      applyTheme(newTheme);
-    });
-
-    applyTheme(currentTheme);
-
-    // Section toggles
-    function toggleSection(id) {
-      const section = document.getElementById(id);
-      const arrow = document.getElementById('arrow-' + id);
-      const isOpen = section.style.maxHeight && section.style.maxHeight !== '0px';
-      if (isOpen) {
-        section.style.maxHeight = '0';
-        arrow.style.transform = 'rotate(0deg)';
-      } else {
-        section.style.maxHeight = section.scrollHeight + 'px';
-        arrow.style.transform = 'rotate(180deg)';
-      }
-    }
-
-    // Register service worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(reg => console.log('Service Worker registered:', reg))
-        .catch(err => console.error('Service Worker failed:', err));
-    }
-  </script>
-  <!-- BOTTOM MENU -->
-<div id="bottom-spacer" class="h-[7rem] sm:h-[5rem]" style="padding-bottom: env(safe-area-inset-bottom);"></div>
-
-<nav class="bottom-menu fixed bottom-0 left-0 right-0 z-50 flex justify-around p-3 text-sm
-            bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md"
+<!-- BOTTOM MENU -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-around p-3 text-sm bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md"
      style="padding-bottom: calc(1rem + env(safe-area-inset-bottom));">
   <a href="#summary" class="text-black dark:text-white hover:text-cyan-500">Summary</a>
   <a href="#experience" class="text-black dark:text-white hover:text-cyan-500">Experience</a>
   <a href="#skills" class="text-black dark:text-white hover:text-cyan-500">Skills</a>
   <a href="#contact" class="text-black dark:text-white hover:text-cyan-500">Contact</a>
 </nav>
+
+<!-- SCRIPTS -->
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    document.body.classList.remove('opacity-0');
+
+    // Open sections on load
+    toggleSection('summary');
+    toggleSection('skills');
+    toggleSection('contact');
+
+    // Menu logic
+    const menuToggle = document.getElementById('menuToggle');
+    const sideMenu = document.getElementById('sideMenu');
+    const backdrop = document.getElementById('backdrop');
+
+    function closeMenu() {
+      sideMenu.classList.add('-translate-x-full');
+      backdrop.classList.add('hidden');
+    }
+
+    function openMenu() {
+      sideMenu.classList.remove('-translate-x-full');
+      backdrop.classList.remove('hidden');
+    }
+
+    menuToggle.addEventListener('click', () => {
+      const isOpen = !sideMenu.classList.contains('-translate-x-full');
+      isOpen ? closeMenu() : openMenu();
+    });
+
+    backdrop.addEventListener('click', closeMenu);
+  });
+
+  // Toggle theme
+  const toggleBtn = document.getElementById('toggleTheme');
+  const themeLabel = document.getElementById('themeLabel');
+  const html = document.documentElement;
+  const currentTheme = localStorage.getItem('theme') || 'dark';
+
+  function applyTheme(theme) {
+    html.classList.toggle('dark', theme === 'dark');
+    if (themeLabel) themeLabel.textContent = theme === 'dark' ? 'Light' : 'Dark';
+    localStorage.setItem('theme', theme);
+  }
+
+  toggleBtn?.addEventListener('click', () => {
+    const newTheme = html.classList.contains('dark') ? 'light' : 'dark';
+    applyTheme(newTheme);
+  });
+
+  applyTheme(currentTheme);
+
+  // Collapsibles
+  function toggleSection(id) {
+    const section = document.getElementById(id);
+    const arrow = document.getElementById('arrow-' + id);
+    const isOpen = section.style.maxHeight && section.style.maxHeight !== '0px';
+    section.style.maxHeight = isOpen ? '0' : section.scrollHeight + 'px';
+    arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+  }
+
+  // Service worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./service-worker.js').then(registration => {
+      registration.onupdatefound = () => {
+        const installingWorker = registration.installing;
+        installingWorker.onstatechange = () => {
+          if (installingWorker.state === 'installed') {
+            if (navigator.serviceWorker.controller) {
+              console.log('New content available');
+              installingWorker.postMessage({ action: 'skipWaiting' });
+            } else {
+              console.log('Content cached for offline use');
+            }
+          }
+        };
+      };
+    }).catch(err => console.error('SW error:', err));
+  }
+</script>
 </body>
 </html>
