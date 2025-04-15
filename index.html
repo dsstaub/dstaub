@@ -26,7 +26,8 @@
   </style>
 </head>
 <body class="opacity-0 bg-white text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100 font-sans leading-relaxed px-6 pt-20 pb-32 max-w-4xl mx-auto">
-  <!-- Resume Sections -->
+
+  <!-- SUMMARY -->
   <section class="mb-6">
     <div class="sticky-header bg-white dark:bg-zinc-900">
       <button onclick="toggleSection('summary')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
@@ -37,92 +38,121 @@
       </button>
     </div>
     <div id="summary" class="collapsible mt-2" style="max-height: 0;">
-      <p>Dynamic operations leader with over a decade of experience driving results across aviation, logistics, and retail sectors...</p>
+      <p>Dynamic operations leader with over a decade of experience driving results across aviation, logistics, and retail sectors. Recognized for simplifying complex workflows, leading cross-functional teams of up to 200 associates, and elevating performance through strategic coaching and process innovation. Thrives in environments where developing others is the mission — consistently empowering associates, peers, and even leaders to grow into roles beyond his own.</p>
     </div>
   </section>
 
-<!-- EXPERIENCE -->
-<section class="mb-6">
-  <div class="sticky-header bg-white dark:bg-zinc-900">
-    <button onclick="toggleSection('experience')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
-      <svg id="arrow-experience" class="w-5 h-5 mr-2 transition-transform duration-500 ease-in-out" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-      </svg>
-      Experience
-    </button>
-  </div>
-  <div id="experience" class="mt-2 text-zinc-700 dark:text-zinc-300 collapsible" style="max-height: 0;">
-    <div class="mt-4">
-      <h3 class="text-xl font-bold">Ramp Agent / Lav & Water Agent</h3>
-      <p class="text-sm italic text-zinc-500 dark:text-zinc-400">Jetstream Ground Services – PIT | Oct 2024 – Present</p>
-      <ul class="list-disc pl-6 mt-1">
-        <li>Service aircraft potable water & lavatory systems</li>
-        <li>Supports ramp ops incl. marshaling, baggage, pushback</li>
-        <li>Conducts safety inspections on GSE</li>
-        <li>Communicates with gate and flight crews</li>
+  <!-- EXPERIENCE -->
+  <section class="mb-6">
+    <div class="sticky-header bg-white dark:bg-zinc-900">
+      <button onclick="toggleSection('experience')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
+        <svg id="arrow-experience" class="w-5 h-5 mr-2 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+        Experience
+      </button>
+    </div>
+    <div id="experience" class="collapsible mt-2 text-zinc-700 dark:text-zinc-300" style="max-height: 0;">
+      <div class="mt-4">
+        <h3 class="text-xl font-bold">Ramp Agent / Lav & Water Agent</h3>
+        <p class="text-sm italic text-zinc-500 dark:text-zinc-400">Jetstream Ground Services – PIT | Oct 2024 – Present</p>
+        <ul class="list-disc pl-6 mt-1">
+          <li>Service aircraft potable water & lavatory systems</li>
+          <li>Supports ramp ops incl. marshaling, baggage, pushback</li>
+          <li>Conducts safety inspections on GSE</li>
+          <li>Communicates with gate and flight crews</li>
+        </ul>
+      </div>
+      <div class="mt-4">
+        <h3 class="text-xl font-bold">Shift/Operations Assistant</h3>
+        <p class="text-sm italic text-zinc-500 dark:text-zinc-400">Amazon Logistics | 2019 – 2024</p>
+        <ul class="list-disc pl-6 mt-1">
+          <li>Led teams of 20–200 during peak periods</li>
+          <li>Created workflow simplifications adopted network-wide</li>
+          <li>Delivered daily peer coaching & training</li>
+          <li>Advanced leadership readiness philosophy</li>
+        </ul>
+      </div>
+      <div class="mt-4">
+        <h3 class="text-xl font-bold">Assistant Operations Manager</h3>
+        <p class="text-sm italic text-zinc-500 dark:text-zinc-400">The Kroger Co | 2013 – 2019</p>
+        <ul class="list-disc pl-6 mt-1">
+          <li>Oversaw Fuel Centers, Pharmacies, and Perishable Depts</li>
+          <li>Managed compliance for EPA, FDA, USDA, OSHA, Health Code</li>
+          <li>Tracked product recalls and Country-of-Origin labeling</li>
+          <li>Acted as OSHA Officer and supported internal training</li>
+          <li>Coordinated delivery schedules with minimal shrink</li>
+          <li>Mentored leads and associates toward advancement</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section class="mb-6">
+    <div class="sticky-header bg-white dark:bg-zinc-900">
+      <button onclick="toggleSection('education')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
+        <svg id="arrow-education" class="w-5 h-5 mr-2 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+        Education & Training
+      </button>
+    </div>
+    <div id="education" class="collapsible mt-2 text-zinc-700 dark:text-zinc-300" style="max-height: 0;">
+      <ul class="list-disc pl-6">
+        <li>Wheeling Park High School — Diploma, 1992</li>
+        <li>Dale Carnegie Leadership Course — Completed</li>
       </ul>
     </div>
-    <!-- Add other job blocks here -->
-  </div>
-</section>
+  </section>
 
-<!-- EDUCATION -->
-<section class="mb-6">
-  <div class="sticky-header bg-white dark:bg-zinc-900">
-    <button onclick="toggleSection('education')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
-      <svg id="arrow-education" class="w-5 h-5 mr-2 transition-transform duration-500 ease-in-out" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-      </svg>
-      Education & Training
-    </button>
-  </div>
-  <div id="education" class="mt-2 text-zinc-700 dark:text-zinc-300 collapsible" style="max-height: 0;">
-    <ul class="list-disc pl-6">
-      <li>Wheeling Park High School — Diploma, 1992</li>
-      <li>Dale Carnegie Leadership Course — Completed</li>
-    </ul>
-  </div>
-</section>
+  <!-- SKILLS -->
+  <section class="mb-6">
+    <div class="sticky-header bg-white dark:bg-zinc-900">
+      <button onclick="toggleSection('skills')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
+        <svg id="arrow-skills" class="w-5 h-5 mr-2 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+        Skills
+      </button>
+    </div>
+    <div id="skills" class="collapsible mt-2 text-zinc-700 dark:text-zinc-300" style="max-height: 0;">
+      <ul class="list-disc pl-6 grid grid-cols-1 sm:grid-cols-2 gap-x-6">
+        <li>Team Leadership (20–200 associates)</li>
+        <li>Process Improvement</li>
+        <li>Audit & Regulatory Management</li>
+        <li>Labor Cost Analysis</li>
+        <li>Recall Compliance</li>
+        <li>Technical Proficiency</li>
+        <li>Coaching & Development</li>
+        <li>Communication Across Levels</li>
+        <li>Ownership Culture</li>
+        <li>Leadership via Empowerment</li>
+      </ul>
+    </div>
+  </section>
 
-<!-- SKILLS -->
-<section class="mb-6">
-  <div class="sticky-header bg-white dark:bg-zinc-900">
-    <button onclick="toggleSection('skills')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
-      <svg id="arrow-skills" class="w-5 h-5 mr-2 transition-transform duration-500 ease-in-out" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-      </svg>
-      Skills
-    </button>
-  </div>
-  <div id="skills" class="mt-2 text-zinc-700 dark:text-zinc-300 collapsible" style="max-height: 0;">
-    <ul class="list-disc pl-6 grid grid-cols-1 sm:grid-cols-2 gap-x-6">
-      <li>Team Leadership</li>
-      <li>Process Improvement</li>
-      <li>Regulatory Compliance</li>
-      <li>Recall Tracking</li>
-    </ul>
-  </div>
-</section>
+  <!-- CONTACT -->
+  <section class="mb-6">
+    <div class="sticky-header bg-white dark:bg-zinc-900">
+      <button onclick="toggleSection('contact')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
+        <svg id="arrow-contact" class="w-5 h-5 mr-2 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+        Contact Me
+      </button>
+    </div>
+    <div id="contact" class="collapsible mt-2 text-sm text-zinc-500 dark:text-zinc-400 space-y-1" style="max-height: 0;">
+      <p>Email: <a href="mailto:resume@dstaub.app" class="text-cyan-500 underline">resume@dstaub.app</a></p>
+      <p>Phone: <a href="tel:+18787871376" class="text-cyan-500 underline">87.87.87.1376</a></p>
+      <p>Telegram: <a href="https://t.me/DStaub" class="text-cyan-500 underline">@DStaub</a></p>
+      <p>Web App: <a href="https://dstaub.app" target="_blank" class="text-cyan-500 underline">DStaub.app</a> — choose "Add to Home Screen"</p>
+      <p>Download PDF: <a href="https://github.com/dsstaub/dstaub/raw/main/documents/David_Staub_Resume_2024-04_v1.1.0.pdf" target="_blank" class="text-cyan-500 underline">Resume</a></p>
+    </div>
+  </section>
 
-<!-- CONTACT -->
-<section class="mb-6">
-  <div class="sticky-header bg-white dark:bg-zinc-900">
-    <button onclick="toggleSection('contact')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
-      <svg id="arrow-contact" class="w-5 h-5 mr-2 transition-transform duration-500 ease-in-out" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-      </svg>
-      Contact Me
-    </button>
-  </div>
-  <div id="contact" class="text-sm text-zinc-500 dark:text-zinc-400 mt-2 space-y-1 collapsible" style="max-height: 0;">
-    <p>Email: <a href="mailto:resume@dstaub.app" class="text-cyan-500 underline">resume@dstaub.app</a></p>
-    <p>Phone: <a href="tel:+18787871376" class="text-cyan-500 underline">87.87.87.1376</a></p>
-  </div>
-</section>
-  <!-- Spacer for Bottom Menu -->
+  <!-- BOTTOM NAV -->
   <div class="h-[7rem]" style="padding-bottom: env(safe-area-inset-bottom);"></div>
-
-  <!-- Bottom Nav -->
   <nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-around p-3 text-sm bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md"
        style="padding-bottom: calc(1rem + env(safe-area-inset-bottom));">
     <a href="#summary" class="text-black dark:text-white hover:text-cyan-500">Summary</a>
@@ -131,4 +161,3 @@
     <a href="#contact" class="text-black dark:text-white hover:text-cyan-500">Contact</a>
   </nav>
 </body>
-</html>
