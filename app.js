@@ -63,3 +63,18 @@ if ('serviceWorker' in navigator) {
     };
   }).catch(err => console.error('Service Worker failed:', err));
 }
+
+const menuToggle = document.getElementById('menuToggle');
+const sideMenu = document.getElementById('sideMenu');
+const backdrop = document.getElementById('backdrop');
+
+menuToggle.addEventListener('click', () => {
+  sideMenu.classList.remove('-translate-x-full');
+  backdrop.classList.remove('hidden');
+});
+
+backdrop.addEventListener('click', () => {
+  sideMenu.classList.add('-translate-x-full');
+  backdrop.classList.add('hidden');
+});
+
