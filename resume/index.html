@@ -12,6 +12,9 @@
   <script src="/layout.js" defer></script>
   <script src="/app.js" defer></script>
   <style>
+    html {
+      scroll-behavior: smooth;
+    }
     .collapsible {
       overflow: hidden;
       transition: max-height 0.5s ease;
@@ -23,6 +26,9 @@
       background-color: inherit;
       padding-top: 0.5rem;
       padding-bottom: 0.5rem;
+    }
+    .scroll-target {
+      scroll-margin-top: 4rem;
     }
   </style>
 </head>
@@ -38,7 +44,7 @@
         Professional Summary
       </button>
     </div>
-    <div id="summary" class="collapsible mt-2">
+    <div id="summary" class="collapsible mt-2 scroll-target">
       <p>Dynamic operations leader with over a decade of experience driving results across aviation, logistics, and retail sectors. Recognized for simplifying complex workflows, leading cross-functional teams of up to 200 associates, and elevating performance through strategic coaching and process innovation. Thrives in environments where developing others is the mission — consistently empowering associates, peers, and even leaders to grow into roles beyond his own.</p>
     </div>
   </section>
@@ -53,7 +59,7 @@
         Experience
       </button>
     </div>
-    <div id="experience" class="collapsible mt-2 text-zinc-700 dark:text-zinc-300">
+    <div id="experience" class="collapsible mt-2 text-zinc-700 dark:text-zinc-300 scroll-target">
       <!-- Jetstream -->
       <div class="mt-4">
         <h3 class="text-xl font-bold">Ramp Agent / Lav & Water Agent</h3>
@@ -102,7 +108,7 @@
         Education & Training
       </button>
     </div>
-    <div id="education" class="collapsible mt-2 text-zinc-700 dark:text-zinc-300">
+    <div id="education" class="collapsible mt-2 text-zinc-700 dark:text-zinc-300 scroll-target">
       <ul class="list-disc pl-6">
         <li>Wheeling Park High School — Diploma, 1992</li>
         <li>Dale Carnegie Leadership Course — Completed</li>
@@ -120,7 +126,7 @@
         Skills
       </button>
     </div>
-    <div id="skills" class="collapsible mt-2 text-zinc-700 dark:text-zinc-300">
+    <div id="skills" class="collapsible mt-2 text-zinc-700 dark:text-zinc-300 scroll-target">
       <ul class="list-disc pl-6 grid grid-cols-1 sm:grid-cols-2 gap-x-6">
         <li>Team Leadership (20–200 associates)</li>
         <li>Process Improvement</li>
@@ -146,7 +152,7 @@
         Contact Me
       </button>
     </div>
-    <div id="contact" class="collapsible mt-2 text-sm text-zinc-500 dark:text-zinc-400 space-y-1">
+    <div id="contact" class="collapsible mt-2 text-sm text-zinc-500 dark:text-zinc-400 space-y-1 scroll-target">
       <p>Email: <a href="mailto:resume@dstaub.app" class="text-cyan-500 underline">resume@dstaub.app</a></p>
       <p>Phone: <a href="tel:+18787871376" class="text-cyan-500 underline">87.87.87.1376</a></p>
       <p>Telegram: <a href="https://t.me/DStaub" class="text-cyan-500 underline">@DStaub</a></p>
