@@ -1,6 +1,6 @@
 // service-worker.js
 
-const CACHE_VERSION = 'v26'; // Increment this value with each deployment
+const CACHE_VERSION = 'v27'; // Increment this value with each deployment
 const CACHE_NAME = `my-pwa-cache-${CACHE_VERSION}`;
 
 const urlsToCache = [
