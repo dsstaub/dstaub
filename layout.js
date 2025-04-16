@@ -56,7 +56,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Inject header + sidebar + backdrop
   document.body.insertAdjacentHTML("afterbegin", `
-        <header class="fixed left-0 right-0 z-50 flex items-center justify-between px-4 py-3 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800"
+      <header class="fixed left-0 right-0 z-50 flex items-center justify-between px-4 py-3 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800"
+        style="top: 0; padding-top: env(safe-area-inset-top, 0px); min-height: 4.5rem;">
         style="top: env(safe-area-inset-top, 0px); padding-top: env(safe-area-inset-top, 0px); min-height: 4.5rem;">
         style="top: env(safe-area-inset-top, 0px); padding-top: env(safe-area-inset-top, 0px); min-height: 4.5rem;"
       <button id="menuToggle" class="text-black dark:text-white">
