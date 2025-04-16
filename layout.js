@@ -47,6 +47,13 @@ if (window.matchMedia('(display-mode: standalone)').matches) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Apply safe-area padding BEFORE anything else
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    document.body.style.paddingTop = `calc(env(safe-area-inset-top, 0px) + 4.5rem)`;
+  } else {
+    document.body.style.paddingTop = '4.5rem'; // fallback for Safari
+  }
+
   // Inject header + sidebar + backdrop
   document.body.insertAdjacentHTML("afterbegin", `
     <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
@@ -71,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     <div id="backdrop" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 hidden"></div>
   `);
-
+});
   // Menu logic
   const menuToggle = document.getElementById('menuToggle');
   const sideMenu = document.getElementById('sideMenu');
@@ -93,4 +100,5 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   backdrop?.addEventListener('click', closeMenu);
+ 
 });

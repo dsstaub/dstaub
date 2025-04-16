@@ -17,10 +17,6 @@ main {
   padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
 }
 
-body.pwa-mode {
-  padding-top: calc(env(safe-area-inset-top, 0px) + 4.5rem);
-}
-
 /* Custom bottom nav styling */
 .bottom-menu {
   position: fixed;
@@ -68,7 +64,7 @@ body.pwa-mode {
 
 .sticky-header {
   position: sticky;
-  top: env(safe-area-inset-top, 0px);
+  top: 0;
   z-index: 10;
   background-color: inherit;
   padding-top: 0.5rem;
