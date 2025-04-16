@@ -1,4 +1,9 @@
-// layout.js — with no dark/light toggle, uses system theme
+  // layout.js or app.js (run early in the page lifecycle)
+  const favicon = document.createElement("link");
+  favicon.rel = "icon";
+  favicon.type = "image/png";
+  favicon.href = "icons/icon-192x192.png"; // adjust path if needed
+  document.head.appendChild(favicon);
 
 document.addEventListener("DOMContentLoaded", () => {
   // Inject header + sidebar + backdrop
