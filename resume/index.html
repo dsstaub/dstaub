@@ -6,12 +6,21 @@
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#111111" />
   <title>D Staub</title>
+
+  <!-- Favicon & Icons -->
+  <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+  <link rel="icon" type="image/png" href="/icons/favicon-32x32.png" />
+
+  <!-- Fonts & Styles -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/style.css" />
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Scripts -->
   <script src="/layout.js" defer></script>
   <script src="/app.js" defer></script>
-  <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+
+  <!-- Inline Styles -->
   <style>
     html {
       scroll-behavior: smooth;
@@ -22,7 +31,7 @@
     }
     .sticky-header {
       position: sticky;
-      top: 0;
+      top: env(safe-area-inset-top, 0px);
       z-index: 10;
       background-color: inherit;
       padding-top: 0.5rem;
