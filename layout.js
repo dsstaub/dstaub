@@ -2,7 +2,7 @@
   const favicon = document.createElement("link");
   favicon.rel = "icon";
   favicon.type = "image/png";
-  favicon.href = "icons/icon-192x192.png"; // adjust path if needed
+  favicon.href = "/icons/favicon-32x32.png"; // adjust path if needed
   document.head.appendChild(favicon);
 
 document.addEventListener("DOMContentLoaded", () => {
