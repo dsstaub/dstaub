@@ -1,4 +1,4 @@
-// app.js
+// app.js +
 
 window.addEventListener('DOMContentLoaded', () => {
   document.body.classList.remove('opacity-0');
