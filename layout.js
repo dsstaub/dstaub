@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
 
     <div id="backdrop" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 hidden"></div>
-  `);
+  `); 
 
   // Menu logic
   const menuToggle = document.getElementById('menuToggle');
