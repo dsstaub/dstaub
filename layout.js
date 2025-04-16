@@ -1,9 +1,46 @@
-  // layout.js or app.js (run early in the page lifecycle)
-  const favicon = document.createElement("link");
-  favicon.rel = "icon";
-  favicon.type = "image/png";
-  favicon.href = "/icons/favicon-32x32.png"; // adjust path if needed
-  document.head.appendChild(favicon);
+// layout.js -- global layout + metadata injection
+
+// Inject essential <head> tags early (for favicon + iOS support)
+const headTags = [
+  {
+    tag: "link",
+    rel: "icon",
+    type: "image/png",
+    sizes: "32x32",
+    href: "/icons/favicon-32x32.png",
+  },
+  {
+    tag: "link",
+    rel: "apple-touch-icon",
+    href: "/icons/icon-192x192.png",
+  },
+  {
+    tag: "link",
+    rel: "manifest",
+    href: "/manifest.json",
+  },
+  {
+    tag: "meta",
+    name: "apple-mobile-web-app-capable",
+    content: "yes",
+  },
+  {
+    tag: "meta",
+    name: "apple-mobile-web-app-status-bar-style",
+    content: "black-translucent",
+  },
+  {
+    tag: "meta",
+    name: "theme-color",
+    content: "#111111",
+  },
+];
+
+headTags.forEach(({ tag, ...attrs }) => {
+  const el = document.createElement(tag);
+  Object.entries(attrs).forEach(([key, val]) => el.setAttribute(key, val));
+  document.head.appendChild(el);
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   // Inject header + sidebar + backdrop
@@ -22,14 +59,14 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="p-5 border-b border-zinc-200 dark:border-zinc-800 font-bold text-lg">Menu</div>
       <nav class="flex flex-col p-4 space-y-3">
         <a href="/resume/">• Resumé •</a>
-        <a href="/music/">• My Music •</a>
-        <a href="/other/">• Other •</a>
+        <a href="/music/">• My Music •</a>
+        <a href="/other/">• Other •</a>
         <a href="/" class="text-cyan-500 hover:text-cyan-400">← Back to Home</a>
       </nav>
     </div>
 
     <div id="backdrop" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 hidden"></div>
-  `); 
+  `);
 
   // Menu logic
   const menuToggle = document.getElementById('menuToggle');
