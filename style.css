@@ -9,6 +9,7 @@
 body {
   font-family: sans-serif;
   padding-bottom: env(safe-area-inset-bottom, 0px);
+  background-color: #18181b;
 }
 
 /* Optional: bottom padding for main tag */
