@@ -48,54 +48,23 @@ if (window.matchMedia('(display-mode: standalone)').matches) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Inject slide-out menu (kept as-is)
-  document.body.insertAdjacentHTML("beforeend", `
-    <div id="sideMenu" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-zinc-900 text-black dark:text-white shadow-lg transform -translate-x-full transition-transform duration-300 z-40">
-      <div class="p-5 border-b border-zinc-200 dark:border-zinc-800 font-bold text-lg">Menu</div>
-      <nav class="flex flex-col p-4 space-y-3">
-        <a href="/resume/">• Resumé •</a>
-        <a href="/music/">• My Music •</a>
-        <a href="/other/">• Other •</a>
-        <a href="/" class="text-cyan-500 hover:text-cyan-400">← Back to Home</a>
-      </nav>
-    </div>
-
-    <div id="backdrop" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 hidden"></div>
-
-    <button id="menuToggle" class="fixed bottom-[4.5rem] left-4 z-50 bg-cyan-500 hover:bg-cyan-400 text-white rounded-full p-3 shadow-lg">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-      </svg>
-    </button>
-
-    <nav id="bottomNav" class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around py-3 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800"
-         style="padding-bottom: env(safe-area-inset-bottom, 0px);">
-      <a href="/resume/" class="text-cyan-500 hover:text-cyan-400 text-sm font-medium">Resumé</a>
-      <a href="/music/" class="text-cyan-500 hover:text-cyan-400 text-sm font-medium">Music</a>
-      <a href="/other/" class="text-cyan-500 hover:text-cyan-400 text-sm font-medium">Other</a>
-      <a href="/" class="text-cyan-500 hover:text-cyan-400 text-sm font-medium">Home</a>
-    </nav>
+  // Inject top header with logo + name
+  document.body.insertAdjacentHTML("afterbegin", `
+    <header class="flex items-center gap-4 py-4 px-6 bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800">
+      <img src="/icons/icon-192x192.png" alt="Logo" class="w-8 h-8 rounded-sm">
+      <h1 class="text-xl font-semibold text-zinc-900 dark:text-zinc-100">DStaub</h1>
+    </header>
   `);
 
-  // Sidebar menu logic
-  const menuToggle = document.getElementById('menuToggle');
-  const sideMenu = document.getElementById('sideMenu');
-  const backdrop = document.getElementById('backdrop');
-
-  function closeMenu() {
-    sideMenu.classList.add('-translate-x-full');
-    backdrop.classList.add('hidden');
-  }
-
-  function openMenu() {
-    sideMenu.classList.remove('-translate-x-full');
-    backdrop.classList.remove('hidden');
-  }
-
-  menuToggle?.addEventListener('click', () => {
-    const isOpen = !sideMenu.classList.contains('-translate-x-full');
-    isOpen ? closeMenu() : openMenu();
-  });
-
-  backdrop?.addEventListener('click', closeMenu);
+  // Inject bottom nav
+  document.body.insertAdjacentHTML("beforeend", `
+    <nav id="bottomNav" class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around py-4 bg-zinc-100/95 dark:bg-zinc-900/95 backdrop-blur-sm border-t border-zinc-300 dark:border-zinc-700 shadow-lg"
+         style="padding-bottom: env(safe-area-inset-bottom, 0px);">
+      <a href="/resume/" class="text-zinc-700 dark:text-zinc-100 hover:text-cyan-500 dark:hover:text-cyan-400 text-sm font-semibold">Resumé</a>
+      <a href="/music/" class="text-zinc-700 dark:text-zinc-100 hover:text-cyan-500 dark:hover:text-cyan-400 text-sm font-semibold">Music</a>
+      <a href="/other/" class="text-zinc-700 dark:text-zinc-100 hover:text-cyan-500 dark:hover:text-cyan-400 text-sm font-semibold">Other</a>
+      <a href="/" class="text-zinc-700 dark:text-zinc-100 hover:text-cyan-500 dark:hover:text-cyan-400 text-sm font-semibold">Home</a>
+    </nav>
+  `);
 });
+
