@@ -17,6 +17,10 @@ main {
   padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
 }
 
+header {
+  padding-top: var(--safe-top);
+}
+
 /* Custom bottom nav styling */
 .bottom-menu {
   position: fixed;

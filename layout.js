@@ -42,24 +42,18 @@ headTags.forEach(({ tag, ...attrs }) => {
   document.head.appendChild(el);
 });
 
+// Add PWA-mode class if running standalone
 if (window.matchMedia('(display-mode: standalone)').matches) {
   document.body.classList.add('pwa-mode');
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Apply safe-area padding BEFORE anything else
-  if (window.matchMedia('(display-mode: standalone)').matches) {
-    document.body.style.paddingTop = `calc(env(safe-area-inset-top, 0px) + 4.5rem)`;
-  } else {
-    document.body.style.paddingTop = '4.5rem'; // fallback for Safari
-  }
+  // Set a CSS variable for safe area inset top
+  document.documentElement.style.setProperty('--safe-top', 'env(safe-area-inset-top, 0px)');
 
   // Inject header + sidebar + backdrop
   document.body.insertAdjacentHTML("afterbegin", `
-      <header class="fixed left-0 right-0 z-50 flex items-center justify-between px-4 py-3 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800"
-        style="top: 0; padding-top: env(safe-area-inset-top, 0px); min-height: 4.5rem;">
-        style="top: env(safe-area-inset-top, 0px); padding-top: env(safe-area-inset-top, 0px); min-height: 4.5rem;">
-        style="top: env(safe-area-inset-top, 0px); padding-top: env(safe-area-inset-top, 0px); min-height: 4.5rem;"
+    <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
       <button id="menuToggle" class="text-black dark:text-white">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
@@ -81,8 +75,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     <div id="backdrop" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 hidden"></div>
   `);
-});
-  // Menu logic
+
+  // Sidebar menu logic
   const menuToggle = document.getElementById('menuToggle');
   const sideMenu = document.getElementById('sideMenu');
   const backdrop = document.getElementById('backdrop');
@@ -103,5 +97,4 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   backdrop?.addEventListener('click', closeMenu);
- 
 });
