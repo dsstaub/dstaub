@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Bottom nav
   document.body.insertAdjacentHTML("beforeend", `
-    <nav id="bottomNav" class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around py-5 bg-zinc-200/95 dark:bg-zinc-900/95 backdrop-blur-sm border-t border-zinc-400 dark:border-zinc-700 shadow-lg text-sm font-semibold"
+    <nav id="bottomNav" class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around h-20 bg-zinc-200/95 dark:bg-zinc-900/95 backdrop-blur-sm border-t border-zinc-400 dark:border-zinc-700 shadow-lg text-sm font-semibold"
          style="padding-bottom: env(safe-area-inset-bottom, 0px);">
       <a href="/resume/" class="nav-link">Resumé</a>
       <a href="/music/" class="nav-link">Music</a>
