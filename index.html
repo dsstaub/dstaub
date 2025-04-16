@@ -2,166 +2,57 @@
 <html lang="en" class="transition-colors duration-300">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#111111" />
-  <title>D Staub</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Now | DStaub</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="/layout.js" defer></script>
   <script src="/app.js" defer></script>
-  <style>
-    .collapsible {
-      overflow: hidden;
-      transition: max-height 0.5s ease;
-    }
-    .sticky-header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background-color: inherit;
-      padding-top: 0.5rem;
-      padding-bottom: 0.5rem;
-    }
-  </style>
 </head>
-<body class="opacity-0 bg-white text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100 font-sans leading-relaxed px-6 pt-20 pb-32 max-w-4xl mx-auto">
+<body class="opacity-0 bg-white text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100 font-sans leading-relaxed pt-20 pb-32 px-6 max-w-3xl mx-auto">
+  <main class="animate-fade-in space-y-10">
+    <h1 class="text-4xl font-bold text-center">Now</h1>
+    <p class="text-center text-zinc-500 dark:text-zinc-400 text-sm italic">Last updated: April 2025</p>
 
-  <!-- SUMMARY -->
-  <section class="mb-6">
-    <div class="sticky-header bg-white dark:bg-zinc-900">
-      <button onclick="toggleSection('summary')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
-        <svg id="arrow-summary" class="w-5 h-5 mr-2 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
-        Professional Summary
-      </button>
-    </div>
-    <div id="summary" class="collapsible mt-2">
-      <p>Dynamic operations leader with over a decade of experience driving results across aviation, logistics, and retail sectors. Recognized for simplifying complex workflows, leading cross-functional teams of up to 200 associates, and elevating performance through strategic coaching and process innovation. Thrives in environments where developing others is the mission — consistently empowering associates, peers, and even leaders to grow into roles beyond his own.</p>
-    </div>
-  </section>
-
-  <!-- EXPERIENCE -->
-  <section class="mb-6">
-    <div class="sticky-header bg-white dark:bg-zinc-900">
-      <button onclick="toggleSection('experience')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
-        <svg id="arrow-experience" class="w-5 h-5 mr-2 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
-        Experience
-      </button>
-    </div>
-    <div id="experience" class="collapsible mt-2 text-zinc-700 dark:text-zinc-300">
-      <!-- Jetstream -->
-      <div class="mt-4">
-        <h3 class="text-xl font-bold">Ramp Agent / Lav & Water Agent</h3>
-        <p class="text-sm italic text-zinc-500 dark:text-zinc-400">Jetstream Ground Services – PIT | Oct 2024 – Present</p>
-        <ul class="list-disc pl-6 mt-1">
-          <li>Service aircraft potable water & lavatory systems</li>
-          <li>Supports ramp ops incl. marshaling, baggage, pushback</li>
-          <li>Conducts safety inspections on GSE</li>
-          <li>Communicates with gate and flight crews</li>
-        </ul>
-      </div>
-      <!-- Amazon -->
-      <div class="mt-4">
-        <h3 class="text-xl font-bold">Shift/Operations Assistant</h3>
-        <p class="text-sm italic text-zinc-500 dark:text-zinc-400">Amazon Logistics | 2019 – 2024</p>
-        <ul class="list-disc pl-6 mt-1">
-          <li>Led teams of 20–200 during peak periods</li>
-          <li>Created workflow simplifications adopted network-wide</li>
-          <li>Delivered daily peer coaching & training</li>
-          <li>Advanced leadership readiness philosophy</li>
-        </ul>
-      </div>
-      <!-- Kroger -->
-      <div class="mt-4">
-        <h3 class="text-xl font-bold">Assistant Operations Manager</h3>
-        <p class="text-sm italic text-zinc-500 dark:text-zinc-400">The Kroger Co | 2013 – 2019</p>
-        <ul class="list-disc pl-6 mt-1">
-          <li>Oversaw Fuel Centers, Pharmacies, and Perishable Depts</li>
-          <li>Managed compliance for EPA, FDA, USDA, OSHA, Health Code</li>
-          <li>Tracked product recalls and Country-of-Origin labeling</li>
-          <li>Acted as OSHA Officer and supported internal training</li>
-          <li>Coordinated delivery schedules with minimal shrink</li>
-          <li>Mentored leads and associates toward advancement</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- EDUCATION -->
-  <section class="mb-6">
-    <div class="sticky-header bg-white dark:bg-zinc-900">
-      <button onclick="toggleSection('education')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
-        <svg id="arrow-education" class="w-5 h-5 mr-2 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
-        Education & Training
-      </button>
-    </div>
-    <div id="education" class="collapsible mt-2 text-zinc-700 dark:text-zinc-300">
-      <ul class="list-disc pl-6">
-        <li>Wheeling Park High School — Diploma, 1992</li>
-        <li>Dale Carnegie Leadership Course — Completed</li>
+    <!-- CURRENTLY BUILDING -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-2 text-cyan-500">Currently Building</h2>
+      <ul class="list-disc pl-6 space-y-1 text-zinc-700 dark:text-zinc-300">
+        <li>My personal website (this one!) — mobile-first, dark mode, PWA-ready</li>
+        <li>A resume that evolves with me, not against me</li>
+        <li>My own music hub for sharing my original singles + new album releases</li>
       </ul>
-    </div>
-  </section>
+    </section>
 
-  <!-- SKILLS -->
-  <section class="mb-6">
-    <div class="sticky-header bg-white dark:bg-zinc-900">
-      <button onclick="toggleSection('skills')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
-        <svg id="arrow-skills" class="w-5 h-5 mr-2 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
-        Skills
-      </button>
-    </div>
-    <div id="skills" class="collapsible mt-2 text-zinc-700 dark:text-zinc-300">
-      <ul class="list-disc pl-6 grid grid-cols-1 sm:grid-cols-2 gap-x-6">
-        <li>Team Leadership (20–200 associates)</li>
-        <li>Process Improvement</li>
-        <li>Audit & Regulatory Management</li>
-        <li>Labor Cost Analysis</li>
-        <li>Recall Compliance</li>
-        <li>Technical Proficiency</li>
-        <li>Coaching & Development</li>
-        <li>Communication Across Levels</li>
-        <li>Ownership Culture</li>
-        <li>Leadership via Empowerment</li>
+    <!-- LEARNING & EXPLORING -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-2 text-cyan-500">Learning & Exploring</h2>
+      <ul class="list-disc pl-6 space-y-1 text-zinc-700 dark:text-zinc-300">
+        <li>Still learning some basic front end coding (html, js, Tailwind CSS, and others)</li>
+        <li>Tailwind CSS — fast styling without the mess</li>
+        <li>Technology + generative AI tools that enrich personal learning and intellectual growth</li>
+        <li>Writing lyrics, building vibes</li>
       </ul>
-    </div>
-  </section>
+    </section>
 
-  <!-- CONTACT -->
-  <section class="mb-6">
-    <div class="sticky-header bg-white dark:bg-zinc-900">
-      <button onclick="toggleSection('contact')" class="flex items-center w-full text-left text-2xl font-semibold text-cyan-500 hover:text-cyan-400">
-        <svg id="arrow-contact" class="w-5 h-5 mr-2 transition-transform" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
-        Contact Me
-      </button>
-    </div>
-    <div id="contact" class="collapsible mt-2 text-sm text-zinc-500 dark:text-zinc-400 space-y-1">
-      <p>Email: <a href="mailto:resume@dstaub.app" class="text-cyan-500 underline">resume@dstaub.app</a></p>
-      <p>Phone: <a href="tel:+18787871376" class="text-cyan-500 underline">87.87.87.1376</a></p>
-      <p>Telegram: <a href="https://t.me/DStaub" class="text-cyan-500 underline">@DStaub</a></p>
-      <p>Web App: <a href="https://dstaub.app" target="_blank" class="text-cyan-500 underline">DStaub.app</a> — choose "Add to Home Screen"</p>
-      <p>Download PDF: <a href="https://github.com/dsstaub/dstaub/raw/main/documents/David_Staub_Resume_2024-04_v1.1.0.pdf" target="_blank" class="text-cyan-500 underline">Resume</a></p>
-    </div>
-  </section>
+    <!-- CURRENT VIBES -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-2 text-cyan-500">What I’m Into</h2>
+      <ul class="list-disc pl-6 space-y-1 text-zinc-700 dark:text-zinc-300">
+        <li>Country-rap fusion with a Pittsburgh edge</li>
+        <li>Overthinking fonts and layout spacing</li>
+        <li>AirPods in. Tunnel vision on. Homemade Diet Dr Pepper cracked.</li>
+      </ul>
+    </section>
 
-  <!-- Bottom Menu Spacer -->
-  <div class="h-[7rem]" style="padding-bottom: env(safe-area-inset-bottom);"></div>
-  <nav class="bottom-menu">
-    <a href="#summary">Summary</a>
-    <a href="#experience">Experience</a>
-    <a href="#skills">Skills</a>
-    <a href="#contact">Contact</a>
-  </nav>
+    <!-- ON THE HORIZON -->
+    <section>
+      <h2 class="text-2xl font-semibold mb-2 text-cyan-500">What’s Coming Up</h2>
+      <ul class="list-disc pl-6 space-y-1 text-zinc-700 dark:text-zinc-300">
+        <li>Major job transition — change is in the air</li>
+        <li>More music. More fire. More streaming links.</li>
+        <li>Possibly moving this page to the home screen (lol)</li>
+      </ul>
+    </section>
+  </main>
 </body>
 </html>

@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div id="sideMenu" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-zinc-900 text-black dark:text-white shadow-lg transform -translate-x-full transition-transform duration-300 z-40">
       <div class="p-5 border-b border-zinc-200 dark:border-zinc-800 font-bold text-lg">Menu</div>
       <nav class="flex flex-col p-4 space-y-3">
-        <a href="/now/">• Now •</a>
+        <a href="/resume/">• Resumé •</a>
         <a href="/music/">• My Music •</a>
         <a href="/other/">• Other •</a>
         <a href="/" class="text-cyan-500 hover:text-cyan-400">← Back to Home</a>
