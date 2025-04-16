@@ -1,4 +1,4 @@
-// app.js +
+// app.js
 
 window.addEventListener('DOMContentLoaded', () => {
   document.body.classList.remove('opacity-0');
@@ -15,4 +15,4 @@ function toggleSection(id) {
   const isOpen = section.style.maxHeight && section.style.maxHeight !== '0px';
   section.style.maxHeight = isOpen ? '0' : section.scrollHeight + 'px';
   arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
- }
+}
