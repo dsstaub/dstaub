@@ -42,6 +42,10 @@ headTags.forEach(({ tag, ...attrs }) => {
   document.head.appendChild(el);
 });
 
+if (window.matchMedia('(display-mode: standalone)').matches) {
+  document.body.classList.add('pwa-mode');
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   // Inject header + sidebar + backdrop
   document.body.insertAdjacentHTML("afterbegin", `
