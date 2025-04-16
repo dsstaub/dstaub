@@ -42,27 +42,14 @@ headTags.forEach(({ tag, ...attrs }) => {
   document.head.appendChild(el);
 });
 
-// Add PWA-mode class if running standalone
+// Apply PWA class if needed
 if (window.matchMedia('(display-mode: standalone)').matches) {
   document.body.classList.add('pwa-mode');
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Set a CSS variable for safe area inset top (for any future use)
-  document.documentElement.style.setProperty('--safe-top', 'env(safe-area-inset-top, 0px)');
-
-  // Inject bottom nav instead of top header
+  // Inject slide-out menu (kept as-is)
   document.body.insertAdjacentHTML("beforeend", `
-    <nav class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around py-3 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800"
-         style="padding-bottom: env(safe-area-inset-bottom, 0px);">
-      <a href="/resume/" class="text-cyan-500 hover:text-cyan-400 text-sm font-medium">Resumé</a>
-      <a href="/music/" class="text-cyan-500 hover:text-cyan-400 text-sm font-medium">Music</a>
-      <a href="/other/" class="text-cyan-500 hover:text-cyan-400 text-sm font-medium">Other</a>
-      <a href="/" class="text-cyan-500 hover:text-cyan-400 text-sm font-medium">Home</a>
-    </nav>
-  `);
-});
-
     <div id="sideMenu" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-zinc-900 text-black dark:text-white shadow-lg transform -translate-x-full transition-transform duration-300 z-40">
       <div class="p-5 border-b border-zinc-200 dark:border-zinc-800 font-bold text-lg">Menu</div>
       <nav class="flex flex-col p-4 space-y-3">
@@ -74,6 +61,20 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
 
     <div id="backdrop" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-30 hidden"></div>
+
+    <button id="menuToggle" class="fixed bottom-[4.5rem] left-4 z-50 bg-cyan-500 hover:bg-cyan-400 text-white rounded-full p-3 shadow-lg">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+
+    <nav id="bottomNav" class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around py-3 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800"
+         style="padding-bottom: env(safe-area-inset-bottom, 0px);">
+      <a href="/resume/" class="text-cyan-500 hover:text-cyan-400 text-sm font-medium">Resumé</a>
+      <a href="/music/" class="text-cyan-500 hover:text-cyan-400 text-sm font-medium">Music</a>
+      <a href="/other/" class="text-cyan-500 hover:text-cyan-400 text-sm font-medium">Other</a>
+      <a href="/" class="text-cyan-500 hover:text-cyan-400 text-sm font-medium">Home</a>
+    </nav>
   `);
 
   // Sidebar menu logic
