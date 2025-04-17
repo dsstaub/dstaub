@@ -96,3 +96,14 @@ header {
   background-color: currentColor;
   opacity: 1;
 }
+
+.collapsible {
+  transition: max-height 0.3s ease;
+  overflow: hidden;
+  max-height: 0;
+}
+
+.collapsible.open {
+  max-height: 2000px; /* or whatever height works */
+}
+

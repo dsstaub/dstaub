@@ -58,15 +58,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Bottom nav
   document.body.insertAdjacentHTML("beforeend", `
-    <nav id="bottomNav" class="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around h-24 bg-zinc-200/95 dark:bg-zinc-900/95 backdrop-blur-sm border-t border-zinc-400 dark:border-zinc-700 shadow-lg text-sm font-semibold">
-         style="padding-bottom: env(safe-area-inset-bottom, 0px);">
-      <a href="/" class="nav-link">Home</a>
-      <a href="/resume/" class="nav-link">Resumé</a>
-      <a href="/music/" class="nav-link">Music</a>
-      <a href="/links/" class="nav-link">Links</a>
+    <nav id="bottomNav" class="fixed bottom-0 left-0 right-0 z-50 w-full flex items-center justify-around h-20 bg-zinc-200 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 font-sans backdrop-blur-sm border-t border-zinc-400 dark:border-zinc-700 shadow-lg text-sm font-semibold">
+      <a href="/index.html" class="hover:text-cyan-500 transition">Home</a>
+      <a href="/resume.html" class="hover:text-cyan-500 transition">Resumé</a>
+      <a href="/music.html" class="hover:text-cyan-500 transition">Music</a>
+      <a href="/other.html" class="hover:text-cyan-500 transition">Links</a>
     </nav>
   `);
-
   // Active link highlight
   const currentPath = window.location.pathname.replace(/\/$/, '');
   document.querySelectorAll('#bottomNav a').forEach(link => {
