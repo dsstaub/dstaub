@@ -62,19 +62,19 @@ document.body.insertAdjacentHTML("beforeend", `
     class="fixed bottom-0 left-0 right-0 z-50 w-full flex items-center justify-around h-16 bg-zinc-200 dark:bg-zinc-900 text-zinc-800 dark:text-white font-sans backdrop-blur-sm border-t border-zinc-400 dark:border-zinc-700 shadow-lg text-sm font-semibold"
     style="padding-bottom: env(safe-area-inset-bottom, 0px);">
       <a href="/index.html" class="flex flex-col items-center hover:text-cyan-500">
-        <img src="/icons/__home.png" alt="Home Icon" class="w-6 h-6 mb-1">
+        <img src="/icons/home.png" alt="Home Icon" class="w-6 h-6 mb-1">
         Home
       </a>
       <a href="/resume/index.html" class="flex flex-col items-center hover:text-cyan-500">
-        <img src="/icons/__resume.png" alt="Resume Icon" class="w-6 h-6 mb-1">
+        <img src="/icons/resume.png" alt="Resume Icon" class="w-6 h-6 mb-1">
         Resumé
       </a>
       <a href="/music/index.html" class="flex flex-col items-center hover:text-cyan-500">
-        <img src="/icons/__music.png" alt="Music Icon" class="w-6 h-6 mb-1">
+        <img src="/icons/music.png" alt="Music Icon" class="w-6 h-6 mb-1">
         Music
       </a>
       <a href="/links/index.html" class="flex flex-col items-center hover:text-cyan-500">
-        <img src="/icons/__links.png" alt="Links Icon" class="w-6 h-6 mb-1">
+        <img src="/icons/links.png" alt="Links Icon" class="w-6 h-6 mb-1">
         Links
       </a>
   </nav>
