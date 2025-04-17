@@ -57,14 +57,17 @@ document.addEventListener("DOMContentLoaded", () => {
   `);
 
   // Bottom nav
-  document.body.insertAdjacentHTML("beforeend", `
-    <nav id="bottomNav" class="fixed bottom-0 left-0 right-0 z-50 w-full flex items-center justify-around h-20 bg-zinc-200 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 font-sans backdrop-blur-sm border-t border-zinc-400 dark:border-zinc-700 shadow-lg text-sm font-semibold">
-      <a href="/index.html" class="hover:text-cyan-500 transition">Home</a>
-      <a href="/resume.html" class="hover:text-cyan-500 transition">Resumé</a>
-      <a href="/music.html" class="hover:text-cyan-500 transition">Music</a>
-      <a href="/other.html" class="hover:text-cyan-500 transition">Links</a>
-    </nav>
-  `);
+document.body.insertAdjacentHTML("beforeend", `
+  <nav id="bottomNav"
+    class="fixed bottom-0 left-0 right-0 z-50 w-full flex items-center justify-around h-20 bg-zinc-200 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 font-sans backdrop-blur-sm border-t border-zinc-400 dark:border-zinc-700 shadow-lg text-sm font-semibold"
+    style="padding-bottom: env(safe-area-inset-bottom, 0px);">
+    <a href="/index.html" class="hover:text-cyan-500">Home</a>
+    <a href="/resume.html" class="hover:text-cyan-500">Resumé</a>
+    <a href="/music.html" class="hover:text-cyan-500">Music</a>
+    <a href="/other.html" class="hover:text-cyan-500">Links</a>
+  </nav>
+`);
+
   // Active link highlight
   const currentPath = window.location.pathname.replace(/\/$/, '');
   document.querySelectorAll('#bottomNav a').forEach(link => {
