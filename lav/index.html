@@ -6,40 +6,49 @@
   <title>Flight Tracker</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .card.dragging {
+    .dragging {
       opacity: 0.4;
     }
-    .swipe-wrapper {
-      transition: transform 0.3s ease;
-    }
     .editing {
-      outline: 2px dashed #fff;
+      outline: 2px dashed white;
+      outline-offset: 2px;
+      background-color: #1e293b;
+    }
+    .drawer {
+      transition: max-height 0.3s ease;
+      overflow: hidden;
+      max-height: 0;
+    }
+    .drawer.open {
+      max-height: 60px;
     }
   </style>
 </head>
-<body class="flex flex-col h-screen font-mono">
+<body class="flex flex-col h-screen font-mono text-xl">
   <textarea id="input" placeholder="Paste flight data here..." class="w-full h-24 p-2 bg-gray-800 text-white resize-none text-lg"></textarea>
   <div class="flex gap-2">
-    <button onclick="createCards()" class="flex-1 py-3 text-lg bg-blue-600 hover:bg-blue-700">Generate Cards</button>
-    <button onclick="clearAll()" class="flex-1 py-3 text-lg bg-red-600 hover:bg-red-700">Clear All</button>
+    <button onclick="createCards()" class="flex-1 py-3 bg-blue-600 hover:bg-blue-700">Generate Cards</button>
+    <button onclick="clearAll()" class="flex-1 py-3 bg-red-600 hover:bg-red-700">Clear All</button>
   </div>
   <div class="flex-1 flex gap-4 p-2 overflow-hidden">
+    <!-- Active Column -->
     <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2">
       <div class="flex justify-between items-center mb-2">
-        <h2 class="text-xl font-bold">Active Flights</h2>
-        <select onchange="sortColumn('activeColumn', this.value)" class="bg-gray-700 text-white px-2 py-1 rounded">
-          <option value="custom">Custom</option>
+        <h2 class="text-lg font-bold">Active Flights</h2>
+        <select onchange="toggleSort('activeColumn', this.value)" class="bg-gray-700 text-white px-2 py-1 rounded">
+          <option value="manual">Manual</option>
           <option value="az">A-Z</option>
         </select>
       </div>
       <div id="activeColumn" class="flex-1 overflow-y-auto space-y-2 p-1" ondragover="allowDrop(event)" ondrop="drop(event, 'activeColumn')"></div>
     </div>
 
+    <!-- Completed Column -->
     <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2">
       <div class="flex justify-between items-center mb-2">
-        <h2 class="text-xl font-bold">Completed</h2>
-        <select onchange="sortColumn('completeColumn', this.value)" class="bg-gray-700 text-white px-2 py-1 rounded">
-          <option value="custom">Custom</option>
+        <h2 class="text-lg font-bold">Completed</h2>
+        <select onchange="toggleSort('completeColumn', this.value)" class="bg-gray-700 text-white px-2 py-1 rounded">
+          <option value="manual">Manual</option>
           <option value="az">A-Z</option>
         </select>
       </div>
@@ -49,110 +58,106 @@
 
   <script>
     let dragged = null;
-    let touchStartX = 0;
-    let activeWrapper = null;
-    let tapTimeout = null;
+    let manualOrder = { activeColumn: [], completeColumn: [] };
+    let currentSort = { activeColumn: "manual", completeColumn: "manual" };
 
-    function classifyCard(text) {
-      if (text.includes("_TF_")) return "bg-red-700";
-      if (text.includes("_QT_")) return "bg-green-700";
-      return "bg-gray-700";
+    function classify(text) {
+      return text.includes("_TF_") ? "bg-red-700" :
+             text.includes("_QT_") ? "bg-green-700" : "bg-gray-700";
     }
 
-    function createCard(text) {
+    function createCard(text, colId = "activeColumn") {
       const wrapper = document.createElement("div");
-      wrapper.className = "relative overflow-hidden rounded swipe-wrapper";
-      wrapper.dataset.id = crypto.randomUUID();
+      wrapper.draggable = true;
+      wrapper.className = "relative group";
 
-      const container = document.createElement("div");
-      container.className = `card ${classifyCard(text)} text-white text-3xl font-bold px-4 py-4 rounded cursor-grab whitespace-pre-wrap`;
-      container.draggable = true;
-      container.textContent = text;
+      const card = document.createElement("div");
+      card.className = `${classify(text)} text-white text-3xl font-bold px-4 py-4 rounded cursor-grab`;
+      card.textContent = text;
 
-      // Drag and drop
-      container.ondragstart = () => {
+      card.ondragstart = () => {
         dragged = wrapper;
-        container.classList.add("dragging");
+        wrapper.classList.add("dragging");
       };
-      container.ondragend = () => {
-        container.classList.remove("dragging");
+      card.ondragend = () => {
         dragged = null;
-        saveState();
+        wrapper.classList.remove("dragging");
+        saveOrder();
       };
-      container.ondragover = e => e.preventDefault();
-      container.ondrop = e => {
-        e.preventDefault();
-        if (dragged && dragged !== wrapper) {
-          container.parentNode.insertBefore(dragged, wrapper.nextSibling);
-          saveState();
+
+      // Tap opens drawer
+      card.ontouchstart = (e) => {
+        closeAllDrawers();
+        wrapper.querySelector(".drawer").classList.add("open");
+      };
+      card.onclick = (e) => {
+        if (e.detail === 2) enableEdit(card);
+        else closeAllDrawers();
+      };
+
+      // Edit mode
+      card.onkeydown = (e) => {
+        if (e.key === "Enter") card.blur();
+      };
+      card.onblur = () => {
+        if (card.isContentEditable) {
+          card.contentEditable = false;
+          card.classList.remove("editing");
+          saveOrder();
         }
       };
 
-      // Swipe handling
-      container.ontouchstart = e => {
-        touchStartX = e.changedTouches[0].screenX;
-        activeWrapper = wrapper;
-      };
-      container.ontouchend = e => {
-        const deltaX = e.changedTouches[0].screenX - touchStartX;
-        if (deltaX < -80) {
-          wrapper.style.transform = "translateX(-100px)";
-        } else if (deltaX > 80) {
-          wrapper.style.transform = "translateX(100px)";
-        } else {
-          wrapper.style.transform = "translateX(0)";
-        }
-      };
+      // Drawer buttons
+      const drawer = document.createElement("div");
+      drawer.className = "drawer flex gap-2 justify-between px-4";
+      drawer.innerHTML = `
+        <button class="bg-green-600 hover:bg-green-700 px-3 py-1 rounded w-1/2" onclick="moveTo('completeColumn', this)">Complete</button>
+        <button class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded w-1/2" onclick="removeCard(this)">Delete</button>
+      `;
 
-      // Double tap to edit
-      container.ondblclick = () => {
-        container.contentEditable = true;
-        container.focus();
-        container.classList.add("editing");
-      };
-      container.onblur = () => {
-        container.contentEditable = false;
-        container.classList.remove("editing");
-        saveState();
-      };
-
-      // Buttons
-      const delBtn = document.createElement("button");
-      delBtn.textContent = "✕";
-      delBtn.onclick = () => {
-        wrapper.remove();
-        saveState();
-      };
-      delBtn.className = "absolute right-2 top-1/2 -translate-y-1/2 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded z-10";
-
-      const doneBtn = document.createElement("button");
-      doneBtn.textContent = "✓";
-      doneBtn.onclick = () => {
-        document.getElementById("completeColumn").appendChild(wrapper);
-        wrapper.style.transform = "translateX(0)";
-        saveState();
-      };
-      doneBtn.className = "absolute left-2 top-1/2 -translate-y-1/2 bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded z-10";
-
-      wrapper.appendChild(container);
-      wrapper.appendChild(doneBtn);
-      wrapper.appendChild(delBtn);
+      wrapper.appendChild(card);
+      wrapper.appendChild(drawer);
+      manualOrder[colId].push(wrapper);
       return wrapper;
     }
 
-    function createCards() {
-      const lines = document.getElementById("input").value.trim().split("\n");
-      const active = document.getElementById("activeColumn");
-      const complete = document.getElementById("completeColumn");
-      active.innerHTML = "";
-      complete.innerHTML = "";
+    function enableEdit(card) {
+      closeAllDrawers();
+      card.contentEditable = true;
+      card.classList.add("editing");
+      card.focus();
+      const range = document.createRange();
+      range.selectNodeContents(card);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
 
+    function moveTo(targetId, btn) {
+      const card = btn.closest(".group");
+      document.getElementById(targetId).appendChild(card);
+      closeAllDrawers();
+      saveOrder();
+    }
+
+    function removeCard(btn) {
+      btn.closest(".group").remove();
+      saveOrder();
+    }
+
+    function createCards() {
+      document.getElementById("activeColumn").innerHTML = "";
+      document.getElementById("completeColumn").innerHTML = "";
+      manualOrder = { activeColumn: [], completeColumn: [] };
+
+      const lines = document.getElementById("input").value.trim().split("\n");
       lines.forEach(line => {
         if (!line.trim()) return;
-        active.appendChild(createCard(line.trim()));
+        const card = createCard(line.trim(), "activeColumn");
+        document.getElementById("activeColumn").appendChild(card);
       });
 
-      saveState();
+      saveOrder();
     }
 
     function allowDrop(e) {
@@ -161,29 +166,54 @@
 
     function drop(e, columnId) {
       e.preventDefault();
-      const col = document.getElementById(columnId);
-      if (dragged && col) col.appendChild(dragged);
-      saveState();
+      const column = document.getElementById(columnId);
+      if (dragged && column) {
+        column.appendChild(dragged);
+        saveOrder();
+      }
     }
 
-    function saveState() {
-      const active = [...document.querySelectorAll("#activeColumn .card")].map(c => c.textContent);
-      const complete = [...document.querySelectorAll("#completeColumn .card")].map(c => c.textContent);
-      localStorage.setItem("flights_active", JSON.stringify(active));
-      localStorage.setItem("flights_complete", JSON.stringify(complete));
+    function closeAllDrawers() {
+      document.querySelectorAll(".drawer.open").forEach(d => d.classList.remove("open"));
+    }
+
+    function toggleSort(id, mode) {
+      currentSort[id] = mode;
+      if (mode === "az") {
+        const column = document.getElementById(id);
+        const sorted = [...column.children].sort((a, b) =>
+          a.innerText.localeCompare(b.innerText)
+        );
+        column.innerHTML = "";
+        sorted.forEach(el => column.appendChild(el));
+      } else {
+        const col = document.getElementById(id);
+        col.innerHTML = "";
+        manualOrder[id].forEach(el => col.appendChild(el));
+      }
+    }
+
+    function saveOrder() {
+      ["activeColumn", "completeColumn"].forEach(id => {
+        const col = document.getElementById(id);
+        manualOrder[id] = [...col.children];
+        const values = [...col.children].map(c => c.querySelector("div").textContent);
+        localStorage.setItem("order_" + id, JSON.stringify(values));
+      });
     }
 
     function loadState() {
-      const activeCards = JSON.parse(localStorage.getItem("flights_active") || "[]");
-      const completeCards = JSON.parse(localStorage.getItem("flights_complete") || "[]");
-      const active = document.getElementById("activeColumn");
-      const complete = document.getElementById("completeColumn");
+      ["activeColumn", "completeColumn"].forEach(id => {
+        const col = document.getElementById(id);
+        manualOrder[id] = [];
+        col.innerHTML = "";
 
-      active.innerHTML = "";
-      complete.innerHTML = "";
-
-      activeCards.forEach(text => active.appendChild(createCard(text)));
-      completeCards.forEach(text => complete.appendChild(createCard(text)));
+        const data = JSON.parse(localStorage.getItem("order_" + id) || "[]");
+        data.forEach(text => {
+          const el = createCard(text, id);
+          col.appendChild(el);
+        });
+      });
     }
 
     function clearAll() {
@@ -191,21 +221,15 @@
         localStorage.clear();
         document.getElementById("activeColumn").innerHTML = "";
         document.getElementById("completeColumn").innerHTML = "";
+        manualOrder = { activeColumn: [], completeColumn: [] };
       }
     }
 
-    function sortColumn(id, mode) {
-      const col = document.getElementById(id);
-      const wrappers = [...col.children];
-      if (mode === "az") {
-        wrappers.sort((a, b) =>
-          a.querySelector(".card").textContent.localeCompare(b.querySelector(".card").textContent)
-        );
+    window.addEventListener("click", (e) => {
+      if (![...document.querySelectorAll(".card")].some(el => el.contains(e.target))) {
+        closeAllDrawers();
       }
-      col.innerHTML = "";
-      wrappers.forEach(w => col.appendChild(w));
-      saveState();
-    }
+    });
 
     loadState();
   </script>
