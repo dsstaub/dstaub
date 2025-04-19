@@ -7,7 +7,7 @@
   <style>
     body {
       margin: 0;
-      font-family: sans-serif;
+      font-family: 'Courier New', monospace;
       background: #121212;
       color: white;
       display: flex;
@@ -27,8 +27,9 @@
     }
     button {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       font-size: 1rem;
+      font-weight: bold;
       background: #1f6feb;
       color: white;
       border: none;
@@ -59,18 +60,23 @@
       color: #aaa;
     }
     .card {
-      padding: 10px;
-      border-radius: 5px;
-      font-size: 1rem;
+      padding: 15px;
+      border-radius: 6px;
+      font-size: 1.4rem;
+      font-weight: bold;
       cursor: grab;
       user-select: none;
       transition: transform 0.2s ease;
       touch-action: pan-y;
       background: #444;
       color: white;
+      font-family: 'Courier New', monospace;
+    }
+    .card:active {
+      transform: scale(1.02);
     }
     .card.qr {
-      background-color: #165c3b;
+      background-color: #1b6e45;
     }
     .card.tf {
       background-color: #702b2b;
@@ -114,10 +120,19 @@
         dragged = card;
         setTimeout(() => card.style.display = "none", 0);
       };
-      card.ondragend = (e) => {
-        dragged.style.display = "block";
+      card.ondragend = () => {
+        if (dragged) dragged.style.display = "block";
         dragged = null;
         saveState();
+      };
+
+      card.ondragover = (e) => e.preventDefault();
+      card.ondrop = (e) => {
+        e.preventDefault();
+        if (dragged && dragged !== card) {
+          card.parentNode.insertBefore(dragged, card.nextSibling);
+          saveState();
+        }
       };
 
       return card;
@@ -126,9 +141,8 @@
     function createCards() {
       const lines = document.getElementById("input").value.trim().split("\n");
       const active = document.getElementById("activeColumn");
-      active.innerHTML = "<h2>Active Flights</h2>";
-
       const complete = document.getElementById("completeColumn");
+      active.innerHTML = "<h2>Active Flights</h2>";
       complete.innerHTML = "<h2>Completed</h2>";
 
       lines.forEach((line) => {
@@ -146,9 +160,9 @@
 
     function drop(e) {
       e.preventDefault();
-      const target = e.target.closest(".column");
-      if (target && dragged) {
-        target.appendChild(dragged);
+      const column = e.target.closest(".column");
+      if (column && dragged) {
+        column.appendChild(dragged);
         saveState();
       }
     }
