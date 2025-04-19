@@ -16,15 +16,17 @@
       word-break: break-word;
       white-space: normal;
     }
+    .scrollable-column {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+    }
     @media (max-width: 768px) {
-      .mobile-stack {
-        flex-direction: column;
+      #completeWrapper {
+        display: none;
       }
-      .resizable {
-        resize: vertical;
-        overflow: auto;
-        min-height: 30%;
-        max-height: 70%;
+      .mobile-show-completed #completeWrapper {
+        display: flex;
       }
     }
   </style>
@@ -35,23 +37,24 @@
     <button onclick="clearAll()" class="flex-1 py-3 bg-red-600 hover:bg-red-700 rounded">Clear All</button>
   </div>
 
-  <div class="flex-1 flex md:flex-row mobile-stack gap-4 p-2 overflow-hidden">
+  <div class="flex-1 flex md:flex-row flex-col gap-4 p-2 overflow-hidden">
     <!-- Active Flights -->
-    <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2 resizable">
+    <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2 resizable scrollable-column">
       <div class="flex justify-between items-center mb-2">
-        <h2 class="text-lg font-bold">Active Flights 
-          <br><span id="activeCount" class="font-normal text-sm text-gray-400"></span>
+        <h2 class="text-lg font-bold">
+          Active Flights<br>
+          <span id="activeCount" class="font-normal text-sm text-gray-400"></span>
         </h2>
         <select onchange="toggleSortMode('activeColumn', this)" class="bg-gray-700 text-white px-2 py-1 rounded">
           <option value="manual">Manual</option>
           <option value="az">A-Z</option>
         </select>
       </div>
-      <div id="activeColumn" class="flex-1 overflow-y-auto space-y-3 p-1"></div>
+      <div id="activeColumn" class="flex-1 space-y-3 p-1"></div>
     </div>
 
-    <!-- Completed -->
-    <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2 resizable">
+    <!-- Completed Flights (toggle-able on mobile) -->
+    <div id="completeWrapper" class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2 resizable scrollable-column">
       <div class="flex justify-between items-center mb-2">
         <h2 class="text-lg font-bold">Completed</h2>
         <select onchange="toggleSortMode('completeColumn', this)" class="bg-gray-700 text-white px-2 py-1 rounded">
@@ -59,8 +62,13 @@
           <option value="az">A-Z</option>
         </select>
       </div>
-      <div id="completeColumn" class="flex-1 overflow-y-auto space-y-3 p-1"></div>
+      <div id="completeColumn" class="flex-1 space-y-3 p-1"></div>
     </div>
+  </div>
+
+  <!-- Mobile toggle button -->
+  <div class="md:hidden p-2">
+    <button onclick="toggleCompleted()" class="w-full py-3 bg-gray-700 rounded text-white">Show Completed</button>
   </div>
 
 <script>
@@ -129,7 +137,7 @@
     } else {
       load(); // reload manual order
     }
-    updateActiveHeader(); // always update breakdown
+    updateActiveHeader(); // update counts
   }
 
   function save() {
@@ -167,6 +175,13 @@
         if (sortMode[id] === "manual") save();
       }
     });
+  }
+
+  function toggleCompleted() {
+    document.body.classList.toggle("mobile-show-completed");
+    const btn = document.querySelector("button[onclick='toggleCompleted()']");
+    const isOpen = document.body.classList.contains("mobile-show-completed");
+    btn.textContent = isOpen ? "Hide Completed" : "Show Completed";
   }
 
   function updateActiveHeader() {
