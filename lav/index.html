@@ -1,138 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="bg-gray-900 text-white">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Flight Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body {
-      margin: 0;
-      font-family: 'Courier New', monospace;
-      background: #121212;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
+    .swipe-delete {
+      transition: transform 0.3s ease;
     }
-    textarea {
-      width: 100%;
-      height: 100px;
-      padding: 10px;
-      font-size: 1rem;
-      box-sizing: border-box;
-      border: none;
-      resize: none;
-      background: #1e1e1e;
-      color: white;
-    }
-    .controls {
-      display: flex;
-    }
-    button {
-      flex: 1;
-      padding: 14px;
-      font-size: 1rem;
-      font-weight: bold;
-      background: #1f6feb;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    #container {
-      flex: 1;
-      display: flex;
-      gap: 10px;
-      padding: 10px;
-      overflow-x: auto;
-      background: #1e1e1e;
-    }
-    .column {
-      flex: 1;
-      min-width: 50%;
-      background: #2c2c2c;
-      padding: 10px;
-      border-radius: 5px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .column h2 {
-      margin: 0 0 10px;
-      font-size: 1.1rem;
-      text-align: center;
-      color: #aaa;
-    }
-    .card {
-      padding: 20px;
-      border-radius: 6px;
-      font-size: 2rem;
-      font-weight: bold;
-      cursor: grab;
-      user-select: none;
-      transition: transform 0.2s ease;
-      touch-action: pan-y;
-      background: #444;
-      color: white;
-      font-family: 'Courier New', monospace;
-    }
-    .card:active {
-      transform: scale(1.02);
-    }
-    .card.qr {
-      background-color: #1b6e45;
-    }
-    .card.tf {
-      background-color: #702b2b;
-    }
-    .completed .card {
-      opacity: 0.85;
+    .card.dragging {
+      opacity: 0.5;
     }
   </style>
 </head>
-<body>
-  <textarea id="input" placeholder="Paste flight data here..."></textarea>
-  <div class="controls">
-    <button onclick="createCards()">Generate Cards</button>
-    <button onclick="clearAll()" style="background:#d22">Clear All</button>
+<body class="flex flex-col h-screen font-mono">
+  <textarea id="input" placeholder="Paste flight data here..." class="w-full h-24 p-2 bg-gray-800 text-white resize-none"></textarea>
+  <div class="flex gap-2">
+    <button onclick="createCards()" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700">Generate Cards</button>
+    <button onclick="clearAll()" class="flex-1 py-2 bg-red-600 hover:bg-red-700">Clear All</button>
   </div>
-  <div id="container">
-    <div class="column" id="activeColumn" ondragover="allowDrop(event)" ondrop="drop(event)">
-      <h2>Active Flights</h2>
+  <div class="flex-1 flex gap-4 p-2 overflow-hidden">
+    <!-- Active Column -->
+    <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2">
+      <div class="flex justify-between items-center mb-2">
+        <h2 class="text-lg font-bold">Active Flights</h2>
+        <select onchange="sortColumn('activeColumn', this.value)" class="bg-gray-700 text-white px-2 py-1 text-sm rounded">
+          <option value="custom">Custom</option>
+          <option value="az">A-Z</option>
+        </select>
+      </div>
+      <div id="activeColumn" class="flex-1 overflow-y-auto space-y-2 p-1" ondragover="allowDrop(event)" ondrop="drop(event, 'activeColumn')"></div>
     </div>
-    <div class="column completed" id="completeColumn" ondragover="allowDrop(event)" ondrop="drop(event)">
-      <h2>Completed</h2>
+
+    <!-- Completed Column -->
+    <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2">
+      <div class="flex justify-between items-center mb-2">
+        <h2 class="text-lg font-bold">Completed</h2>
+        <select onchange="sortColumn('completeColumn', this.value)" class="bg-gray-700 text-white px-2 py-1 text-sm rounded">
+          <option value="custom">Custom</option>
+          <option value="az">A-Z</option>
+        </select>
+      </div>
+      <div id="completeColumn" class="flex-1 overflow-y-auto space-y-2 p-1" ondragover="allowDrop(event)" ondrop="drop(event, 'completeColumn')"></div>
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div id="confirmModal" class="fixed inset-0 hidden bg-black bg-opacity-60 items-center justify-center z-50">
+    <div class="bg-gray-800 p-4 rounded-lg text-center max-w-sm w-full">
+      <p class="mb-4">Delete this card?</p>
+      <div class="flex justify-center gap-4">
+        <button onclick="confirmDelete(true)" class="bg-red-600 px-4 py-2 rounded hover:bg-red-700">Yes</button>
+        <button onclick="confirmDelete(false)" class="bg-gray-600 px-4 py-2 rounded hover:bg-gray-700">No</button>
+      </div>
     </div>
   </div>
 
   <script>
     let dragged = null;
+    let deleteTarget = null;
     let touchStartX = 0;
 
     function classifyCard(text) {
-      if (text.includes("_TF_")) return "tf";
-      if (text.includes("_QT_")) return "qr";
-      return "";
+      if (text.includes("_TF_")) return "bg-red-700";
+      if (text.includes("_QT_")) return "bg-green-700";
+      return "bg-gray-700";
     }
 
     function createCard(text) {
       const card = document.createElement("div");
-      card.className = "card " + classifyCard(text);
+      card.className = `card swipe-delete ${classifyCard(text)} text-white text-2xl font-bold px-4 py-3 rounded cursor-grab`;
       card.draggable = true;
       card.textContent = text;
       card.dataset.id = crypto.randomUUID();
 
-      // Drag logic
-      card.ondragstart = (e) => {
+      // Drag
+      card.ondragstart = () => {
         dragged = card;
-        setTimeout(() => card.style.display = "none", 0);
+        card.classList.add("dragging");
       };
       card.ondragend = () => {
-        if (dragged) dragged.style.display = "block";
         dragged = null;
+        card.classList.remove("dragging");
         saveState();
       };
-      card.ondragover = (e) => e.preventDefault();
-      card.ondrop = (e) => {
+      card.ondragover = e => e.preventDefault();
+      card.ondrop = e => {
         e.preventDefault();
         if (dragged && dragged !== card) {
           card.parentNode.insertBefore(dragged, card.nextSibling);
@@ -140,16 +94,15 @@
         }
       };
 
-      // Swipe logic
-      card.ontouchstart = (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-      };
-      card.ontouchend = (e) => {
+      // Swipe
+      card.ontouchstart = e => touchStartX = e.changedTouches[0].screenX;
+      card.ontouchend = e => {
         const deltaX = e.changedTouches[0].screenX - touchStartX;
         if (deltaX < -80) {
           document.getElementById("completeColumn").appendChild(card);
         } else if (deltaX > 80) {
-          card.remove();
+          deleteTarget = card;
+          document.getElementById("confirmModal").classList.remove("hidden");
         }
         saveState();
       };
@@ -161,13 +114,12 @@
       const lines = document.getElementById("input").value.trim().split("\n");
       const active = document.getElementById("activeColumn");
       const complete = document.getElementById("completeColumn");
-      active.innerHTML = "<h2>Active Flights</h2>";
-      complete.innerHTML = "<h2>Completed</h2>";
+      active.innerHTML = "";
+      complete.innerHTML = "";
 
-      lines.forEach((line) => {
+      lines.forEach(line => {
         if (!line.trim()) return;
-        const card = createCard(line.trim());
-        active.appendChild(card);
+        active.appendChild(createCard(line.trim()));
       });
 
       saveState();
@@ -177,39 +129,59 @@
       e.preventDefault();
     }
 
-    function drop(e) {
+    function drop(e, columnId) {
       e.preventDefault();
-      const column = e.target.closest(".column");
-      if (column && dragged) {
-        column.appendChild(dragged);
-        saveState();
-      }
+      const column = document.getElementById(columnId);
+      if (dragged && column) column.appendChild(dragged);
+      saveState();
     }
 
     function saveState() {
-      const activeCards = Array.from(document.querySelectorAll("#activeColumn .card")).map(c => c.textContent);
-      const completeCards = Array.from(document.querySelectorAll("#completeColumn .card")).map(c => c.textContent);
-      localStorage.setItem("flights_active", JSON.stringify(activeCards));
-      localStorage.setItem("flights_complete", JSON.stringify(completeCards));
+      const active = [...document.querySelectorAll("#activeColumn .card")].map(c => c.textContent);
+      const complete = [...document.querySelectorAll("#completeColumn .card")].map(c => c.textContent);
+      localStorage.setItem("flights_active", JSON.stringify(active));
+      localStorage.setItem("flights_complete", JSON.stringify(complete));
     }
 
     function loadState() {
       const activeCards = JSON.parse(localStorage.getItem("flights_active") || "[]");
       const completeCards = JSON.parse(localStorage.getItem("flights_complete") || "[]");
-
       const active = document.getElementById("activeColumn");
       const complete = document.getElementById("completeColumn");
-      active.innerHTML = "<h2>Active Flights</h2>";
-      complete.innerHTML = "<h2>Completed</h2>";
+
+      active.innerHTML = "";
+      complete.innerHTML = "";
 
       activeCards.forEach(text => active.appendChild(createCard(text)));
       completeCards.forEach(text => complete.appendChild(createCard(text)));
     }
 
     function clearAll() {
-      localStorage.clear();
-      document.getElementById("activeColumn").innerHTML = "<h2>Active Flights</h2>";
-      document.getElementById("completeColumn").innerHTML = "<h2>Completed</h2>";
+      if (confirm("Clear all cards?")) {
+        localStorage.clear();
+        document.getElementById("activeColumn").innerHTML = "";
+        document.getElementById("completeColumn").innerHTML = "";
+      }
+    }
+
+    function confirmDelete(yes) {
+      document.getElementById("confirmModal").classList.add("hidden");
+      if (yes && deleteTarget) {
+        deleteTarget.remove();
+        saveState();
+      }
+      deleteTarget = null;
+    }
+
+    function sortColumn(id, mode) {
+      const col = document.getElementById(id);
+      const cards = [...col.children];
+      if (mode === "az") {
+        cards.sort((a, b) => a.textContent.localeCompare(b.textContent));
+      }
+      col.innerHTML = "";
+      cards.forEach(c => col.appendChild(c));
+      saveState();
     }
 
     loadState();
