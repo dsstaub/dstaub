@@ -15,26 +15,39 @@
   </style>
 </head>
 <body class="flex flex-col h-screen font-mono text-xl">
-  <div class="flex flex-wrap gap-2 p-2 bg-gray-800 border-b border-gray-700">
+  <div class="flex gap-2 flex-wrap p-2 bg-gray-800 border-b border-gray-700">
     <button onclick="pasteFromClipboard()" class="flex-1 py-3 bg-blue-600 hover:bg-blue-700 rounded">Paste From Clipboard</button>
-    <button onclick="toggleSortMode()" class="flex-1 py-3 bg-yellow-600 hover:bg-yellow-700 rounded" id="sortToggle">Sort: Manual</button>
     <button onclick="clearAll()" class="flex-1 py-3 bg-red-600 hover:bg-red-700 rounded">Clear All</button>
   </div>
 
   <div class="flex-1 flex flex-col md:flex-row gap-4 p-2 overflow-hidden">
+    <!-- Active Flights -->
     <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2">
-      <h2 class="text-lg font-bold text-center mb-2">Active Flights</h2>
+      <div class="flex justify-between items-center mb-2">
+        <h2 class="text-lg font-bold">Active Flights</h2>
+        <select onchange="toggleSortMode('activeColumn', this)" class="bg-gray-700 text-white px-2 py-1 rounded">
+          <option value="manual">Manual</option>
+          <option value="az">A-Z</option>
+        </select>
+      </div>
       <div id="activeColumn" class="flex-1 overflow-y-auto space-y-3 p-1"></div>
     </div>
 
+    <!-- Completed -->
     <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2">
-      <h2 class="text-lg font-bold text-center mb-2">Completed</h2>
+      <div class="flex justify-between items-center mb-2">
+        <h2 class="text-lg font-bold">Completed</h2>
+        <select onchange="toggleSortMode('completeColumn', this)" class="bg-gray-700 text-white px-2 py-1 rounded">
+          <option value="manual">Manual</option>
+          <option value="az">A-Z</option>
+        </select>
+      </div>
       <div id="completeColumn" class="flex-1 overflow-y-auto space-y-3 p-1"></div>
     </div>
   </div>
 
   <script>
-    let sortMode = "manual";
+    const sortMode = { activeColumn: "manual", completeColumn: "manual" };
 
     function classify(text) {
       return text.includes("_TF_") ? "bg-red-700"
@@ -51,33 +64,24 @@
       card.addEventListener("click", () => {
         const now = Date.now();
         if (now - lastTap < 300) {
-          editCard(card);
+          const input = document.createElement("input");
+          input.value = card.textContent;
+          input.className = "bg-gray-700 text-white px-2 py-1 w-full rounded editing";
+          card.replaceWith(input);
+          input.focus();
+          input.select();
+
+          input.onkeydown = (e) => { if (e.key === "Enter") input.blur(); };
+          input.onblur = () => {
+            const newCard = createCard(input.value, column);
+            input.replaceWith(newCard);
+            save();
+          };
         }
         lastTap = now;
       });
 
       return card;
-    }
-
-    function editCard(card) {
-      const original = card.textContent;
-      const input = document.createElement("input");
-      input.type = "text";
-      input.value = original;
-      input.className = "bg-gray-700 text-white px-2 py-1 w-full rounded editing";
-      card.replaceWith(input);
-      input.focus();
-      input.select();
-
-      input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") input.blur();
-      });
-
-      input.addEventListener("blur", () => {
-        const newCard = createCard(input.value);
-        input.replaceWith(newCard);
-        save();
-      });
     }
 
     function pasteFromClipboard() {
@@ -86,29 +90,26 @@
         document.getElementById("activeColumn").innerHTML = "";
         document.getElementById("completeColumn").innerHTML = "";
         lines.forEach(line => {
-          if (line.trim()) {
-            const card = createCard(line.trim(), "activeColumn");
-            document.getElementById("activeColumn").appendChild(card);
-          }
+          const card = createCard(line.trim(), "activeColumn");
+          document.getElementById("activeColumn").appendChild(card);
         });
         save();
       }).catch(() => alert("Clipboard access failed."));
     }
 
-    function toggleSortMode() {
-      sortMode = sortMode === "manual" ? "az" : "manual";
-      document.getElementById("sortToggle").textContent = "Sort: " + (sortMode === "manual" ? "Manual" : "A–Z");
-      ["activeColumn", "completeColumn"].forEach(id => sortColumn(id));
+    function toggleSortMode(columnId, select) {
+      sortMode[columnId] = select.value;
+      applySort(columnId);
     }
 
-    function sortColumn(id) {
-      const col = document.getElementById(id);
-      if (sortMode === "az") {
+    function applySort(columnId) {
+      const col = document.getElementById(columnId);
+      if (sortMode[columnId] === "az") {
         const sorted = [...col.children].sort((a, b) => a.textContent.localeCompare(b.textContent));
         col.innerHTML = "";
         sorted.forEach(card => col.appendChild(card));
       } else {
-        load(); // restore manual order
+        load(); // reload manual order
       }
     }
 
@@ -141,7 +142,7 @@
         group: "cards",
         animation: 150,
         onEnd: () => {
-          if (sortMode === "manual") save();
+          if (sortMode[id] === "manual") save();
         }
       });
     }
