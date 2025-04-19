@@ -57,35 +57,35 @@
          : "bg-gray-700";
   }
 
-  function createCard(text, column = "activeColumn") {
-    const card = document.createElement("div");
-    card.className = `${classify(text)} text-white text-2xl font-bold px-4 py-4 rounded cursor-move`;
-    card.textContent = text;
+function createCard(text, column = "activeColumn") {
+  const card = document.createElement("div");
+  card.className = `${classify(text)} text-white text-4xl font-bold px-4 py-4 rounded cursor-move`;
+  card.textContent = text;
 
-    let lastTap = 0;
-    card.addEventListener("click", () => {
-      const now = Date.now();
-      if (now - lastTap < 300) {
-        const input = document.createElement("input");
-        input.value = card.textContent;
-        input.className = "bg-gray-700 text-white px-2 py-1 w-full rounded editing";
-        card.replaceWith(input);
-        input.focus();
-        input.select();
+  let lastTap = 0;
+  card.addEventListener("click", () => {
+    const now = Date.now();
+    if (now - lastTap < 300) {
+      const input = document.createElement("input");
+      input.value = card.textContent;
+      input.className = "bg-gray-700 text-white px-2 py-1 w-full rounded editing text-4xl";
+      card.replaceWith(input);
+      input.focus();
+      input.select();
 
-        input.onkeydown = (e) => { if (e.key === "Enter") input.blur(); };
+      input.onkeydown = (e) => { if (e.key === "Enter") input.blur(); };
 
-        input.onblur = () => {
-          const newCard = createCard(input.value, column);
-          input.replaceWith(newCard);
-          save();
-        };
-      }
-      lastTap = now;
-    });
+      input.onblur = () => {
+        const newCard = createCard(input.value, column);
+        input.replaceWith(newCard);
+        save();
+      };
+    }
+    lastTap = now;
+  });
 
-    return card;
-  }
+  return card;
+}
 
   function pasteFromClipboard() {
     navigator.clipboard.readText().then(text => {
