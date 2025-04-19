@@ -24,7 +24,7 @@
     <!-- Active Flights -->
     <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2">
       <div class="flex justify-between items-center mb-2">
-        <h2 class="text-lg font-bold">Active Flights</h2>
+        <h2 class="text-lg font-bold">Active Flights <span id="activeCount" class="font-normal text-sm text-gray-400"></span></h2>
         <select onchange="toggleSortMode('activeColumn', this)" class="bg-gray-700 text-white px-2 py-1 rounded">
           <option value="manual">Manual</option>
           <option value="az">A-Z</option>
@@ -46,110 +46,130 @@
     </div>
   </div>
 
-  <script>
-    const sortMode = { activeColumn: "manual", completeColumn: "manual" };
+<script>
+  const sortMode = { activeColumn: "manual", completeColumn: "manual" };
 
-    function classify(text) {
-      return text.includes("_TF_") ? "bg-red-700"
-           : text.includes("_QT_") ? "bg-green-700"
-           : "bg-gray-700";
-    }
+  function classify(text) {
+    return text.includes("_TF_") ? "bg-red-700"
+         : text.includes("_QT_") ? "bg-green-700"
+         : "bg-gray-700";
+  }
 
-    function createCard(text, column = "activeColumn") {
-      const card = document.createElement("div");
-      card.className = `${classify(text)} text-white text-2xl font-bold px-4 py-4 rounded cursor-move`;
-      card.textContent = text;
+  function createCard(text, column = "activeColumn") {
+    const card = document.createElement("div");
+    card.className = `${classify(text)} text-white text-2xl font-bold px-4 py-4 rounded cursor-move`;
+    card.textContent = text;
 
-      let lastTap = 0;
-      card.addEventListener("click", () => {
-        const now = Date.now();
-        if (now - lastTap < 300) {
-          const input = document.createElement("input");
-          input.value = card.textContent;
-          input.className = "bg-gray-700 text-white px-2 py-1 w-full rounded editing";
-          card.replaceWith(input);
-          input.focus();
-          input.select();
+    let lastTap = 0;
+    card.addEventListener("click", () => {
+      const now = Date.now();
+      if (now - lastTap < 300) {
+        const input = document.createElement("input");
+        input.value = card.textContent;
+        input.className = "bg-gray-700 text-white px-2 py-1 w-full rounded editing";
+        card.replaceWith(input);
+        input.focus();
+        input.select();
 
-          input.onkeydown = (e) => { if (e.key === "Enter") input.blur(); };
-          input.onblur = () => {
-            const newCard = createCard(input.value, column);
-            input.replaceWith(newCard);
-            save();
-          };
-        }
-        lastTap = now;
-      });
+        input.onkeydown = (e) => { if (e.key === "Enter") input.blur(); };
 
-      return card;
-    }
-
-    function pasteFromClipboard() {
-      navigator.clipboard.readText().then(text => {
-        const lines = text.trim().split("\n");
-        document.getElementById("activeColumn").innerHTML = "";
-        document.getElementById("completeColumn").innerHTML = "";
-        lines.forEach(line => {
-          const card = createCard(line.trim(), "activeColumn");
-          document.getElementById("activeColumn").appendChild(card);
-        });
-        save();
-      }).catch(() => alert("Clipboard access failed."));
-    }
-
-    function toggleSortMode(columnId, select) {
-      sortMode[columnId] = select.value;
-      applySort(columnId);
-    }
-
-    function applySort(columnId) {
-      const col = document.getElementById(columnId);
-      if (sortMode[columnId] === "az") {
-        const sorted = [...col.children].sort((a, b) => a.textContent.localeCompare(b.textContent));
-        col.innerHTML = "";
-        sorted.forEach(card => col.appendChild(card));
-      } else {
-        load(); // reload manual order
+        input.onblur = () => {
+          const newCard = createCard(input.value, column);
+          input.replaceWith(newCard);
+          save();
+        };
       }
-    }
+      lastTap = now;
+    });
 
-    function save() {
-      ["activeColumn", "completeColumn"].forEach(id => {
-        const items = [...document.getElementById(id).children].map(el => el.textContent);
-        localStorage.setItem("order_" + id, JSON.stringify(items));
+    return card;
+  }
+
+  function pasteFromClipboard() {
+    navigator.clipboard.readText().then(text => {
+      const lines = text.trim().split("\n");
+      document.getElementById("activeColumn").innerHTML = "";
+      document.getElementById("completeColumn").innerHTML = "";
+      lines.forEach(line => {
+        const card = createCard(line.trim(), "activeColumn");
+        document.getElementById("activeColumn").appendChild(card);
       });
-    }
+      save();
+    }).catch(() => alert("Clipboard access failed."));
+  }
 
-    function load() {
-      ["activeColumn", "completeColumn"].forEach(id => {
-        const data = JSON.parse(localStorage.getItem("order_" + id) || "[]");
-        const col = document.getElementById(id);
-        col.innerHTML = "";
-        data.forEach(text => col.appendChild(createCard(text, id)));
-      });
-    }
+  function toggleSortMode(columnId, select) {
+    sortMode[columnId] = select.value;
+    applySort(columnId);
+  }
 
-    function clearAll() {
-      if (confirm("Clear all cards?")) {
-        localStorage.clear();
-        document.getElementById("activeColumn").innerHTML = "";
-        document.getElementById("completeColumn").innerHTML = "";
+  function applySort(columnId) {
+    const col = document.getElementById(columnId);
+    if (sortMode[columnId] === "az") {
+      const sorted = [...col.children].sort((a, b) => a.textContent.localeCompare(b.textContent));
+      col.innerHTML = "";
+      sorted.forEach(card => col.appendChild(card));
+    } else {
+      load(); // reload manual order
+    }
+    updateActiveHeader(); // always update breakdown
+  }
+
+  function save() {
+    ["activeColumn", "completeColumn"].forEach(id => {
+      const items = [...document.getElementById(id).children].map(el => el.textContent);
+      localStorage.setItem("order_" + id, JSON.stringify(items));
+    });
+    updateActiveHeader();
+  }
+
+  function load() {
+    ["activeColumn", "completeColumn"].forEach(id => {
+      const data = JSON.parse(localStorage.getItem("order_" + id) || "[]");
+      const col = document.getElementById(id);
+      col.innerHTML = "";
+      data.forEach(text => col.appendChild(createCard(text, id)));
+    });
+    updateActiveHeader();
+  }
+
+  function clearAll() {
+    if (confirm("Clear all cards?")) {
+      localStorage.clear();
+      document.getElementById("activeColumn").innerHTML = "";
+      document.getElementById("completeColumn").innerHTML = "";
+      updateActiveHeader();
+    }
+  }
+
+  function enableSortable(id) {
+    new Sortable(document.getElementById(id), {
+      group: "cards",
+      animation: 150,
+      onEnd: () => {
+        if (sortMode[id] === "manual") save();
       }
-    }
+    });
+  }
 
-    function enableSortable(id) {
-      new Sortable(document.getElementById(id), {
-        group: "cards",
-        animation: 150,
-        onEnd: () => {
-          if (sortMode[id] === "manual") save();
-        }
-      });
-    }
+  function updateActiveHeader() {
+    const cards = [...document.getElementById("activeColumn").children];
+    const count = cards.length;
+    const hourMap = {};
+    cards.forEach(card => {
+      const hour = card.textContent.slice(0, 2);
+      if (hour) hourMap[hour] = (hourMap[hour] || 0) + 1;
+    });
+    const breakdown = Object.entries(hourMap)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([h, c]) => `${h}–${c}`)
+      .join(" • ");
+    document.getElementById("activeCount").textContent = `(${count}) • ${breakdown}`;
+  }
 
-    enableSortable("activeColumn");
-    enableSortable("completeColumn");
-    load();
-  </script>
+  enableSortable("activeColumn");
+  enableSortable("completeColumn");
+  load();
+</script>
 </body>
 </html>
