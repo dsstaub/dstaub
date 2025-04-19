@@ -6,35 +6,10 @@
   <title>Flight Tracker</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .card-inner {
-      transition: transform 0.25s ease;
-    }
     .editing {
       outline: 2px dashed white;
       outline-offset: 2px;
       background-color: #1e293b;
-    }
-    .card {
-      touch-action: pan-y;
-      overflow: hidden;
-      position: relative;
-    }
-    .action-buttons {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: space-between;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease;
-      z-index: 0;
-    }
-    .card.show-actions .action-buttons {
-      opacity: 1;
-      pointer-events: auto;
     }
     .dragging {
       opacity: 0.5;
@@ -48,160 +23,100 @@
     <button onclick="clearAll()" class="flex-1 py-3 bg-red-600 hover:bg-red-700">Clear All</button>
   </div>
   <div class="flex-1 flex gap-4 p-2 overflow-hidden">
+    <!-- Active Column -->
     <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2">
-      <h2 class="text-lg font-bold text-center mb-2">Active Flights</h2>
+      <div class="flex justify-between items-center mb-2">
+        <h2 class="text-lg font-bold">Active Flights</h2>
+        <select onchange="toggleSort('activeColumn', this.value)" class="bg-gray-700 text-white px-2 py-1 rounded">
+          <option value="manual">Manual</option>
+          <option value="az">A-Z</option>
+        </select>
+      </div>
       <div id="activeColumn" class="flex-1 overflow-y-auto space-y-3 p-1" ondragover="allowDrop(event)" ondrop="drop(event, 'activeColumn')"></div>
     </div>
+
+    <!-- Completed Column -->
     <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2">
-      <h2 class="text-lg font-bold text-center mb-2">Completed</h2>
+      <div class="flex justify-between items-center mb-2">
+        <h2 class="text-lg font-bold">Completed</h2>
+        <select onchange="toggleSort('completeColumn', this.value)" class="bg-gray-700 text-white px-2 py-1 rounded">
+          <option value="manual">Manual</option>
+          <option value="az">A-Z</option>
+        </select>
+      </div>
       <div id="completeColumn" class="flex-1 overflow-y-auto space-y-3 p-1" ondragover="allowDrop(event)" ondrop="drop(event, 'completeColumn')"></div>
     </div>
   </div>
 
   <script>
     let dragged = null;
-    let lastTapTime = 0;
+    let manualOrder = { activeColumn: [], completeColumn: [] };
+    let currentSort = { activeColumn: "manual", completeColumn: "manual" };
 
     function classify(text) {
       return text.includes("_TF_") ? "bg-red-700" :
              text.includes("_QT_") ? "bg-green-700" : "bg-gray-700";
     }
 
-    function createCard(text, origin = "activeColumn") {
-      const wrapper = document.createElement("div");
-      wrapper.className = "card rounded";
-      wrapper.draggable = true;
+    function createCard(text, column = "activeColumn") {
+      const card = document.createElement("div");
+      card.className = `card ${classify(text)} text-white text-3xl font-bold px-4 py-5 rounded cursor-move`;
+      card.textContent = text;
+      card.draggable = true;
 
-      const bgActions = document.createElement("div");
-      bgActions.className = "action-buttons px-3 items-center";
-      bgActions.innerHTML = origin === "completeColumn"
-        ? `<div class="flex justify-end w-full">
-             <button class="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded text-white" onclick="undoCard(this)">Undo</button>
-           </div>`
-        : `<button class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white" onclick="completeCard(this)">Complete</button>
-           <button class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-white" onclick="deleteCard(this)">Delete</button>`;
+      // Drag logic
+      card.ondragstart = () => {
+        dragged = card;
+        card.classList.add("dragging");
+      };
+      card.ondragend = () => {
+        dragged = null;
+        card.classList.remove("dragging");
+        saveManualOrder();
+      };
 
-      const inner = document.createElement("div");
-      inner.className = `card-inner ${classify(text)} text-white text-3xl font-bold px-4 py-5 rounded`;
-      inner.textContent = text;
+      // Drop logic for inside cards
+      card.ondragover = e => e.preventDefault();
+      card.ondrop = e => {
+        e.preventDefault();
+        if (dragged && dragged !== card) {
+          card.parentNode.insertBefore(dragged, card.nextSibling);
+          saveManualOrder();
+        }
+      };
 
-      // Double tap to edit
-      inner.onclick = () => {
+      // Double-tap to edit
+      let lastTap = 0;
+      card.onclick = () => {
         const now = Date.now();
-        if (now - lastTapTime < 300) {
-          inner.contentEditable = true;
-          inner.classList.add("editing");
-          inner.focus();
+        if (now - lastTap < 300) {
+          card.contentEditable = true;
+          card.classList.add("editing");
+          card.focus();
           const range = document.createRange();
-          range.selectNodeContents(inner);
+          range.selectNodeContents(card);
           const sel = window.getSelection();
           sel.removeAllRanges();
           sel.addRange(range);
         }
-        lastTapTime = now;
+        lastTap = now;
       };
-
-      inner.onblur = () => {
-        if (inner.isContentEditable) {
-          inner.contentEditable = false;
-          inner.classList.remove("editing");
-          saveState();
+      card.onblur = () => {
+        if (card.isContentEditable) {
+          card.contentEditable = false;
+          card.classList.remove("editing");
+          saveManualOrder();
         }
       };
-
-      inner.onkeydown = (e) => {
+      card.onkeydown = (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
-          inner.blur();
+          card.blur();
         }
       };
 
-      // Swipe logic
-      let startX = 0;
-      let currentX = 0;
-      let swiping = false;
-
-      inner.addEventListener("touchstart", (e) => {
-        startX = e.touches[0].clientX;
-        swiping = true;
-      });
-
-      inner.addEventListener("touchmove", (e) => {
-        if (!swiping) return;
-        currentX = e.touches[0].clientX;
-        const deltaX = currentX - startX;
-        inner.style.transform = `translateX(${deltaX}px)`;
-      });
-
-      inner.addEventListener("touchend", () => {
-        const deltaX = currentX - startX;
-        swiping = false;
-        if (deltaX < -100 || deltaX > 100) {
-          wrapper.classList.add("show-actions");
-        } else {
-          inner.style.transform = "translateX(0)";
-          wrapper.classList.remove("show-actions");
-        }
-      });
-
-      // Drag and drop
-      wrapper.ondragstart = () => {
-        dragged = wrapper;
-        wrapper.classList.add("dragging");
-      };
-      wrapper.ondragend = () => {
-        dragged = null;
-        wrapper.classList.remove("dragging");
-        saveState();
-      };
-      wrapper.ondragover = (e) => e.preventDefault();
-      wrapper.ondrop = (e) => {
-        e.preventDefault();
-        if (dragged && dragged !== wrapper) {
-          wrapper.parentNode.insertBefore(dragged, wrapper.nextSibling);
-          saveState();
-        }
-      };
-
-      wrapper.appendChild(bgActions);
-      wrapper.appendChild(inner);
-      return wrapper;
-    }
-
-    function completeCard(btn) {
-      const card = btn.closest(".card");
-      card.classList.remove("show-actions");
-      card.querySelector(".card-inner").style.transform = "translateX(0)";
-      document.getElementById("completeColumn").appendChild(card);
-      saveState();
-    }
-
-    function deleteCard(btn) {
-      btn.closest(".card").remove();
-      saveState();
-    }
-
-    function undoCard(btn) {
-      const card = btn.closest(".card");
-      card.classList.remove("show-actions");
-      card.querySelector(".card-inner").style.transform = "translateX(0)";
-      document.getElementById("activeColumn").appendChild(card);
-      saveState();
-    }
-
-    function createCards() {
-      const lines = document.getElementById("input").value.trim().split("\n");
-      const active = document.getElementById("activeColumn");
-      const complete = document.getElementById("completeColumn");
-      active.innerHTML = "";
-      complete.innerHTML = "";
-
-      lines.forEach(line => {
-        if (!line.trim()) return;
-        active.appendChild(createCard(line.trim()));
-      });
-
-      saveState();
+      manualOrder[column].push(card);
+      return card;
     }
 
     function allowDrop(e) {
@@ -212,28 +127,62 @@
       e.preventDefault();
       if (dragged) {
         document.getElementById(columnId).appendChild(dragged);
-        saveState();
+        saveManualOrder();
       }
     }
 
-    function saveState() {
-      const active = [...document.querySelectorAll("#activeColumn .card-inner")].map(c => c.textContent);
-      const complete = [...document.querySelectorAll("#completeColumn .card-inner")].map(c => c.textContent);
-      localStorage.setItem("flights_active", JSON.stringify(active));
-      localStorage.setItem("flights_complete", JSON.stringify(complete));
+    function toggleSort(columnId, mode) {
+      currentSort[columnId] = mode;
+      const col = document.getElementById(columnId);
+      if (mode === "az") {
+        const sorted = [...col.children].sort((a, b) =>
+          a.textContent.localeCompare(b.textContent)
+        );
+        col.innerHTML = "";
+        sorted.forEach(c => col.appendChild(c));
+      } else {
+        col.innerHTML = "";
+        manualOrder[columnId].forEach(c => col.appendChild(c));
+      }
     }
 
-    function loadState() {
-      const activeCards = JSON.parse(localStorage.getItem("flights_active") || "[]");
-      const completeCards = JSON.parse(localStorage.getItem("flights_complete") || "[]");
+    function saveManualOrder() {
+      ["activeColumn", "completeColumn"].forEach(id => {
+        const col = document.getElementById(id);
+        manualOrder[id] = [...col.children];
+        const values = manualOrder[id].map(c => c.textContent);
+        localStorage.setItem("order_" + id, JSON.stringify(values));
+      });
+    }
 
-      const activeCol = document.getElementById("activeColumn");
-      const completeCol = document.getElementById("completeColumn");
-      activeCol.innerHTML = "";
-      completeCol.innerHTML = "";
+    function loadManualOrder() {
+      ["activeColumn", "completeColumn"].forEach(id => {
+        const col = document.getElementById(id);
+        manualOrder[id] = [];
+        col.innerHTML = "";
+        const values = JSON.parse(localStorage.getItem("order_" + id) || "[]");
+        values.forEach(text => {
+          const card = createCard(text, id);
+          col.appendChild(card);
+        });
+      });
+    }
 
-      activeCards.forEach(t => activeCol.appendChild(createCard(t)));
-      completeCards.forEach(t => completeCol.appendChild(createCard(t, "completeColumn")));
+    function createCards() {
+      const lines = document.getElementById("input").value.trim().split("\n");
+      const active = document.getElementById("activeColumn");
+      const complete = document.getElementById("completeColumn");
+      active.innerHTML = "";
+      complete.innerHTML = "";
+      manualOrder = { activeColumn: [], completeColumn: [] };
+
+      lines.forEach(line => {
+        if (!line.trim()) return;
+        const card = createCard(line.trim(), "activeColumn");
+        active.appendChild(card);
+      });
+
+      saveManualOrder();
     }
 
     function clearAll() {
@@ -241,10 +190,11 @@
         localStorage.clear();
         document.getElementById("activeColumn").innerHTML = "";
         document.getElementById("completeColumn").innerHTML = "";
+        manualOrder = { activeColumn: [], completeColumn: [] };
       }
     }
 
-    loadState();
+    loadManualOrder();
   </script>
 </body>
 </html>
