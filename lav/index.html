@@ -2,201 +2,102 @@
 <html lang="en" class="bg-gray-900 text-white">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flight Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Draggable Cards</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    .dragging {
+      opacity: 0.4;
+    }
     .editing {
       outline: 2px dashed white;
       outline-offset: 2px;
-      background-color: #1e293b;
-    }
-    .dragging {
-      opacity: 0.4;
     }
   </style>
 </head>
 <body class="flex flex-col h-screen font-mono text-xl">
-  <textarea id="input" placeholder="Paste flight data here..." class="w-full h-24 p-2 bg-gray-800 text-white resize-none text-lg"></textarea>
-  <div class="flex gap-2">
-    <button onclick="createCards()" class="flex-1 py-3 bg-blue-600 hover:bg-blue-700">Generate Cards</button>
-    <button onclick="clearAll()" class="flex-1 py-3 bg-red-600 hover:bg-red-700">Clear All</button>
-  </div>
-  <div class="flex-1 flex gap-4 p-2 overflow-hidden">
-    <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2">
-      <div class="flex justify-between items-center mb-2">
-        <h2 class="text-lg font-bold">Active Flights</h2>
-        <select onchange="toggleSort('activeColumn', this.value)" class="bg-gray-700 text-white px-2 py-1 rounded">
-          <option value="manual">Manual</option>
-          <option value="az">A-Z</option>
-        </select>
-      </div>
-      <div id="activeColumn" class="flex-1 overflow-y-auto space-y-3 p-1"></div>
+  <div class="flex gap-4 p-4 overflow-hidden flex-1">
+    <!-- Column A -->
+    <div id="columnA" class="flex-1 bg-gray-800 p-2 rounded overflow-y-auto space-y-2"
+         ondragover="onDragOver(event)" ondrop="onDrop(event, 'columnA')">
+      <h2 class="text-center font-bold text-white mb-2">Active</h2>
     </div>
 
-    <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2">
-      <div class="flex justify-between items-center mb-2">
-        <h2 class="text-lg font-bold">Completed</h2>
-        <select onchange="toggleSort('completeColumn', this.value)" class="bg-gray-700 text-white px-2 py-1 rounded">
-          <option value="manual">Manual</option>
-          <option value="az">A-Z</option>
-        </select>
-      </div>
-      <div id="completeColumn" class="flex-1 overflow-y-auto space-y-3 p-1"></div>
+    <!-- Column B -->
+    <div id="columnB" class="flex-1 bg-gray-800 p-2 rounded overflow-y-auto space-y-2"
+         ondragover="onDragOver(event)" ondrop="onDrop(event, 'columnB')">
+      <h2 class="text-center font-bold text-white mb-2">Completed</h2>
     </div>
   </div>
 
-<script>
-let draggedEl = null;
-let manualOrder = { activeColumn: [], completeColumn: [] };
-let currentSort = { activeColumn: "manual", completeColumn: "manual" };
+  <script>
+    let dragged = null;
 
-function classify(text) {
-  return text.includes("_TF_") ? "bg-red-700" :
-         text.includes("_QT_") ? "bg-green-700" : "bg-gray-700";
-}
+    function createCard(text) {
+      const card = document.createElement('div');
+      card.className = 'bg-blue-700 px-4 py-3 rounded text-2xl font-bold cursor-move';
+      card.textContent = text;
+      card.draggable = true;
 
-function createCard(text, column = 'activeColumn') {
-  const card = document.createElement('div');
-  card.className = `${classify(text)} text-white text-3xl font-bold px-4 py-5 rounded cursor-move`;
-  card.textContent = text;
-  card.draggable = true;
+      card.addEventListener('dragstart', () => {
+        dragged = card;
+        card.classList.add('dragging');
+      });
 
-  // Drag handlers
-  card.addEventListener('dragstart', () => {
-    draggedEl = card;
-    card.classList.add('dragging');
-  });
+      card.addEventListener('dragend', () => {
+        dragged = null;
+        card.classList.remove('dragging');
+      });
 
-  card.addEventListener('dragend', () => {
-    draggedEl = null;
-    card.classList.remove('dragging');
-    saveManualOrder();
-  });
+      card.addEventListener('dragover', e => e.preventDefault());
 
-  card.addEventListener('dragover', e => e.preventDefault());
+      card.addEventListener('drop', e => {
+        e.preventDefault();
+        const parent = card.parentNode;
+        parent.insertBefore(dragged, card.nextSibling);
+      });
 
-  card.addEventListener('drop', e => {
-    e.preventDefault();
-    if (draggedEl && draggedEl !== card) {
-      const rect = card.getBoundingClientRect();
-      const isBelow = e.clientY > rect.top + rect.height / 2;
-      const parent = card.parentNode;
-      parent.insertBefore(draggedEl, isBelow ? card.nextSibling : card);
-      saveManualOrder();
+      // Double tap to edit
+      let lastTap = 0;
+      card.onclick = () => {
+        const now = Date.now();
+        if (now - lastTap < 300) {
+          card.contentEditable = true;
+          card.classList.add('editing');
+          card.focus();
+        }
+        lastTap = now;
+      };
+      card.onblur = () => {
+        card.contentEditable = false;
+        card.classList.remove('editing');
+      };
+      card.onkeydown = e => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          card.blur();
+        }
+      };
+
+      return card;
     }
-  });
 
-  // Allow dropping directly into empty space
-  const parentEl = document.getElementById(column);
-  parentEl.addEventListener('dragover', e => e.preventDefault());
-  parentEl.addEventListener('drop', e => {
-    if (!e.target.closest('.card')) {
-      parentEl.appendChild(draggedEl);
-      saveManualOrder();
-    }
-  });
-
-  // Double-tap to edit
-  let lastTap = 0;
-  card.onclick = () => {
-    const now = Date.now();
-    if (now - lastTap < 300) {
-      card.contentEditable = true;
-      card.classList.add('editing');
-      card.focus();
-      const range = document.createRange();
-      range.selectNodeContents(card);
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
-    }
-    lastTap = now;
-  };
-
-  card.onblur = () => {
-    if (card.isContentEditable) {
-      card.contentEditable = false;
-      card.classList.remove('editing');
-      saveManualOrder();
-    }
-  };
-
-  card.onkeydown = (e) => {
-    if (e.key === "Enter") {
+    function onDragOver(e) {
       e.preventDefault();
-      card.blur();
     }
-  };
 
-  manualOrder[column].push(card);
-  return card;
-}
+    function onDrop(e, columnId) {
+      e.preventDefault();
+      const col = document.getElementById(columnId);
+      if (dragged) {
+        col.appendChild(dragged);
+      }
+    }
 
-function toggleSort(id, mode) {
-  currentSort[id] = mode;
-  const col = document.getElementById(id);
-  if (mode === "az") {
-    const sorted = [...col.children].sort((a, b) =>
-      a.textContent.localeCompare(b.textContent)
-    );
-    col.innerHTML = "";
-    sorted.forEach(el => col.appendChild(el));
-  } else {
-    col.innerHTML = "";
-    manualOrder[id].forEach(el => col.appendChild(el));
-  }
-}
-
-function saveManualOrder() {
-  ["activeColumn", "completeColumn"].forEach(id => {
-    const col = document.getElementById(id);
-    manualOrder[id] = [...col.children];
-    const values = manualOrder[id].map(c => c.textContent);
-    localStorage.setItem("order_" + id, JSON.stringify(values));
-  });
-}
-
-function loadManualOrder() {
-  ["activeColumn", "completeColumn"].forEach(id => {
-    const col = document.getElementById(id);
-    manualOrder[id] = [];
-    col.innerHTML = "";
-    const values = JSON.parse(localStorage.getItem("order_" + id) || "[]");
-    values.forEach(text => {
-      const card = createCard(text, id);
-      col.appendChild(card);
-    });
-  });
-}
-
-function createCards() {
-  const lines = document.getElementById("input").value.trim().split("\n");
-  const active = document.getElementById("activeColumn");
-  const complete = document.getElementById("completeColumn");
-  active.innerHTML = "";
-  complete.innerHTML = "";
-  manualOrder = { activeColumn: [], completeColumn: [] };
-
-  lines.forEach(line => {
-    if (!line.trim()) return;
-    const card = createCard(line.trim(), "activeColumn");
-    active.appendChild(card);
-  });
-
-  saveManualOrder();
-}
-
-function clearAll() {
-  if (confirm("Clear all cards?")) {
-    localStorage.clear();
-    document.getElementById("activeColumn").innerHTML = "";
-    document.getElementById("completeColumn").innerHTML = "";
-    manualOrder = { activeColumn: [], completeColumn: [] };
-  }
-}
-
-loadManualOrder();
-</script>
+    // Demo: create 3 starter cards
+    document.getElementById('columnA').appendChild(createCard("15_2664_DFW_QT_738K_3CL_B10"));
+    document.getElementById('columnA').appendChild(createCard("16_1245_LAX_TF_738K_3FW_B10"));
+    document.getElementById('columnA').appendChild(createCard("18_2863_MIA_QT_H319_818_B8"));
+  </script>
 </body>
 </html>
