@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Flight Tracker</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #121212;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      font-size: 1rem;
+      box-sizing: border-box;
+      border: none;
+      resize: none;
+      background: #1e1e1e;
+      color: white;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      background: #1f6feb;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #container {
+      flex: 1;
+      display: flex;
+      gap: 10px;
+      padding: 10px;
+      overflow-x: auto;
+      background: #1e1e1e;
+    }
+    .column {
+      flex: 1;
+      min-width: 50%;
+      background: #2c2c2c;
+      padding: 10px;
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .column h2 {
+      margin: 0 0 10px;
+      font-size: 1.1rem;
+      text-align: center;
+      color: #aaa;
+    }
+    .card {
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: grab;
+      user-select: none;
+      transition: transform 0.2s ease;
+      touch-action: pan-y;
+      background: #444;
+      color: white;
+    }
+    .card.qr {
+      background-color: #165c3b;
+    }
+    .card.tf {
+      background-color: #702b2b;
+    }
+    .completed .card {
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+  <textarea id="input" placeholder="Paste flight data here..."></textarea>
+  <button onclick="createCards()">Generate Cards</button>
+  <div id="container">
+    <div class="column" id="activeColumn" ondragover="allowDrop(event)" ondrop="drop(event)">
+      <h2>Active Flights</h2>
+    </div>
+    <div class="column completed" id="completeColumn" ondragover="allowDrop(event)" ondrop="drop(event)">
+      <h2>Completed</h2>
+    </div>
+  </div>
+
+  <script>
+    let dragged = null;
+
+    function classifyCard(text) {
+      if (text.includes("_TF_")) return "tf";
+      if (text.includes("_QT_")) return "qr";
+      return "";
+    }
+
+    function createCard(text) {
+      const card = document.createElement("div");
+      card.className = "card " + classifyCard(text);
+      card.draggable = true;
+      card.textContent = text;
+      card.dataset.id = crypto.randomUUID();
+      card.ontouchstart = handleTouchStart;
+      card.ontouchend = handleTouchEnd;
+
+      card.ondragstart = (e) => {
+        dragged = card;
+        setTimeout(() => card.style.display = "none", 0);
+      };
+      card.ondragend = (e) => {
+        dragged.style.display = "block";
+        dragged = null;
+        saveState();
+      };
+
+      return card;
+    }
+
+    function createCards() {
+      const lines = document.getElementById("input").value.trim().split("\n");
+      const active = document.getElementById("activeColumn");
+      active.innerHTML = "<h2>Active Flights</h2>";
+
+      const complete = document.getElementById("completeColumn");
+      complete.innerHTML = "<h2>Completed</h2>";
+
+      lines.forEach((line) => {
+        if (!line.trim()) return;
+        const card = createCard(line.trim());
+        active.appendChild(card);
+      });
+
+      saveState();
+    }
+
+    function allowDrop(e) {
+      e.preventDefault();
+    }
+
+    function drop(e) {
+      e.preventDefault();
+      const target = e.target.closest(".column");
+      if (target && dragged) {
+        target.appendChild(dragged);
+        saveState();
+      }
+    }
+
+    let touchStartX = 0;
+
+    function handleTouchStart(e) {
+      touchStartX = e.changedTouches[0].screenX;
+    }
+
+    function handleTouchEnd(e) {
+      const touchEndX = e.changedTouches[0].screenX;
+      if (touchStartX - touchEndX > 80) {
+        document.getElementById("completeColumn").appendChild(e.target);
+        saveState();
+      }
+    }
+
+    function saveState() {
+      const activeCards = Array.from(document.querySelectorAll("#activeColumn .card")).map(c => c.textContent);
+      const completeCards = Array.from(document.querySelectorAll("#completeColumn .card")).map(c => c.textContent);
+      localStorage.setItem("flights_active", JSON.stringify(activeCards));
+      localStorage.setItem("flights_complete", JSON.stringify(completeCards));
+    }
+
+    function loadState() {
+      const activeCards = JSON.parse(localStorage.getItem("flights_active") || "[]");
+      const completeCards = JSON.parse(localStorage.getItem("flights_complete") || "[]");
+
+      const active = document.getElementById("activeColumn");
+      const complete = document.getElementById("completeColumn");
+      active.innerHTML = "<h2>Active Flights</h2>";
+      complete.innerHTML = "<h2>Completed</h2>";
+
+      activeCards.forEach(text => active.appendChild(createCard(text)));
+      completeCards.forEach(text => complete.appendChild(createCard(text)));
+    }
+
+    loadState();
+  </script>
+</body>
+</html>
