@@ -2,22 +2,17 @@
 <html lang="en" class="bg-gray-900 text-white">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Flight Tracker</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .dragging {
-      opacity: 0.4;
-    }
-    .editing {
-      outline: 2px dashed white;
-      outline-offset: 2px;
-      background-color: #1e293b;
+      opacity: 0.5;
     }
   </style>
 </head>
-<body class="flex flex-col h-screen font-mono">
-  <textarea id="input" placeholder="Paste flight data here..." class="w-full h-24 p-2 bg-gray-800 text-white resize-none text-xl"></textarea>
+<body class="flex flex-col h-screen font-mono text-xl">
+  <textarea id="input" placeholder="Paste flight data here..." class="w-full h-24 p-2 bg-gray-800 text-white resize-none text-lg"></textarea>
   <div class="flex gap-2">
     <button onclick="createCards()" class="flex-1 py-3 bg-blue-600 hover:bg-blue-700">Generate Cards</button>
     <button onclick="clearAll()" class="flex-1 py-3 bg-red-600 hover:bg-red-700">Clear All</button>
@@ -61,9 +56,43 @@
 
   function createCard(text, columnId = 'activeColumn') {
     const card = document.createElement('div');
-    card.className = `${classify(text)} text-white text-2xl font-bold px-4 py-4 rounded cursor-move`;
-    card.textContent = text;
+    card.className = `${classify(text)} text-white text-2xl font-bold px-4 py-4 rounded cursor-move flex justify-between items-center gap-2`;
     card.setAttribute('draggable', 'true');
+
+    const textDiv = document.createElement('div');
+    textDiv.className = 'flex-1';
+    textDiv.textContent = text;
+
+    const input = document.createElement('input');
+    input.className = 'bg-gray-700 text-white rounded px-2 py-1 hidden w-full';
+    input.value = text;
+
+    // Double-tap to switch to input
+    let lastTap = 0;
+    textDiv.onclick = () => {
+      const now = Date.now();
+      if (now - lastTap < 300) {
+        input.value = textDiv.textContent;
+        input.classList.remove('hidden');
+        textDiv.classList.add('hidden');
+        input.focus();
+        input.select();
+      }
+      lastTap = now;
+    };
+
+    input.onkeydown = (e) => {
+      if (e.key === 'Enter') {
+        input.blur();
+      }
+    };
+
+    input.onblur = () => {
+      textDiv.textContent = input.value;
+      input.classList.add('hidden');
+      textDiv.classList.remove('hidden');
+      saveManualOrder();
+    };
 
     // DRAG EVENTS
     card.addEventListener('dragstart', () => {
@@ -89,36 +118,8 @@
       }
     });
 
-    // DOUBLE TAP TO EDIT
-    let lastTap = 0;
-    card.addEventListener('click', () => {
-      const now = Date.now();
-      if (now - lastTap < 300) {
-        card.contentEditable = true;
-        card.classList.add('editing');
-        card.focus();
-        const sel = window.getSelection();
-        sel.removeAllRanges();
-        const range = document.createRange();
-        range.selectNodeContents(card);
-        sel.addRange(range);
-      }
-      lastTap = now;
-    });
-
-    card.addEventListener('blur', () => {
-      card.contentEditable = false;
-      card.classList.remove('editing');
-      saveManualOrder();
-    });
-
-    card.addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        card.blur();
-      }
-    });
-
+    card.appendChild(textDiv);
+    card.appendChild(input);
     manualOrder[columnId].push(card);
     return card;
   }
@@ -130,7 +131,7 @@
   function onDrop(e, columnId) {
     e.preventDefault();
     const col = document.getElementById(columnId);
-    if (dragged && col && !col.contains(dragged)) {
+    if (dragged && !col.contains(dragged)) {
       col.appendChild(dragged);
       saveManualOrder();
     }
