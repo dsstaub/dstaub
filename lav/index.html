@@ -6,26 +6,28 @@
   <title>Flight Tracker</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .swipe-delete {
+    .card.dragging {
+      opacity: 0.4;
+    }
+    .swipe-wrapper {
       transition: transform 0.3s ease;
     }
-    .card.dragging {
-      opacity: 0.5;
+    .editing {
+      outline: 2px dashed #fff;
     }
   </style>
 </head>
 <body class="flex flex-col h-screen font-mono">
-  <textarea id="input" placeholder="Paste flight data here..." class="w-full h-24 p-2 bg-gray-800 text-white resize-none"></textarea>
+  <textarea id="input" placeholder="Paste flight data here..." class="w-full h-24 p-2 bg-gray-800 text-white resize-none text-lg"></textarea>
   <div class="flex gap-2">
-    <button onclick="createCards()" class="flex-1 py-2 bg-blue-600 hover:bg-blue-700">Generate Cards</button>
-    <button onclick="clearAll()" class="flex-1 py-2 bg-red-600 hover:bg-red-700">Clear All</button>
+    <button onclick="createCards()" class="flex-1 py-3 text-lg bg-blue-600 hover:bg-blue-700">Generate Cards</button>
+    <button onclick="clearAll()" class="flex-1 py-3 text-lg bg-red-600 hover:bg-red-700">Clear All</button>
   </div>
   <div class="flex-1 flex gap-4 p-2 overflow-hidden">
-    <!-- Active Column -->
     <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2">
       <div class="flex justify-between items-center mb-2">
-        <h2 class="text-lg font-bold">Active Flights</h2>
-        <select onchange="sortColumn('activeColumn', this.value)" class="bg-gray-700 text-white px-2 py-1 text-sm rounded">
+        <h2 class="text-xl font-bold">Active Flights</h2>
+        <select onchange="sortColumn('activeColumn', this.value)" class="bg-gray-700 text-white px-2 py-1 rounded">
           <option value="custom">Custom</option>
           <option value="az">A-Z</option>
         </select>
@@ -33,11 +35,10 @@
       <div id="activeColumn" class="flex-1 overflow-y-auto space-y-2 p-1" ondragover="allowDrop(event)" ondrop="drop(event, 'activeColumn')"></div>
     </div>
 
-    <!-- Completed Column -->
     <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2">
       <div class="flex justify-between items-center mb-2">
-        <h2 class="text-lg font-bold">Completed</h2>
-        <select onchange="sortColumn('completeColumn', this.value)" class="bg-gray-700 text-white px-2 py-1 text-sm rounded">
+        <h2 class="text-xl font-bold">Completed</h2>
+        <select onchange="sortColumn('completeColumn', this.value)" class="bg-gray-700 text-white px-2 py-1 rounded">
           <option value="custom">Custom</option>
           <option value="az">A-Z</option>
         </select>
@@ -46,21 +47,11 @@
     </div>
   </div>
 
-  <!-- Confirm Modal -->
-  <div id="confirmModal" class="fixed inset-0 hidden bg-black bg-opacity-60 items-center justify-center z-50">
-    <div class="bg-gray-800 p-4 rounded-lg text-center max-w-sm w-full">
-      <p class="mb-4">Delete this card?</p>
-      <div class="flex justify-center gap-4">
-        <button onclick="confirmDelete(true)" class="bg-red-600 px-4 py-2 rounded hover:bg-red-700">Yes</button>
-        <button onclick="confirmDelete(false)" class="bg-gray-600 px-4 py-2 rounded hover:bg-gray-700">No</button>
-      </div>
-    </div>
-  </div>
-
   <script>
     let dragged = null;
-    let deleteTarget = null;
     let touchStartX = 0;
+    let activeWrapper = null;
+    let tapTimeout = null;
 
     function classifyCard(text) {
       if (text.includes("_TF_")) return "bg-red-700";
@@ -69,45 +60,84 @@
     }
 
     function createCard(text) {
-      const card = document.createElement("div");
-      card.className = `card swipe-delete ${classifyCard(text)} text-white text-2xl font-bold px-4 py-3 rounded cursor-grab`;
-      card.draggable = true;
-      card.textContent = text;
-      card.dataset.id = crypto.randomUUID();
+      const wrapper = document.createElement("div");
+      wrapper.className = "relative overflow-hidden rounded swipe-wrapper";
+      wrapper.dataset.id = crypto.randomUUID();
 
-      // Drag
-      card.ondragstart = () => {
-        dragged = card;
-        card.classList.add("dragging");
+      const container = document.createElement("div");
+      container.className = `card ${classifyCard(text)} text-white text-3xl font-bold px-4 py-4 rounded cursor-grab whitespace-pre-wrap`;
+      container.draggable = true;
+      container.textContent = text;
+
+      // Drag and drop
+      container.ondragstart = () => {
+        dragged = wrapper;
+        container.classList.add("dragging");
       };
-      card.ondragend = () => {
+      container.ondragend = () => {
+        container.classList.remove("dragging");
         dragged = null;
-        card.classList.remove("dragging");
         saveState();
       };
-      card.ondragover = e => e.preventDefault();
-      card.ondrop = e => {
+      container.ondragover = e => e.preventDefault();
+      container.ondrop = e => {
         e.preventDefault();
-        if (dragged && dragged !== card) {
-          card.parentNode.insertBefore(dragged, card.nextSibling);
+        if (dragged && dragged !== wrapper) {
+          container.parentNode.insertBefore(dragged, wrapper.nextSibling);
           saveState();
         }
       };
 
-      // Swipe
-      card.ontouchstart = e => touchStartX = e.changedTouches[0].screenX;
-      card.ontouchend = e => {
+      // Swipe handling
+      container.ontouchstart = e => {
+        touchStartX = e.changedTouches[0].screenX;
+        activeWrapper = wrapper;
+      };
+      container.ontouchend = e => {
         const deltaX = e.changedTouches[0].screenX - touchStartX;
         if (deltaX < -80) {
-          document.getElementById("completeColumn").appendChild(card);
+          wrapper.style.transform = "translateX(-100px)";
         } else if (deltaX > 80) {
-          deleteTarget = card;
-          document.getElementById("confirmModal").classList.remove("hidden");
+          wrapper.style.transform = "translateX(100px)";
+        } else {
+          wrapper.style.transform = "translateX(0)";
         }
+      };
+
+      // Double tap to edit
+      container.ondblclick = () => {
+        container.contentEditable = true;
+        container.focus();
+        container.classList.add("editing");
+      };
+      container.onblur = () => {
+        container.contentEditable = false;
+        container.classList.remove("editing");
         saveState();
       };
 
-      return card;
+      // Buttons
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "✕";
+      delBtn.onclick = () => {
+        wrapper.remove();
+        saveState();
+      };
+      delBtn.className = "absolute right-2 top-1/2 -translate-y-1/2 bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded z-10";
+
+      const doneBtn = document.createElement("button");
+      doneBtn.textContent = "✓";
+      doneBtn.onclick = () => {
+        document.getElementById("completeColumn").appendChild(wrapper);
+        wrapper.style.transform = "translateX(0)";
+        saveState();
+      };
+      doneBtn.className = "absolute left-2 top-1/2 -translate-y-1/2 bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded z-10";
+
+      wrapper.appendChild(container);
+      wrapper.appendChild(doneBtn);
+      wrapper.appendChild(delBtn);
+      return wrapper;
     }
 
     function createCards() {
@@ -131,8 +161,8 @@
 
     function drop(e, columnId) {
       e.preventDefault();
-      const column = document.getElementById(columnId);
-      if (dragged && column) column.appendChild(dragged);
+      const col = document.getElementById(columnId);
+      if (dragged && col) col.appendChild(dragged);
       saveState();
     }
 
@@ -164,23 +194,16 @@
       }
     }
 
-    function confirmDelete(yes) {
-      document.getElementById("confirmModal").classList.add("hidden");
-      if (yes && deleteTarget) {
-        deleteTarget.remove();
-        saveState();
-      }
-      deleteTarget = null;
-    }
-
     function sortColumn(id, mode) {
       const col = document.getElementById(id);
-      const cards = [...col.children];
+      const wrappers = [...col.children];
       if (mode === "az") {
-        cards.sort((a, b) => a.textContent.localeCompare(b.textContent));
+        wrappers.sort((a, b) =>
+          a.querySelector(".card").textContent.localeCompare(b.querySelector(".card").textContent)
+        );
       }
       col.innerHTML = "";
-      cards.forEach(c => col.appendChild(c));
+      wrappers.forEach(w => col.appendChild(w));
       saveState();
     }
 
