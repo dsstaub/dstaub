@@ -15,38 +15,26 @@
   </style>
 </head>
 <body class="flex flex-col h-screen font-mono text-xl">
-  <textarea id="input" placeholder="Paste flight data here..." class="w-full h-24 p-2 bg-gray-800 text-white resize-none text-lg"></textarea>
-  <div class="flex gap-2">
-    <button onclick="createCards()" class="flex-1 py-3 bg-blue-600 hover:bg-blue-700">Generate Cards</button>
-    <button onclick="clearAll()" class="flex-1 py-3 bg-red-600 hover:bg-red-700">Clear All</button>
+  <div class="flex flex-wrap gap-2 p-2 bg-gray-800 border-b border-gray-700">
+    <button onclick="pasteFromClipboard()" class="flex-1 py-3 bg-blue-600 hover:bg-blue-700 rounded">Paste From Clipboard</button>
+    <button onclick="toggleSortMode()" class="flex-1 py-3 bg-yellow-600 hover:bg-yellow-700 rounded" id="sortToggle">Sort: Manual</button>
+    <button onclick="clearAll()" class="flex-1 py-3 bg-red-600 hover:bg-red-700 rounded">Clear All</button>
   </div>
-  <div class="flex-1 flex gap-4 p-2 overflow-hidden">
+
+  <div class="flex-1 flex flex-col md:flex-row gap-4 p-2 overflow-hidden">
     <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2">
-      <div class="flex justify-between items-center mb-2">
-        <h2 class="text-lg font-bold">Active Flights</h2>
-        <select onchange="sortColumn('activeColumn', this.value)" class="bg-gray-700 text-white px-2 py-1 rounded">
-          <option value="manual">Manual</option>
-          <option value="az">A-Z</option>
-        </select>
-      </div>
+      <h2 class="text-lg font-bold text-center mb-2">Active Flights</h2>
       <div id="activeColumn" class="flex-1 overflow-y-auto space-y-3 p-1"></div>
     </div>
 
     <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2">
-      <div class="flex justify-between items-center mb-2">
-        <h2 class="text-lg font-bold">Completed</h2>
-        <select onchange="sortColumn('completeColumn', this.value)" class="bg-gray-700 text-white px-2 py-1 rounded">
-          <option value="manual">Manual</option>
-          <option value="az">A-Z</option>
-        </select>
-      </div>
+      <h2 class="text-lg font-bold text-center mb-2">Completed</h2>
       <div id="completeColumn" class="flex-1 overflow-y-auto space-y-3 p-1"></div>
     </div>
   </div>
 
   <script>
-    let sortMode = { activeColumn: 'manual', completeColumn: 'manual' };
-    let manualOrder = { activeColumn: [], completeColumn: [] };
+    let sortMode = "manual";
 
     function classify(text) {
       return text.includes("_TF_") ? "bg-red-700"
@@ -92,30 +80,35 @@
       });
     }
 
-    function createCards() {
-      document.getElementById("activeColumn").innerHTML = "";
-      document.getElementById("completeColumn").innerHTML = "";
-      manualOrder = { activeColumn: [], completeColumn: [] };
-
-      const lines = document.getElementById("input").value.trim().split("\n");
-      lines.forEach(line => {
-        const card = createCard(line.trim(), "activeColumn");
-        document.getElementById("activeColumn").appendChild(card);
-      });
-
-      save();
+    function pasteFromClipboard() {
+      navigator.clipboard.readText().then(text => {
+        const lines = text.trim().split("\n");
+        document.getElementById("activeColumn").innerHTML = "";
+        document.getElementById("completeColumn").innerHTML = "";
+        lines.forEach(line => {
+          if (line.trim()) {
+            const card = createCard(line.trim(), "activeColumn");
+            document.getElementById("activeColumn").appendChild(card);
+          }
+        });
+        save();
+      }).catch(() => alert("Clipboard access failed."));
     }
 
-    function sortColumn(id, mode) {
-      sortMode[id] = mode;
+    function toggleSortMode() {
+      sortMode = sortMode === "manual" ? "az" : "manual";
+      document.getElementById("sortToggle").textContent = "Sort: " + (sortMode === "manual" ? "Manual" : "A–Z");
+      ["activeColumn", "completeColumn"].forEach(id => sortColumn(id));
+    }
+
+    function sortColumn(id) {
       const col = document.getElementById(id);
-      if (mode === "az") {
-        const cards = [...col.children];
-        cards.sort((a, b) => a.textContent.localeCompare(b.textContent));
+      if (sortMode === "az") {
+        const sorted = [...col.children].sort((a, b) => a.textContent.localeCompare(b.textContent));
         col.innerHTML = "";
-        cards.forEach(c => col.appendChild(c));
+        sorted.forEach(card => col.appendChild(card));
       } else {
-        load(); // reload manual order
+        load(); // restore manual order
       }
     }
 
@@ -136,26 +129,25 @@
     }
 
     function clearAll() {
-      if (confirm("Clear everything?")) {
+      if (confirm("Clear all cards?")) {
         localStorage.clear();
         document.getElementById("activeColumn").innerHTML = "";
         document.getElementById("completeColumn").innerHTML = "";
       }
     }
 
-    // Init sortable
-    function enableDrag(id) {
+    function enableSortable(id) {
       new Sortable(document.getElementById(id), {
-        group: "flights",
+        group: "cards",
         animation: 150,
         onEnd: () => {
-          if (sortMode[id] === "manual") save();
+          if (sortMode === "manual") save();
         }
       });
     }
 
-    enableDrag("activeColumn");
-    enableDrag("completeColumn");
+    enableSortable("activeColumn");
+    enableSortable("completeColumn");
     load();
   </script>
 </body>
