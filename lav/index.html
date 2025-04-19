@@ -5,9 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Flight Tracker</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
   <style>
-    .dragging {
-      opacity: 0.5;
+    .editing {
+      outline: 2px dashed white;
+      outline-offset: 2px;
+      background-color: #1e293b;
     }
   </style>
 </head>
@@ -21,185 +24,139 @@
     <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2">
       <div class="flex justify-between items-center mb-2">
         <h2 class="text-lg font-bold">Active Flights</h2>
-        <select onchange="toggleSort('activeColumn', this.value)" class="bg-gray-700 text-white px-2 py-1 rounded">
+        <select onchange="sortColumn('activeColumn', this.value)" class="bg-gray-700 text-white px-2 py-1 rounded">
           <option value="manual">Manual</option>
           <option value="az">A-Z</option>
         </select>
       </div>
-      <div id="activeColumn" class="flex-1 overflow-y-auto space-y-3 p-1"
-           ondragover="onDragOver(event)" ondrop="onDrop(event, 'activeColumn')"></div>
+      <div id="activeColumn" class="flex-1 overflow-y-auto space-y-3 p-1"></div>
     </div>
 
     <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2">
       <div class="flex justify-between items-center mb-2">
         <h2 class="text-lg font-bold">Completed</h2>
-        <select onchange="toggleSort('completeColumn', this.value)" class="bg-gray-700 text-white px-2 py-1 rounded">
+        <select onchange="sortColumn('completeColumn', this.value)" class="bg-gray-700 text-white px-2 py-1 rounded">
           <option value="manual">Manual</option>
           <option value="az">A-Z</option>
         </select>
       </div>
-      <div id="completeColumn" class="flex-1 overflow-y-auto space-y-3 p-1"
-           ondragover="onDragOver(event)" ondrop="onDrop(event, 'completeColumn')"></div>
+      <div id="completeColumn" class="flex-1 overflow-y-auto space-y-3 p-1"></div>
     </div>
   </div>
 
-<script>
-  let dragged = null;
-  let manualOrder = { activeColumn: [], completeColumn: [] };
-  let currentSort = { activeColumn: 'manual', completeColumn: 'manual' };
+  <script>
+    let sortMode = { activeColumn: 'manual', completeColumn: 'manual' };
+    let manualOrder = { activeColumn: [], completeColumn: [] };
 
-  function classify(text) {
-    return text.includes('_TF_') ? 'bg-red-700'
-         : text.includes('_QT_') ? 'bg-green-700'
-         : 'bg-gray-700';
-  }
-
-  function createCard(text, columnId = 'activeColumn') {
-    const card = document.createElement('div');
-    card.className = `${classify(text)} text-white text-2xl font-bold px-4 py-4 rounded cursor-move flex justify-between items-center gap-2`;
-    card.setAttribute('draggable', 'true');
-
-    const textDiv = document.createElement('div');
-    textDiv.className = 'flex-1';
-    textDiv.textContent = text;
-
-    const input = document.createElement('input');
-    input.className = 'bg-gray-700 text-white rounded px-2 py-1 hidden w-full';
-    input.value = text;
-
-    // Double-tap to switch to input
-    let lastTap = 0;
-    textDiv.onclick = () => {
-      const now = Date.now();
-      if (now - lastTap < 300) {
-        input.value = textDiv.textContent;
-        input.classList.remove('hidden');
-        textDiv.classList.add('hidden');
-        input.focus();
-        input.select();
-      }
-      lastTap = now;
-    };
-
-    input.onkeydown = (e) => {
-      if (e.key === 'Enter') {
-        input.blur();
-      }
-    };
-
-    input.onblur = () => {
-      textDiv.textContent = input.value;
-      input.classList.add('hidden');
-      textDiv.classList.remove('hidden');
-      saveManualOrder();
-    };
-
-    // DRAG EVENTS
-    card.addEventListener('dragstart', () => {
-      dragged = card;
-      card.classList.add('dragging');
-    });
-
-    card.addEventListener('dragend', () => {
-      card.classList.remove('dragging');
-      dragged = null;
-      saveManualOrder();
-    });
-
-    card.addEventListener('dragover', e => e.preventDefault());
-
-    card.addEventListener('drop', e => {
-      e.preventDefault();
-      if (dragged && dragged !== card) {
-        const rect = card.getBoundingClientRect();
-        const isBelow = e.clientY > rect.top + rect.height / 2;
-        card.parentNode.insertBefore(dragged, isBelow ? card.nextSibling : card);
-        saveManualOrder();
-      }
-    });
-
-    card.appendChild(textDiv);
-    card.appendChild(input);
-    manualOrder[columnId].push(card);
-    return card;
-  }
-
-  function onDragOver(e) {
-    e.preventDefault();
-  }
-
-  function onDrop(e, columnId) {
-    e.preventDefault();
-    const col = document.getElementById(columnId);
-    if (dragged && !col.contains(dragged)) {
-      col.appendChild(dragged);
-      saveManualOrder();
+    function classify(text) {
+      return text.includes("_TF_") ? "bg-red-700"
+           : text.includes("_QT_") ? "bg-green-700"
+           : "bg-gray-700";
     }
-  }
 
-  function toggleSort(columnId, mode) {
-    currentSort[columnId] = mode;
-    const col = document.getElementById(columnId);
-    if (mode === 'az') {
-      const sorted = [...col.children].sort((a, b) =>
-        a.textContent.localeCompare(b.textContent)
-      );
-      col.innerHTML = '';
-      sorted.forEach(card => col.appendChild(card));
-    } else {
-      col.innerHTML = '';
-      manualOrder[columnId].forEach(card => col.appendChild(card));
-    }
-  }
+    function createCard(text, column = "activeColumn") {
+      const card = document.createElement("div");
+      card.className = `${classify(text)} text-white text-2xl font-bold px-4 py-4 rounded cursor-move`;
+      card.textContent = text;
 
-  function saveManualOrder() {
-    ['activeColumn', 'completeColumn'].forEach(id => {
-      const col = document.getElementById(id);
-      manualOrder[id] = [...col.children];
-      const data = manualOrder[id].map(c => c.textContent);
-      localStorage.setItem('order_' + id, JSON.stringify(data));
-    });
-  }
-
-  function loadManualOrder() {
-    ['activeColumn', 'completeColumn'].forEach(id => {
-      const col = document.getElementById(id);
-      manualOrder[id] = [];
-      col.innerHTML = '';
-      const values = JSON.parse(localStorage.getItem('order_' + id) || '[]');
-      values.forEach(text => {
-        const card = createCard(text, id);
-        col.appendChild(card);
+      let lastTap = 0;
+      card.addEventListener("click", () => {
+        const now = Date.now();
+        if (now - lastTap < 300) {
+          editCard(card);
+        }
+        lastTap = now;
       });
-    });
-  }
 
-  function createCards() {
-    const lines = document.getElementById('input').value.trim().split('\n');
-    document.getElementById('activeColumn').innerHTML = '';
-    document.getElementById('completeColumn').innerHTML = '';
-    manualOrder = { activeColumn: [], completeColumn: [] };
-
-    lines.forEach(line => {
-      if (line.trim()) {
-        const card = createCard(line.trim(), 'activeColumn');
-        document.getElementById('activeColumn').appendChild(card);
-      }
-    });
-
-    saveManualOrder();
-  }
-
-  function clearAll() {
-    if (confirm("Clear all cards?")) {
-      localStorage.clear();
-      manualOrder = { activeColumn: [], completeColumn: [] };
-      document.getElementById('activeColumn').innerHTML = '';
-      document.getElementById('completeColumn').innerHTML = '';
+      return card;
     }
-  }
 
-  loadManualOrder();
-</script>
+    function editCard(card) {
+      const original = card.textContent;
+      const input = document.createElement("input");
+      input.type = "text";
+      input.value = original;
+      input.className = "bg-gray-700 text-white px-2 py-1 w-full rounded editing";
+      card.replaceWith(input);
+      input.focus();
+      input.select();
+
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") input.blur();
+      });
+
+      input.addEventListener("blur", () => {
+        const newCard = createCard(input.value);
+        input.replaceWith(newCard);
+        save();
+      });
+    }
+
+    function createCards() {
+      document.getElementById("activeColumn").innerHTML = "";
+      document.getElementById("completeColumn").innerHTML = "";
+      manualOrder = { activeColumn: [], completeColumn: [] };
+
+      const lines = document.getElementById("input").value.trim().split("\n");
+      lines.forEach(line => {
+        const card = createCard(line.trim(), "activeColumn");
+        document.getElementById("activeColumn").appendChild(card);
+      });
+
+      save();
+    }
+
+    function sortColumn(id, mode) {
+      sortMode[id] = mode;
+      const col = document.getElementById(id);
+      if (mode === "az") {
+        const cards = [...col.children];
+        cards.sort((a, b) => a.textContent.localeCompare(b.textContent));
+        col.innerHTML = "";
+        cards.forEach(c => col.appendChild(c));
+      } else {
+        load(); // reload manual order
+      }
+    }
+
+    function save() {
+      ["activeColumn", "completeColumn"].forEach(id => {
+        const items = [...document.getElementById(id).children].map(el => el.textContent);
+        localStorage.setItem("order_" + id, JSON.stringify(items));
+      });
+    }
+
+    function load() {
+      ["activeColumn", "completeColumn"].forEach(id => {
+        const data = JSON.parse(localStorage.getItem("order_" + id) || "[]");
+        const col = document.getElementById(id);
+        col.innerHTML = "";
+        data.forEach(text => col.appendChild(createCard(text, id)));
+      });
+    }
+
+    function clearAll() {
+      if (confirm("Clear everything?")) {
+        localStorage.clear();
+        document.getElementById("activeColumn").innerHTML = "";
+        document.getElementById("completeColumn").innerHTML = "";
+      }
+    }
+
+    // Init sortable
+    function enableDrag(id) {
+      new Sortable(document.getElementById(id), {
+        group: "flights",
+        animation: 150,
+        onEnd: () => {
+          if (sortMode[id] === "manual") save();
+        }
+      });
+    }
+
+    enableDrag("activeColumn");
+    enableDrag("completeColumn");
+    load();
+  </script>
 </body>
 </html>
