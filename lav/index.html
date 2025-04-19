@@ -7,28 +7,37 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .card-inner {
-      transition: transform 0.2s ease;
+      transition: transform 0.25s ease;
     }
     .editing {
-      outline: 2px dashed #fff;
+      outline: 2px dashed white;
       outline-offset: 2px;
       background-color: #1e293b;
     }
     .card {
       touch-action: pan-y;
       overflow: hidden;
+      position: relative;
     }
     .action-buttons {
       position: absolute;
       top: 0;
       bottom: 0;
+      left: 0;
+      right: 0;
       display: flex;
-      width: 100%;
       justify-content: space-between;
+      opacity: 0;
       pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: 0;
     }
-    .action-buttons button {
+    .card.show-actions .action-buttons {
+      opacity: 1;
       pointer-events: auto;
+    }
+    .dragging {
+      opacity: 0.5;
     }
   </style>
 </head>
@@ -51,52 +60,35 @@
 
   <script>
     let dragged = null;
-    let tapTimeout = null;
+    let lastTapTime = 0;
 
     function classify(text) {
       return text.includes("_TF_") ? "bg-red-700" :
              text.includes("_QT_") ? "bg-green-700" : "bg-gray-700";
     }
 
-    function createCard(text) {
+    function createCard(text, origin = "activeColumn") {
       const wrapper = document.createElement("div");
-      wrapper.className = "relative card";
+      wrapper.className = "card rounded";
       wrapper.draggable = true;
 
       const bgActions = document.createElement("div");
-      bgActions.className = "action-buttons px-3";
-      bgActions.innerHTML = `
-        <button class="bg-green-600 hover:bg-green-700 px-3 py-2 rounded text-white" onclick="completeCard(this)">Complete</button>
-        <button class="bg-red-600 hover:bg-red-700 px-3 py-2 rounded text-white" onclick="deleteCard(this)">Delete</button>
-      `;
+      bgActions.className = "action-buttons px-3 items-center";
+      bgActions.innerHTML = origin === "completeColumn"
+        ? `<div class="flex justify-end w-full">
+             <button class="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded text-white" onclick="undoCard(this)">Undo</button>
+           </div>`
+        : `<button class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white" onclick="completeCard(this)">Complete</button>
+           <button class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-white" onclick="deleteCard(this)">Delete</button>`;
 
       const inner = document.createElement("div");
       inner.className = `card-inner ${classify(text)} text-white text-3xl font-bold px-4 py-5 rounded`;
       inner.textContent = text;
 
-      // Drag reorder
-      wrapper.ondragstart = () => {
-        dragged = wrapper;
-        inner.classList.add("opacity-50");
-      };
-      wrapper.ondragend = () => {
-        dragged = null;
-        inner.classList.remove("opacity-50");
-      };
-      wrapper.ondragover = e => e.preventDefault();
-      wrapper.ondrop = e => {
-        e.preventDefault();
-        if (dragged && dragged !== wrapper) {
-          wrapper.parentNode.insertBefore(dragged, wrapper.nextSibling);
-          saveState();
-        }
-      };
-
       // Double tap to edit
-      let lastTap = 0;
       inner.onclick = () => {
         const now = Date.now();
-        if (now - lastTap < 300) {
+        if (now - lastTapTime < 300) {
           inner.contentEditable = true;
           inner.classList.add("editing");
           inner.focus();
@@ -106,8 +98,9 @@
           sel.removeAllRanges();
           sel.addRange(range);
         }
-        lastTap = now;
+        lastTapTime = now;
       };
+
       inner.onblur = () => {
         if (inner.isContentEditable) {
           inner.contentEditable = false;
@@ -115,6 +108,7 @@
           saveState();
         }
       };
+
       inner.onkeydown = (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
@@ -131,23 +125,43 @@
         startX = e.touches[0].clientX;
         swiping = true;
       });
+
       inner.addEventListener("touchmove", (e) => {
         if (!swiping) return;
         currentX = e.touches[0].clientX;
         const deltaX = currentX - startX;
         inner.style.transform = `translateX(${deltaX}px)`;
       });
+
       inner.addEventListener("touchend", () => {
         const deltaX = currentX - startX;
         swiping = false;
-        if (deltaX < -100) {
-          inner.style.transform = "translateX(-100px)";
-        } else if (deltaX > 100) {
-          inner.style.transform = "translateX(100px)";
+        if (deltaX < -100 || deltaX > 100) {
+          wrapper.classList.add("show-actions");
         } else {
           inner.style.transform = "translateX(0)";
+          wrapper.classList.remove("show-actions");
         }
       });
+
+      // Drag and drop
+      wrapper.ondragstart = () => {
+        dragged = wrapper;
+        wrapper.classList.add("dragging");
+      };
+      wrapper.ondragend = () => {
+        dragged = null;
+        wrapper.classList.remove("dragging");
+        saveState();
+      };
+      wrapper.ondragover = (e) => e.preventDefault();
+      wrapper.ondrop = (e) => {
+        e.preventDefault();
+        if (dragged && dragged !== wrapper) {
+          wrapper.parentNode.insertBefore(dragged, wrapper.nextSibling);
+          saveState();
+        }
+      };
 
       wrapper.appendChild(bgActions);
       wrapper.appendChild(inner);
@@ -156,8 +170,9 @@
 
     function completeCard(btn) {
       const card = btn.closest(".card");
-      document.getElementById("completeColumn").appendChild(card);
+      card.classList.remove("show-actions");
       card.querySelector(".card-inner").style.transform = "translateX(0)";
+      document.getElementById("completeColumn").appendChild(card);
       saveState();
     }
 
@@ -166,14 +181,31 @@
       saveState();
     }
 
-    function createCards() {
-      const input = document.getElementById("input").value.trim().split("\n");
-      const col = document.getElementById("activeColumn");
-      col.innerHTML = "";
-      input.forEach(line => {
-        if (line.trim()) col.appendChild(createCard(line.trim()));
-      });
+    function undoCard(btn) {
+      const card = btn.closest(".card");
+      card.classList.remove("show-actions");
+      card.querySelector(".card-inner").style.transform = "translateX(0)";
+      document.getElementById("activeColumn").appendChild(card);
       saveState();
+    }
+
+    function createCards() {
+      const lines = document.getElementById("input").value.trim().split("\n");
+      const active = document.getElementById("activeColumn");
+      const complete = document.getElementById("completeColumn");
+      active.innerHTML = "";
+      complete.innerHTML = "";
+
+      lines.forEach(line => {
+        if (!line.trim()) return;
+        active.appendChild(createCard(line.trim()));
+      });
+
+      saveState();
+    }
+
+    function allowDrop(e) {
+      e.preventDefault();
     }
 
     function drop(e, columnId) {
@@ -184,34 +216,28 @@
       }
     }
 
-    function allowDrop(e) {
-      e.preventDefault();
-    }
-
     function saveState() {
-      localStorage.setItem("flights_active", JSON.stringify(
-        [...document.querySelectorAll("#activeColumn .card-inner")].map(c => c.textContent)
-      ));
-      localStorage.setItem("flights_complete", JSON.stringify(
-        [...document.querySelectorAll("#completeColumn .card-inner")].map(c => c.textContent)
-      ));
+      const active = [...document.querySelectorAll("#activeColumn .card-inner")].map(c => c.textContent);
+      const complete = [...document.querySelectorAll("#completeColumn .card-inner")].map(c => c.textContent);
+      localStorage.setItem("flights_active", JSON.stringify(active));
+      localStorage.setItem("flights_complete", JSON.stringify(complete));
     }
 
     function loadState() {
-      const actives = JSON.parse(localStorage.getItem("flights_active") || "[]");
-      const completes = JSON.parse(localStorage.getItem("flights_complete") || "[]");
+      const activeCards = JSON.parse(localStorage.getItem("flights_active") || "[]");
+      const completeCards = JSON.parse(localStorage.getItem("flights_complete") || "[]");
 
       const activeCol = document.getElementById("activeColumn");
       const completeCol = document.getElementById("completeColumn");
       activeCol.innerHTML = "";
       completeCol.innerHTML = "";
 
-      actives.forEach(t => activeCol.appendChild(createCard(t)));
-      completes.forEach(t => completeCol.appendChild(createCard(t)));
+      activeCards.forEach(t => activeCol.appendChild(createCard(t)));
+      completeCards.forEach(t => completeCol.appendChild(createCard(t, "completeColumn")));
     }
 
     function clearAll() {
-      if (confirm("Clear everything?")) {
+      if (confirm("Clear all cards?")) {
         localStorage.clear();
         document.getElementById("activeColumn").innerHTML = "";
         document.getElementById("completeColumn").innerHTML = "";
