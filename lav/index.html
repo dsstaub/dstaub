@@ -25,9 +25,12 @@
       background: #1e1e1e;
       color: white;
     }
+    .controls {
+      display: flex;
+    }
     button {
-      width: 100%;
-      padding: 12px;
+      flex: 1;
+      padding: 14px;
       font-size: 1rem;
       font-weight: bold;
       background: #1f6feb;
@@ -60,9 +63,9 @@
       color: #aaa;
     }
     .card {
-      padding: 15px;
+      padding: 20px;
       border-radius: 6px;
-      font-size: 1.4rem;
+      font-size: 2rem;
       font-weight: bold;
       cursor: grab;
       user-select: none;
@@ -88,7 +91,10 @@
 </head>
 <body>
   <textarea id="input" placeholder="Paste flight data here..."></textarea>
-  <button onclick="createCards()">Generate Cards</button>
+  <div class="controls">
+    <button onclick="createCards()">Generate Cards</button>
+    <button onclick="clearAll()" style="background:#d22">Clear All</button>
+  </div>
   <div id="container">
     <div class="column" id="activeColumn" ondragover="allowDrop(event)" ondrop="drop(event)">
       <h2>Active Flights</h2>
@@ -100,6 +106,7 @@
 
   <script>
     let dragged = null;
+    let touchStartX = 0;
 
     function classifyCard(text) {
       if (text.includes("_TF_")) return "tf";
@@ -113,9 +120,8 @@
       card.draggable = true;
       card.textContent = text;
       card.dataset.id = crypto.randomUUID();
-      card.ontouchstart = handleTouchStart;
-      card.ontouchend = handleTouchEnd;
 
+      // Drag logic
       card.ondragstart = (e) => {
         dragged = card;
         setTimeout(() => card.style.display = "none", 0);
@@ -125,7 +131,6 @@
         dragged = null;
         saveState();
       };
-
       card.ondragover = (e) => e.preventDefault();
       card.ondrop = (e) => {
         e.preventDefault();
@@ -133,6 +138,20 @@
           card.parentNode.insertBefore(dragged, card.nextSibling);
           saveState();
         }
+      };
+
+      // Swipe logic
+      card.ontouchstart = (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      };
+      card.ontouchend = (e) => {
+        const deltaX = e.changedTouches[0].screenX - touchStartX;
+        if (deltaX < -80) {
+          document.getElementById("completeColumn").appendChild(card);
+        } else if (deltaX > 80) {
+          card.remove();
+        }
+        saveState();
       };
 
       return card;
@@ -167,20 +186,6 @@
       }
     }
 
-    let touchStartX = 0;
-
-    function handleTouchStart(e) {
-      touchStartX = e.changedTouches[0].screenX;
-    }
-
-    function handleTouchEnd(e) {
-      const touchEndX = e.changedTouches[0].screenX;
-      if (touchStartX - touchEndX > 80) {
-        document.getElementById("completeColumn").appendChild(e.target);
-        saveState();
-      }
-    }
-
     function saveState() {
       const activeCards = Array.from(document.querySelectorAll("#activeColumn .card")).map(c => c.textContent);
       const completeCards = Array.from(document.querySelectorAll("#completeColumn .card")).map(c => c.textContent);
@@ -199,6 +204,12 @@
 
       activeCards.forEach(text => active.appendChild(createCard(text)));
       completeCards.forEach(text => complete.appendChild(createCard(text)));
+    }
+
+    function clearAll() {
+      localStorage.clear();
+      document.getElementById("activeColumn").innerHTML = "<h2>Active Flights</h2>";
+      document.getElementById("completeColumn").innerHTML = "<h2>Completed</h2>";
     }
 
     loadState();
