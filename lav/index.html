@@ -12,6 +12,21 @@
       outline-offset: 2px;
       background-color: #1e293b;
     }
+    .card {
+      word-break: break-word;
+      white-space: normal;
+    }
+    @media (max-width: 768px) {
+      .mobile-stack {
+        flex-direction: column;
+      }
+      .resizable {
+        resize: vertical;
+        overflow: auto;
+        min-height: 30%;
+        max-height: 70%;
+      }
+    }
   </style>
 </head>
 <body class="flex flex-col h-screen font-mono text-xl">
@@ -20,13 +35,13 @@
     <button onclick="clearAll()" class="flex-1 py-3 bg-red-600 hover:bg-red-700 rounded">Clear All</button>
   </div>
 
-  <div class="flex-1 flex flex-col md:flex-row gap-4 p-2 overflow-hidden">
+  <div class="flex-1 flex md:flex-row mobile-stack gap-4 p-2 overflow-hidden">
     <!-- Active Flights -->
-    <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2">
+    <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2 resizable">
       <div class="flex justify-between items-center mb-2">
         <h2 class="text-lg font-bold">Active Flights 
-        <br>
-        <span id="activeCount" class="font-normal text-sm text-gray-400"></span></h2>
+          <br><span id="activeCount" class="font-normal text-sm text-gray-400"></span>
+        </h2>
         <select onchange="toggleSortMode('activeColumn', this)" class="bg-gray-700 text-white px-2 py-1 rounded">
           <option value="manual">Manual</option>
           <option value="az">A-Z</option>
@@ -36,7 +51,7 @@
     </div>
 
     <!-- Completed -->
-    <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2">
+    <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2 resizable">
       <div class="flex justify-between items-center mb-2">
         <h2 class="text-lg font-bold">Completed</h2>
         <select onchange="toggleSortMode('completeColumn', this)" class="bg-gray-700 text-white px-2 py-1 rounded">
@@ -57,35 +72,35 @@
          : "bg-gray-700";
   }
 
-function createCard(text, column = "activeColumn") {
-  const card = document.createElement("div");
-  card.className = `${classify(text)} text-white text-3xl font-bold px-4 py-4 rounded cursor-move`;
-  card.textContent = text;
+  function createCard(text, column = "activeColumn") {
+    const card = document.createElement("div");
+    card.className = `${classify(text)} card text-white text-4xl font-bold px-4 py-4 rounded cursor-move`;
+    card.textContent = text;
 
-  let lastTap = 0;
-  card.addEventListener("click", () => {
-    const now = Date.now();
-    if (now - lastTap < 300) {
-      const input = document.createElement("input");
-      input.value = card.textContent;
-      input.className = "bg-gray-700 text-white px-2 py-1 w-full rounded editing text-4xl";
-      card.replaceWith(input);
-      input.focus();
-      input.select();
+    let lastTap = 0;
+    card.addEventListener("click", () => {
+      const now = Date.now();
+      if (now - lastTap < 300) {
+        const input = document.createElement("input");
+        input.value = card.textContent;
+        input.className = "bg-gray-700 text-white px-2 py-1 w-full rounded editing text-4xl";
+        card.replaceWith(input);
+        input.focus();
+        input.select();
 
-      input.onkeydown = (e) => { if (e.key === "Enter") input.blur(); };
+        input.onkeydown = (e) => { if (e.key === "Enter") input.blur(); };
 
-      input.onblur = () => {
-        const newCard = createCard(input.value, column);
-        input.replaceWith(newCard);
-        save();
-      };
-    }
-    lastTap = now;
-  });
+        input.onblur = () => {
+          const newCard = createCard(input.value, column);
+          input.replaceWith(newCard);
+          save();
+        };
+      }
+      lastTap = now;
+    });
 
-  return card;
-}
+    return card;
+  }
 
   function pasteFromClipboard() {
     navigator.clipboard.readText().then(text => {
