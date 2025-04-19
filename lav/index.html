@@ -59,7 +59,7 @@
 
 function createCard(text, column = "activeColumn") {
   const card = document.createElement("div");
-  card.className = `${classify(text)} text-white text-4xl font-bold px-4 py-4 rounded cursor-move`;
+  card.className = `${classify(text)} text-white text-3xl font-bold px-4 py-4 rounded cursor-move`;
   card.textContent = text;
 
   let lastTap = 0;
