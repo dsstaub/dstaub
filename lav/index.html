@@ -53,16 +53,27 @@
       <div id="activeColumn" class="flex-1 space-y-3 p-1"></div>
     </div>
 
-    <!-- Completed Flights (toggle-able on mobile) -->
-    <div id="completeWrapper" class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2 resizable scrollable-column">
-      <div class="flex justify-between items-center mb-2">
-        <h2 class="text-lg font-bold">Completed</h2>
-        <select onchange="toggleSortMode('completeColumn', this)" class="bg-gray-700 text-white px-2 py-1 rounded">
-          <option value="manual">Manual</option>
-          <option value="az">A-Z</option>
-        </select>
+    <!-- Stacked Up Next + Completed Column -->
+    <div class="flex flex-col flex-1 gap-4">
+      <!-- Up Next -->
+      <div class="flex flex-col bg-gray-800 rounded-lg p-2 scrollable-column" style="max-height: 24rem;">
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="text-lg font-bold">Up Next / Arrived</h2>
+        </div>
+        <div id="upNextColumn" class="flex-1 space-y-3 p-1 overflow-y-auto"></div>
       </div>
-      <div id="completeColumn" class="flex-1 space-y-3 p-1"></div>
+
+      <!-- Completed -->
+      <div id="completeWrapper" class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2 scrollable-column">
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="text-lg font-bold">Completed</h2>
+          <select onchange="toggleSortMode('completeColumn', this)" class="bg-gray-700 text-white px-2 py-1 rounded">
+            <option value="manual">Manual</option>
+            <option value="az">A-Z</option>
+          </select>
+        </div>
+        <div id="completeColumn" class="flex-1 space-y-3 p-1 overflow-y-auto"></div>
+      </div>
     </div>
   </div>
 
@@ -72,7 +83,11 @@
   </div>
 
 <script>
-  const sortMode = { activeColumn: "manual", completeColumn: "manual" };
+  const sortMode = {
+    activeColumn: "manual",
+    upNextColumn: "manual",
+    completeColumn: "manual"
+  };
 
   function classify(text) {
     return text.includes("_TF_") ? "bg-red-700"
@@ -112,9 +127,8 @@
 
   function pasteFromClipboard() {
     navigator.clipboard.readText().then(text => {
+      ["activeColumn", "upNextColumn", "completeColumn"].forEach(id => document.getElementById(id).innerHTML = "");
       const lines = text.trim().split("\n");
-      document.getElementById("activeColumn").innerHTML = "";
-      document.getElementById("completeColumn").innerHTML = "";
       lines.forEach(line => {
         const card = createCard(line.trim(), "activeColumn");
         document.getElementById("activeColumn").appendChild(card);
@@ -141,7 +155,7 @@
   }
 
   function save() {
-    ["activeColumn", "completeColumn"].forEach(id => {
+    ["activeColumn", "upNextColumn", "completeColumn"].forEach(id => {
       const items = [...document.getElementById(id).children].map(el => el.textContent);
       localStorage.setItem("order_" + id, JSON.stringify(items));
     });
@@ -149,32 +163,29 @@
   }
 
   function load() {
-    ["activeColumn", "completeColumn"].forEach(id => {
+    ["activeColumn", "upNextColumn", "completeColumn"].forEach(id => {
       const data = JSON.parse(localStorage.getItem("order_" + id) || "[]");
       const col = document.getElementById(id);
       col.innerHTML = "";
-      data.forEach(text => col.appendChild(createCard(text, id)));
+      data.forEach(text => {
+        const content = (id === "completeColumn") ? formatForCompleted(text) : text;
+        col.appendChild(createCard(content, id));
+      });
     });
     updateActiveHeader();
+  }
+
+  function formatForCompleted(text) {
+    const parts = text.split("_");
+    return parts.length >= 6 ? `${parts[1]}_${parts[5]}_${parts[6]}` : text;
   }
 
   function clearAll() {
     if (confirm("Clear all cards?")) {
       localStorage.clear();
-      document.getElementById("activeColumn").innerHTML = "";
-      document.getElementById("completeColumn").innerHTML = "";
+      ["activeColumn", "upNextColumn", "completeColumn"].forEach(id => document.getElementById(id).innerHTML = "");
       updateActiveHeader();
     }
-  }
-
-  function enableSortable(id) {
-    new Sortable(document.getElementById(id), {
-      group: "cards",
-      animation: 150,
-      onEnd: () => {
-        if (sortMode[id] === "manual") save();
-      }
-    });
   }
 
   function toggleCompleted() {
@@ -199,7 +210,23 @@
     document.getElementById("activeCount").textContent = `(${count}) • ${breakdown}`;
   }
 
+  function enableSortable(id) {
+    new Sortable(document.getElementById(id), {
+      group: "cards",
+      animation: 150,
+      onEnd: (evt) => {
+        // Trim text if moved into completed
+        if (evt.to.id === "completeColumn") {
+          const card = evt.item;
+          card.textContent = formatForCompleted(card.textContent);
+        }
+        if (sortMode[id] === "manual") save();
+      }
+    });
+  }
+
   enableSortable("activeColumn");
+  enableSortable("upNextColumn");
   enableSortable("completeColumn");
   load();
 </script>
