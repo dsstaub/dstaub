@@ -93,35 +93,56 @@
          : "bg-gray-700";
   }
 
-  function createCard(text, column = "activeColumn") {
-    const card = document.createElement("div");
-    card.className = `${classify(text)} card text-white text-4xl font-bold px-4 py-4 rounded cursor-move`;
-    card.textContent = text;
+    function createCard(text, column = "activeColumn") {
+      const wrapper = document.createElement("div");
+      wrapper.className = "relative flex";
 
-    let lastTap = 0;
-    card.addEventListener("click", () => {
-      const now = Date.now();
-      if (now - lastTap < 300) {
-        const input = document.createElement("input");
-        input.value = card.textContent;
-        input.className = "bg-gray-700 text-white px-2 py-1 w-full rounded editing text-4xl";
-        card.replaceWith(input);
-        input.focus();
-        input.select();
+      // Determine ML vs Regional based on flight number
+      const flightNumMatch = text.match(/_(\d{4})_/);
+      const flightNum = flightNumMatch ? parseInt(flightNumMatch[1], 10) : 0;
+      const isMainline = (flightNum >= 1 && flightNum <= 2949) || (flightNum >= 6300 && flightNum <= 6349);
+      const bgColor = isMainline ? "bg-blue-200" : "bg-red-200";
 
-        input.onkeydown = (e) => { if (e.key === "Enter") input.blur(); };
+      // Determine left bar color
+      const barColor = text.includes("_TF_") ? "bg-red-600"
+                     : text.includes("_QT_") ? "bg-green-600"
+                     : "bg-gray-600";
 
-        input.onblur = () => {
-          const newCard = createCard(input.value, column);
-          input.replaceWith(newCard);
-          save();
-        };
-      }
-      lastTap = now;
-    });
+      // Bar div (left side indicator)
+      const bar = document.createElement("div");
+      bar.className = `absolute left-0 top-0 h-full w-[10px] ${barColor}`;
+      wrapper.appendChild(bar);
 
-    return card;
-  }
+      // Card content
+      const card = document.createElement("div");
+      card.className = `${bgColor} card text-black text-4xl font-bold px-4 py-4 pl-6 rounded w-full cursor-move`;
+      card.textContent = text;
+
+      let lastTap = 0;
+      card.addEventListener("click", () => {
+        const now = Date.now();
+        if (now - lastTap < 300) {
+          const input = document.createElement("input");
+          input.value = card.textContent;
+          input.className = "bg-gray-700 text-white px-2 py-1 w-full rounded editing text-4xl";
+          wrapper.replaceWith(input);
+          input.focus();
+          input.select();
+
+          input.onkeydown = (e) => { if (e.key === "Enter") input.blur(); };
+
+          input.onblur = () => {
+            const newCard = createCard(input.value, column);
+            input.replaceWith(newCard);
+            save();
+          };
+        }
+        lastTap = now;
+      });
+
+      wrapper.appendChild(card);
+      return wrapper;
+    }
 
   function pasteFromClipboard() {
     navigator.clipboard.readText().then(text => {
