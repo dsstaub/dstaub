@@ -193,20 +193,26 @@
     updateCompleteHeader();
   }
 
-  function updateActiveHeader() {
-    const cards = [...document.getElementById("activeColumn").children];
-    const count = cards.length;
-    const hourMap = {};
-    cards.forEach(card => {
-      const hour = card.textContent.slice(0, 2);
-      if (hour) hourMap[hour] = (hourMap[hour] || 0) + 1;
-    });
-    const breakdown = Object.entries(hourMap)
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([h, c]) => `${h}–${c}`)
-      .join(" • ");
-    document.getElementById("activeCount").textContent = `(${count}) • ${breakdown}`;
-  }
+    function updateActiveHeader() {
+      const cards = [...document.getElementById("activeColumn").children];
+      const count = cards.length;
+      const hourMap = {};
+      cards.forEach(card => {
+        const hour = card.textContent.slice(0, 2);
+        if (hour) hourMap[hour] = (hourMap[hour] || 0) + 1;
+      });
+
+      const breakdownItems = Object.entries(hourMap)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([h, c]) => `• ${h}–${c} •`);
+
+      let breakdownLines = [];
+      for (let i = 0; i < breakdownItems.length; i += 3) {
+        breakdownLines.push(breakdownItems.slice(i, i + 3).join(" "));
+      }
+
+      document.getElementById("activeCount").innerHTML = `(${count})<br>${breakdownLines.join("<br>")}`;
+    }
 
   function updateCompleteHeader() {
     const col = document.getElementById("completeColumn");
