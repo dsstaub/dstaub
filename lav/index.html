@@ -5,203 +5,101 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Flight Tracker</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-  <style>
-    .editing {
-      outline: 2px dashed white;
-      outline-offset: 2px;
-      background-color: #1e293b;
-    }
-    .card {
-      word-break: break-word;
-      white-space: normal;
-    }
-    .scrollable-column {
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      touch-action: pan-y;
-    }
-    @media (max-width: 768px) {
-      #completeWrapper {
-        display: none;
-      }
-      .mobile-show-completed #completeWrapper {
-        display: flex;
-      }
-    }
-  </style>
 </head>
-<body class="flex flex-col h-screen font-mono text-xl">
-  <div class="flex gap-2 flex-wrap p-2 bg-gray-800 border-b border-gray-700">
-    <button onclick="pasteFromClipboard()" class="flex-1 py-3 bg-blue-600 hover:bg-blue-700 rounded">Paste From Clipboard</button>
-    <button onclick="clearAll()" class="flex-1 py-3 bg-red-600 hover:bg-red-700 rounded">Clear All</button>
+<body class="p-4 font-sans text-white bg-gray-900">
+  <h1 class="text-2xl font-bold mb-4">Ramp Flight Tracker</h1>
+  <div class="mb-4">
+    <button id="toggleHide" class="px-4 py-2 bg-cyan-700 rounded hover:bg-cyan-600 hidden md:inline-block">
+      Hide Completed
+    </button>
   </div>
+  <div id="flightList" class="space-y-3"></div>
 
-  <div class="flex-1 flex md:flex-row flex-col gap-4 p-2 overflow-hidden">
-    <!-- Active Flights -->
-    <div class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2 resizable scrollable-column">
-      <div class="flex justify-between items-center mb-2">
-        <h2 class="text-lg font-bold">
-          Active Flights<br>
-          <span id="activeCount" class="font-normal text-sm text-gray-400"></span>
-        </h2>
-        <select onchange="toggleSortMode('activeColumn', this)" class="bg-gray-700 text-white px-2 py-1 rounded">
-          <option value="manual">Manual</option>
-          <option value="az">A-Z</option>
-        </select>
-      </div>
-      <div id="activeColumn" class="flex-1 space-y-3 p-1"></div>
-    </div>
-
-    <!-- Completed Flights (toggle-able on mobile) -->
-    <div id="completeWrapper" class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2 resizable scrollable-column">
-      <div class="flex justify-between items-center mb-2">
-        <h2 class="text-lg font-bold">Completed</h2>
-        <select onchange="toggleSortMode('completeColumn', this)" class="bg-gray-700 text-white px-2 py-1 rounded">
-          <option value="manual">Manual</option>
-          <option value="az">A-Z</option>
-        </select>
-      </div>
-      <div id="completeColumn" class="flex-1 space-y-3 p-1"></div>
-    </div>
-  </div>
-
-  <!-- Mobile toggle button -->
-  <div class="md:hidden p-2">
-    <button onclick="toggleCompleted()" class="w-full py-3 bg-gray-700 rounded text-white">Show Completed</button>
-  </div>
-
-<script>
-  const sortMode = { activeColumn: "manual", completeColumn: "manual" };
-
-  function classify(text) {
-    return text.includes("_TF_") ? "bg-red-700"
-         : text.includes("_QT_") ? "bg-green-700"
-         : "bg-gray-700";
-  }
-
-  function createCard(text, column = "activeColumn") {
-    const card = document.createElement("div");
-    card.className = `${classify(text)} card text-white text-4xl font-bold px-4 py-4 rounded cursor-move`;
-    card.textContent = text;
-
-    let lastTap = 0;
-    card.addEventListener("click", () => {
-      const now = Date.now();
-      if (now - lastTap < 300) {
-        const input = document.createElement("input");
-        input.value = card.textContent;
-        input.className = "bg-gray-700 text-white px-2 py-1 w-full rounded editing text-4xl";
-        card.replaceWith(input);
-        input.focus();
-        input.select();
-
-        input.onkeydown = (e) => { if (e.key === "Enter") input.blur(); };
-
-        input.onblur = () => {
-          const newCard = createCard(input.value, column);
-          input.replaceWith(newCard);
-          save();
-        };
-      }
-      lastTap = now;
+  <script>
+    const rawFlights = `
+1608_2092_CLT_QT_321K_923_B8
+1617_2121_DCA_QT_319W_733_B6
+1637_1245_LAX_QT_738R_3MH_B10
+1742_3248_PHL_QT_A320_117_nan
+1816_2863_MIA_QT_H319_742_B6
+1823_1868_DFW_TF_738R_742_B10
+1831_4349_DFW_QT_CR7_996_B6
+1836_4742_PHL_TF_CR7_774_B10
+1843_347_PHL_TF_CR7_122_B8
+1850_1702_DFW_TF_738R_933_B8
+1857_1761_DFW_TF_738R_879_B10
+1905_2871_CLT_QT_E75L_907_B8
+1923_2963_DFW_QT_E75L_958_B10
+2002_4410_DFW_QT_E75L_978_B6
+2025_4410_LGA_QT_CR7_981_B6
+2042_4613_DCA_QT_CR7_978_B8
+2045_4742_PHL_TF_CR7_978_B6
+2134_1962_DFW_TF_738R_841_B6
+`.trim().split('\n').map(line => {
+      const [eta, flight, origin, status, type, tail, gate] = line.split('_');
+      return { id: flight, eta, flight, origin, status, type, tail, gate, serviced: false };
     });
 
-    return card;
-  }
+    const flightList = document.getElementById("flightList");
+    const hideBtn = document.getElementById("toggleHide");
+    let hideCompleted = false;
 
-  function pasteFromClipboard() {
-    navigator.clipboard.readText().then(text => {
-      const lines = text.trim().split("\n");
-      document.getElementById("activeColumn").innerHTML = "";
-      document.getElementById("completeColumn").innerHTML = "";
-      lines.forEach(line => {
-        const card = createCard(line.trim(), "activeColumn");
-        document.getElementById("activeColumn").appendChild(card);
+    // Load state from localStorage
+    function loadState() {
+      const saved = JSON.parse(localStorage.getItem("flightProgress") || "{}");
+      rawFlights.forEach(f => {
+        f.serviced = saved[f.id] || false;
       });
-      save();
-    }).catch(() => alert("Clipboard access failed."));
-  }
-
-  function toggleSortMode(columnId, select) {
-    sortMode[columnId] = select.value;
-    applySort(columnId);
-  }
-
-  function applySort(columnId) {
-    const col = document.getElementById(columnId);
-    if (sortMode[columnId] === "az") {
-      const sorted = [...col.children].sort((a, b) => a.textContent.localeCompare(b.textContent));
-      col.innerHTML = "";
-      sorted.forEach(card => col.appendChild(card));
-    } else {
-      load(); // reload manual order
     }
-    updateActiveHeader(); // update counts
-  }
 
-  function save() {
-    ["activeColumn", "completeColumn"].forEach(id => {
-      const items = [...document.getElementById(id).children].map(el => el.textContent);
-      localStorage.setItem("order_" + id, JSON.stringify(items));
-    });
-    updateActiveHeader();
-  }
-
-  function load() {
-    ["activeColumn", "completeColumn"].forEach(id => {
-      const data = JSON.parse(localStorage.getItem("order_" + id) || "[]");
-      const col = document.getElementById(id);
-      col.innerHTML = "";
-      data.forEach(text => col.appendChild(createCard(text, id)));
-    });
-    updateActiveHeader();
-  }
-
-  function clearAll() {
-    if (confirm("Clear all cards?")) {
-      localStorage.clear();
-      document.getElementById("activeColumn").innerHTML = "";
-      document.getElementById("completeColumn").innerHTML = "";
-      updateActiveHeader();
+    // Save state to localStorage
+    function saveState() {
+      const saved = {};
+      rawFlights.forEach(f => {
+        if (f.serviced) saved[f.id] = true;
+      });
+      localStorage.setItem("flightProgress", JSON.stringify(saved));
     }
-  }
 
-  function enableSortable(id) {
-    new Sortable(document.getElementById(id), {
-      group: "cards",
-      animation: 150,
-      onEnd: () => {
-        if (sortMode[id] === "manual") save();
-      }
-    });
-  }
+    function renderFlights() {
+      flightList.innerHTML = "";
+      rawFlights.forEach(f => {
+        if (hideCompleted && f.serviced) return;
+        const div = document.createElement("div");
+        div.className = `p-3 rounded border flex justify-between items-center transition-all ${
+          f.serviced ? 'bg-green-800 border-green-500 opacity-70' : 'bg-gray-800 border-gray-600'
+        }`;
+        div.innerHTML = `
+          <div>
+            <div class="font-bold text-lg">${f.flight} (${f.origin})</div>
+            <div class="text-sm">ETA: ${f.eta} | Gate: ${f.gate || '--'} | A/C: ${f.type} | Tail: ${f.tail}</div>
+          </div>
+          <button class="ml-4 px-3 py-1 rounded bg-cyan-700 hover:bg-cyan-600">
+            ${f.serviced ? 'Undo' : 'Serviced'}
+          </button>
+        `;
+        div.querySelector("button").onclick = () => {
+          f.serviced = !f.serviced;
+          saveState();
+          renderFlights();
+        };
+        flightList.appendChild(div);
+      });
+    }
 
-  function toggleCompleted() {
-    document.body.classList.toggle("mobile-show-completed");
-    const btn = document.querySelector("button[onclick='toggleCompleted()']");
-    const isOpen = document.body.classList.contains("mobile-show-completed");
-    btn.textContent = isOpen ? "Hide Completed" : "Show Completed";
-  }
+    hideBtn.onclick = () => {
+      hideCompleted = !hideCompleted;
+      hideBtn.textContent = hideCompleted ? "Show All" : "Hide Completed";
+      renderFlights();
+    };
 
-  function updateActiveHeader() {
-    const cards = [...document.getElementById("activeColumn").children];
-    const count = cards.length;
-    const hourMap = {};
-    cards.forEach(card => {
-      const hour = card.textContent.slice(0, 2);
-      if (hour) hourMap[hour] = (hourMap[hour] || 0) + 1;
-    });
-    const breakdown = Object.entries(hourMap)
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([h, c]) => `${h}–${c}`)
-      .join(" • ");
-    document.getElementById("activeCount").textContent = `(${count}) • ${breakdown}`;
-  }
+    // Mobile: hide the button
+    if (window.innerWidth < 768) {
+      hideBtn.style.display = "none";
+    }
 
-  enableSortable("activeColumn");
-  enableSortable("completeColumn");
-  load();
-</script>
+    loadState();
+    renderFlights();
+  </script>
 </body>
 </html>
