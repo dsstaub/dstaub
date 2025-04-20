@@ -204,7 +204,7 @@
 
       const breakdownItems = Object.entries(hourMap)
         .sort(([a], [b]) => a.localeCompare(b))
-        .map(([h, c]) => `• ${h}–${c} •`);
+        .map(([h, c]) => `[ ${h}–${c} ]`);
 
       let breakdownLines = [];
       for (let i = 0; i < breakdownItems.length; i += 3) {
