@@ -66,11 +66,10 @@
       <!-- Completed -->
       <div id="completeWrapper" class="flex flex-col flex-1 bg-gray-800 rounded-lg p-2 scrollable-column">
         <div class="flex justify-between items-center mb-2">
-          <h2 class="text-lg font-bold">Completed</h2>
-          <select onchange="toggleSortMode('completeColumn', this)" class="bg-gray-700 text-white px-2 py-1 rounded">
-            <option value="manual">Manual</option>
-            <option value="az">A-Z</option>
-          </select>
+          <h2 class="text-lg font-bold">
+            Completed<br>
+            <span id="completeCount" class="font-normal text-sm text-gray-400"></span>
+          </h2>
         </div>
         <div id="completeColumn" class="flex-1 space-y-3 p-1 overflow-y-auto"></div>
       </div>
@@ -85,8 +84,7 @@
 <script>
   const sortMode = {
     activeColumn: "manual",
-    upNextColumn: "manual",
-    completeColumn: "manual"
+    upNextColumn: "manual"
   };
 
   function classify(text) {
@@ -151,27 +149,6 @@
     } else {
       load(); // reload manual order
     }
-    updateActiveHeader(); // update counts
-  }
-
-  function save() {
-    ["activeColumn", "upNextColumn", "completeColumn"].forEach(id => {
-      const items = [...document.getElementById(id).children].map(el => el.textContent);
-      localStorage.setItem("order_" + id, JSON.stringify(items));
-    });
-    updateActiveHeader();
-  }
-
-  function load() {
-    ["activeColumn", "upNextColumn", "completeColumn"].forEach(id => {
-      const data = JSON.parse(localStorage.getItem("order_" + id) || "[]");
-      const col = document.getElementById(id);
-      col.innerHTML = "";
-      data.forEach(text => {
-        const content = (id === "completeColumn") ? formatForCompleted(text) : text;
-        col.appendChild(createCard(content, id));
-      });
-    });
     updateActiveHeader();
   }
 
@@ -180,19 +157,40 @@
     return parts.length >= 6 ? `${parts[1]}_${parts[5]}_${parts[6]}` : text;
   }
 
-  function clearAll() {
-    if (confirm("Clear all cards?")) {
-      localStorage.clear();
-      ["activeColumn", "upNextColumn", "completeColumn"].forEach(id => document.getElementById(id).innerHTML = "");
-      updateActiveHeader();
-    }
+  function save() {
+    ["activeColumn", "upNextColumn", "completeColumn"].forEach(id => {
+      const items = [...document.getElementById(id).children].map(el => el.textContent);
+      localStorage.setItem("order_" + id, JSON.stringify(items));
+    });
+    updateActiveHeader();
+    updateCompleteHeader();
   }
 
-  function toggleCompleted() {
-    document.body.classList.toggle("mobile-show-completed");
-    const btn = document.querySelector("button[onclick='toggleCompleted()']");
-    const isOpen = document.body.classList.contains("mobile-show-completed");
-    btn.textContent = isOpen ? "Hide Completed" : "Show Completed";
+  function load() {
+    ["activeColumn", "upNextColumn", "completeColumn"].forEach(id => {
+      const data = JSON.parse(localStorage.getItem("order_" + id) || "[]");
+      const col = document.getElementById(id);
+      col.innerHTML = "";
+      const cardsToAdd = data.map(text => {
+        const content = (id === "completeColumn") ? formatForCompleted(text) : text;
+        return createCard(content, id);
+      });
+
+      if (id === "completeColumn") {
+        cardsToAdd.sort((a, b) => {
+          const num = el => {
+            const match = el.textContent.match(/(\d{4})/);
+            return match ? parseInt(match[1], 10) : 9999;
+          };
+          return num(a) - num(b);
+        });
+      }
+
+      cardsToAdd.forEach(card => col.appendChild(card));
+    });
+
+    updateActiveHeader();
+    updateCompleteHeader();
   }
 
   function updateActiveHeader() {
@@ -210,15 +208,49 @@
     document.getElementById("activeCount").textContent = `(${count}) • ${breakdown}`;
   }
 
+  function updateCompleteHeader() {
+    const col = document.getElementById("completeColumn");
+    const cards = [...col.children];
+    const count = cards.length;
+    document.getElementById("completeCount").textContent = `(${count})`;
+
+    const sorted = cards.sort((a, b) => {
+      const getNum = el => {
+        const match = el.textContent.match(/(\d{4})/);
+        return match ? parseInt(match[1], 10) : 9999;
+      };
+      return getNum(a) - getNum(b);
+    });
+
+    col.innerHTML = "";
+    sorted.forEach(c => col.appendChild(c));
+  }
+
+  function clearAll() {
+    if (confirm("Clear all cards?")) {
+      localStorage.clear();
+      ["activeColumn", "upNextColumn", "completeColumn"].forEach(id => document.getElementById(id).innerHTML = "");
+      updateActiveHeader();
+      updateCompleteHeader();
+    }
+  }
+
+  function toggleCompleted() {
+    document.body.classList.toggle("mobile-show-completed");
+    const btn = document.querySelector("button[onclick='toggleCompleted()']");
+    const isOpen = document.body.classList.contains("mobile-show-completed");
+    btn.textContent = isOpen ? "Hide Completed" : "Show Completed";
+  }
+
   function enableSortable(id) {
     new Sortable(document.getElementById(id), {
       group: "cards",
       animation: 150,
       onEnd: (evt) => {
-        // Trim text if moved into completed
         if (evt.to.id === "completeColumn") {
           const card = evt.item;
           card.textContent = formatForCompleted(card.textContent);
+          updateCompleteHeader();
         }
         if (sortMode[id] === "manual") save();
       }
