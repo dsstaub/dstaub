@@ -32,7 +32,7 @@ const headTags = [
 {
   tag: "meta",
   name: "theme-color",
-  content: "#ffffff",
+  content: "#9AA9B8",
   media: "(prefers-color-scheme: light)"
 },
 {
