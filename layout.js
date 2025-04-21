@@ -29,11 +29,18 @@ const headTags = [
     name: "apple-mobile-web-app-status-bar-style",
     content: "black-translucent",
   },
-  {
-    tag: "meta",
-    name: "theme-color",
-    content: "#111111",
-  },
+{
+  tag: "meta",
+  name: "theme-color",
+  content: "#ffffff",
+  media: "(prefers-color-scheme: light)"
+},
+{
+  tag: "meta",
+  name: "theme-color",
+  content: "#121212",
+  media: "(prefers-color-scheme: dark)"
+}
 ];
 
 headTags.forEach(({ tag, ...attrs }) => {
