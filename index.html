@@ -76,7 +76,12 @@
           </li>
           <li>Walking -- both kinds</li>
           <li>Overthinking fonts and layout spacing</li>
-          <li>Honestly, just overthinking</li>
+          <li>
+            Honestly,
+            <span onclick="openModal()" class="cursor-pointer hover:opacity-70 select-none">
+              just overthinking.
+            </span>
+          </li>
           <li>AirPods in. Tunnel vision on. Homemade Diet Dr Pepper in a Yeti mug.</li>
         </ul>
       </section>
@@ -94,9 +99,29 @@
       <div class="text-center">
         <a href="/contact/index.html" class="btn">Contact Me!</a>
       </div>
-    </section>
-
     </article>
   </main>
+
+  <!-- Easter Egg Modal -->
+  <div id="imageModal" class="fixed inset-0 bg-black bg-opacity-80 hidden items-center justify-center z-50">
+    <div class="relative max-w-screen-sm mx-auto">
+      <button onclick="closeModal()" class="absolute top-2 right-2 text-white text-xl font-bold">&times;</button>
+      <img src="https://www.oldbug.com/jmzvw073.jpg" alt="VW Easter Egg" class="rounded shadow-xl max-h-[80vh] w-auto mx-auto" />
+    </div>
+  </div>
+
+  <script>
+    function openModal() {
+      document.getElementById("imageModal").classList.remove("hidden");
+      document.getElementById("imageModal").classList.add("flex");
+    }
+    function closeModal() {
+      document.getElementById("imageModal").classList.remove("flex");
+      document.getElementById("imageModal").classList.add("hidden");
+    }
+    document.getElementById("imageModal").addEventListener("click", (e) => {
+      if (e.target.id === "imageModal") closeModal();
+    });
+  </script>
 </body>
 </html>
