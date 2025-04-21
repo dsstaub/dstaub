@@ -1,91 +1,106 @@
 <!DOCTYPE html>
-<html lang="en" class="transition-colors duration-300">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>D Staub • Music</title>
+
+  <!-- Meta + Icons -->
+  <meta name="theme-color" content="#121212" />
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#111111" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
+  <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <!-- Fonts + CSS -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/style.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="/layout.js" defer></script>
   <script src="/app.js" defer></script>
-  <title>D Staub • Music</title>
 </head>
-<body class="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 font-sans leading-relaxed px-6 pb-[7rem] max-w-4xl mx-auto">
+
+<body class="bg-[#121212] text-white font-sans leading-relaxed px-6 pb-[7rem] max-w-4xl mx-auto">
   <main class="max-w-xl mx-auto mt-10 text-center">
     <h1 class="text-4xl font-bold mb-6">Music</h1>
-    <p class="mb-8 text-lg text-zinc-600 dark:text-zinc-400">Every track below was written and produced by me - from lyrics to final mix - and released under my artist name, Walter Hartwell. I use AI-generated vocals to bring each song to life. You can preview them all here or stream the full albums anywhere.</p>
+    <p class="mb-8 text-lg text-[#AAAAAA]">
+      Every track below was written and produced by me -- from lyrics to final mix -- and released under my artist name, Walter Hartwell. I use AI-generated vocals to bring each song to life. You can preview them all here or stream the full albums anywhere.
+    </p>
 
     <section class="space-y-14">
+
       <!-- Album Card: Drifting By -->
-      <div class="max-w-md mx-auto bg-white dark:bg-zinc-800 rounded-lg shadow-lg overflow-hidden border border-zinc-200 dark:border-zinc-700">
+      <div class="glass max-w-md mx-auto overflow-hidden">
         <div class="aspect-4-5 overflow-hidden">
-          <img src="/music/cards/card_driftingby.jpg" alt="Up album cover" class="w-full h-full object-cover">
+          <img src="/music/cards/card_driftingby.jpg" alt="Drifting By album cover" class="w-full h-full object-cover">
         </div>
         <div class="p-6">
           <h2 class="text-2xl font-semibold mb-1">Drifting By</h2>
-          <p class="text-sm italic text-zinc-500 dark:text-zinc-400 mb-4">
+          <p class="text-sm italic text-[#BBBBBB] mb-4">
             A moody, late-night wander through regret and resilience.
           </p>
           <a href="https://distrokid.com/hyperfollow/walterhartwell/drifting-by" target="_blank"
-             class="inline-block bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-medium px-5 py-2 rounded transition">
+             class="inline-block bg-[#00C2FF] hover:bg-[#00AADC] text-black text-sm font-medium px-5 py-2 rounded transition">
             Listen on Streaming Services
           </a>
         </div>
       </div>
 
-      <!-- Album Card: UP -->
-      <div class="max-w-md mx-auto bg-white dark:bg-zinc-800 rounded-lg shadow-lg overflow-hidden border border-zinc-200 dark:border-zinc-700">
+      <!-- Album Card: Up -->
+      <div class="glass max-w-md mx-auto overflow-hidden">
         <div class="aspect-4-5 overflow-hidden">
           <img src="/music/cards/card_up.jpg" alt="Up album cover" class="w-full h-full object-cover">
         </div>
         <div class="p-6">
           <h2 class="text-2xl font-semibold mb-1">Up...</h2>
-          <p class="text-sm italic text-zinc-500 dark:text-zinc-400 mb-4">
+          <p class="text-sm italic text-[#BBBBBB] mb-4">
             A hard pop-country fusion with a modern edge.
           </p>
           <a href="https://distrokid.com/hyperfollow/walterhartwell/up" target="_blank"
-             class="inline-block bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-medium px-5 py-2 rounded transition">
+             class="inline-block bg-[#00C2FF] hover:bg-[#00AADC] text-black text-sm font-medium px-5 py-2 rounded transition">
             Listen on Streaming Services
           </a>
         </div>
       </div>
 
       <!-- Album Card: Blue Eyes & Blonde Hair -->
-      <div class="max-w-md mx-auto bg-white dark:bg-zinc-800 rounded-lg shadow-lg overflow-hidden border border-zinc-200 dark:border-zinc-700">
+      <div class="glass max-w-md mx-auto overflow-hidden">
         <div class="aspect-4-5 overflow-hidden">
           <img src="/music/cards/card_blueeyesandblondehair.jpg" alt="Blue Eyes & Blonde Hair album cover" class="w-full h-full object-cover">
         </div>
         <div class="p-6">
           <h2 class="text-2xl font-semibold mb-1">Blue Eyes & Blonde Hair</h2>
-          <p class="text-sm italic text-zinc-500 dark:text-zinc-400 mb-4">
+          <p class="text-sm italic text-[#BBBBBB] mb-4">
             A Midwest summer heartbreak jam, slow-burning and vivid.
           </p>
           <a href="https://distrokid.com/hyperfollow/walterhartwell/blue-eyes--blonde-hair" target="_blank"
-             class="inline-block bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-medium px-5 py-2 rounded transition">
+             class="inline-block bg-[#00C2FF] hover:bg-[#00AADC] text-black text-sm font-medium px-5 py-2 rounded transition">
             Listen on Streaming Services
           </a>
         </div>
       </div>
-      
-       <!-- Album Card: Fuck This Shit 
-      <div class="max-w-md mx-auto bg-white dark:bg-zinc-800 rounded-lg shadow-lg overflow-hidden border border-zinc-200 dark:border-zinc-700">
+
+      <!-- Album Card: Fuck This Shit -->
+      <!-- COMMENTED OUT FOR PROFESSIONALISM -->
+      <!--
+      <div class="glass max-w-md mx-auto overflow-hidden">
         <div class="aspect-4-5 overflow-hidden">
           <img src="/music/cards/card_fuckthisshit.jpg" alt="Fuck This Shit album cover" class="w-full h-full object-cover">
         </div>
         <div class="p-6">
           <h2 class="text-2xl font-semibold mb-1">Fuck This Shit</h2>
-          <p class="text-sm italic text-zinc-500 dark:text-zinc-400 mb-4">
+          <p class="text-sm italic text-[#BBBBBB] mb-4">
             An unapologetic, hard-hitting anthem of frustration and rebellion that doesn’t hold back.
           </p>
           <a href="https://distrokid.com/hyperfollow/walterhartwell/fuck-this-shit" target="_blank"
-             class="inline-block bg-cyan-500 hover:bg-cyan-600 text-white text-sm font-medium px-5 py-2 rounded transition">
+             class="inline-block bg-[#00C2FF] hover:bg-[#00AADC] text-black text-sm font-medium px-5 py-2 rounded transition">
             Listen on Streaming Services
           </a>
         </div>
-      </div> 
-      COMMENTED OUT FOR PROFFESIONALISM -->
+      </div>
+      -->
+
     </section>
   </main>
 </body>

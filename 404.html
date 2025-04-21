@@ -1,24 +1,37 @@
 <!DOCTYPE html>
-<html lang="en" class="transition-colors duration-300">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>D Staub • 404</title>
+
+  <!-- Meta + Icons -->
+  <meta name="theme-color" content="#121212" />
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#111111" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
+  <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <!-- Fonts + Styles -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/style.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="/layout.js" defer></script>
   <script src="/app.js" defer></script>
-  <title>D Staub</title>
 </head>
-<body class="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 font-sans leading-relaxed px-6 pb-[7rem] max-w-4xl mx-auto">
-  <main class="max-w-xl mx-auto mt-10 text-center">
-  <h1 class="text-xl font-semibold text-zinc-900 dark:text-zinc-100">DStaub</h1>
-</header>
-  <h1 class="text-4xl font-bold mb-4">404 – Not Found</h1>
-  <p class="mb-6 text-zinc-400">Well this is awkward. That page doesn’t exist.</p>
-  <a href="/" class="text-cyan-400 hover:underline">Return to homepage</a>
-  <p class="mt-10 text-sm text-zinc-600">Or keep digging… maybe there’s something fun hiding in the <code>/music</code> directory.</p>
+
+<body class="bg-[#121212] text-white font-sans leading-relaxed px-6 pb-[7rem] max-w-4xl mx-auto">
+
+  <main class="max-w-xl mx-auto mt-20 text-center">
+    <div class="glass p-10 rounded-xl">
+      <h1 class="text-xl font-semibold mb-2 text-white">DStaub</h1>
+      <h2 class="text-4xl font-bold mb-4">404 – Not Found</h2>
+      <p class="mb-6 text-[#BBBBBB]">Well this is awkward. That page doesn’t exist.</p>
+      <a href="/" class="text-[#00C2FF] hover:underline font-medium">Return to homepage</a>
+      <p class="mt-10 text-sm text-[#888888]">Or keep digging… maybe there’s something fun hiding in the <code class="text-[#00C2FF]">/music</code> directory.</p>
+    </div>
+  </main>
+
 </body>
 </html>
