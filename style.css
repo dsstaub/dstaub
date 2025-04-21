@@ -132,6 +132,24 @@ section:hover {
   background: rgba(255, 255, 255, 0.08);
 }
 
+/* Glass background variants that match pastel theme titles */
+
+.bg-glass-red {
+  background-color: rgba(248, 183, 181, 0.08); /* #F8B7B5 */
+}
+
+.bg-glass-green {
+  background-color: rgba(200, 230, 201, 0.08); /* #C8E6C9 */
+}
+
+.bg-glass-blue {
+  background-color: rgba(179, 229, 252, 0.08); /* #B3E5FC */
+}
+
+.bg-glass-yellow {
+  background-color: rgba(255, 236, 179, 0.08); /* #FFECB3 */
+}
+
 document.body.insertAdjacentHTML("afterbegin", `
   <header class="sticky top-0 z-50 flex items-center justify-center gap-3 px-4 pt-4 pb-1 backdrop-blur-md bg-black/40 border-b border-white/10 shadow-sm">
     <img src="/icons/icon-512x512.png" alt="Logo" class="w-24 h-24 rounded-md">
