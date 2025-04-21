@@ -9,25 +9,18 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Base body setup -- Tailwind handles bg/text colors */
 body {
   font-family: 'Inter', sans-serif;
-  background-color: #121212;
-  color: #ffffff;
   line-height: 1.6;
   padding-bottom: env(safe-area-inset-bottom, 80px);
 }
 
-/* Top sticky header */
+/* Sticky header bar */
 header {
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: #121212;
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-bottom: 1px solid #333;
 }
 
 /* Sticky section titles */
@@ -35,26 +28,9 @@ header {
   position: sticky;
   top: 0;
   z-index: 50;
-  background-color: #121212;
   padding: 1rem 1rem 0.5rem 1rem;
   font-weight: 600;
   font-size: 1.2rem;
-  color: #ffffff;
-}
-
-/* Card-like containers */
-section {
-  background-color: #1e1e1e;
-  margin: 1rem;
-  padding: 1rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-section:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
 
 /* Bottom nav bar */
@@ -68,33 +44,32 @@ section:hover {
   justify-content: space-around;
   align-items: center;
   padding: 1rem;
-  background-color: #1a1a1a;
-  border-top: 1px solid #333;
   box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.4);
 }
 
+/* Bottom nav links */
 #bottomNav a {
-  color: #bbbbbb;
   font-size: 1.1rem;
   text-align: center;
   transition: color 0.2s ease;
 }
 
 #bottomNav a.active {
-  color: #00ff9c;
+  font-weight: 600;
 }
 
 #bottomNav a:hover {
-  color: #00c2ff;
+  color: var(--tw-text-cyan-400);
 }
 
-/* Utility classes */
+/* Optional muted text */
 .text-muted {
   color: #888;
 }
 
+/* Button style */
 .btn {
-  background-color: #00c2ff;
+  background-color: #06b6d4; /* Tailwind cyan-400 */
   color: #000;
   padding: 0.6rem 1.2rem;
   border: none;
@@ -103,58 +78,60 @@ section:hover {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-
 .btn:hover {
-  background-color: #00a8dc;
+  background-color: #0891b2; /* Tailwind cyan-500 */
 }
 
-/* Animations */
+/* Fade-in animation */
 .fade-in {
   animation: fadeIn 0.6s ease forwards;
 }
-
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Glass effect base */
 .glass {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 1rem;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  border-radius: 1rem;
   transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.05);
 }
 .glass:hover {
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6);
   background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6);
 }
 
-/* Glass background variants that match pastel theme titles */
-
+/* Glass pastel background variants (light mode) */
 .bg-glass-red {
-  background-color: rgba(248, 183, 181, 0.08); /* #F8B7B5 */
+  background-color: rgba(248, 183, 181, 0.08);
 }
-
 .bg-glass-green {
-  background-color: rgba(200, 230, 201, 0.08); /* #C8E6C9 */
+  background-color: rgba(200, 230, 201, 0.08);
 }
-
 .bg-glass-blue {
-  background-color: rgba(179, 229, 252, 0.08); /* #B3E5FC */
+  background-color: rgba(179, 229, 252, 0.08);
 }
-
 .bg-glass-yellow {
-  background-color: rgba(255, 236, 179, 0.08); /* #FFECB3 */
+  background-color: rgba(255, 236, 179, 0.08);
 }
 
-document.body.insertAdjacentHTML("afterbegin", `
-  <header class="sticky top-0 z-50 flex items-center justify-center gap-3 px-4 pt-4 pb-1 backdrop-blur-md bg-black/40 border-b border-white/10 shadow-sm">
-    <img src="/icons/icon-512x512.png" alt="Logo" class="w-24 h-24 rounded-md">
-    <h1 class="text-lg font-semibold text-white tracking-wide">DStaub</h1>
-  </header>
-`);
-
-
+/* Optional dark variants for glass backgrounds */
+@media (prefers-color-scheme: dark) {
+  .bg-glass-red {
+    background-color: rgba(255, 255, 255, 0.03);
+  }
+  .bg-glass-green {
+    background-color: rgba(255, 255, 255, 0.03);
+  }
+  .bg-glass-blue {
+    background-color: rgba(255, 255, 255, 0.03);
+  }
+  .bg-glass-yellow {
+    background-color: rgba(255, 255, 255, 0.03);
+  }
+}

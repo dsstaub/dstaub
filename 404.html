@@ -6,7 +6,6 @@
   <title>D Staub • 404</title>
 
   <!-- Meta + Icons -->
-
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
   <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
@@ -16,22 +15,23 @@
   <!-- Fonts + Styles -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/style.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
   <script src="/layout.js" defer></script>
   <script src="/app.js" defer></script>
 </head>
 
-<body class="bg-[#CBD5DF] text-zinc-800 dark:bg-[#121212] dark:text-white font-sans leading-relaxed px-6 pb-[7rem] max-w-4xl mx-auto">
-
+<body class="bg-slate-200 text-slate-800 dark:bg-zinc-900 dark:text-white font-sans leading-relaxed px-6 pb-[7rem] max-w-4xl mx-auto">
   <main class="max-w-xl mx-auto mt-20 text-center">
-    <div class="glass p-10 rounded-xl">
-      <h1 class="text-xl font-semibold mb-2 text-white">DStaub</h1>
+    <div class="glass bg-white/40 dark:bg-white/10 p-10 rounded-xl backdrop-blur-sm border border-white/20">
+      <h1 class="text-xl font-semibold mb-2 text-zinc-800 dark:text-white">DStaub</h1>
       <h2 class="text-4xl font-bold mb-4">404 – Not Found</h2>
-      <p class="mb-6 text-[#BBBBBB]">Well this is awkward. That page doesn’t exist.</p>
-      <a href="/" class="text-[#00C2FF] hover:underline font-medium">Return to homepage</a>
-      <p class="mt-10 text-sm text-[#888888]">Or keep digging… maybe there’s something fun hiding in the <code class="text-[#00C2FF]">/music</code> directory.</p>
+      <p class="mb-6 text-zinc-600 dark:text-zinc-400">Well this is awkward. That page doesn’t exist.</p>
+      <a href="/" class="text-cyan-600 dark:text-cyan-400 hover:underline font-medium">Return to homepage</a>
+      <p class="mt-10 text-sm text-zinc-500 dark:text-zinc-400">
+        Or keep digging… maybe there’s something fun hiding in the
+        <code class="text-cyan-600 dark:text-cyan-400 font-mono">/music</code> directory.
+      </p>
     </div>
   </main>
-
 </body>
 </html>
