@@ -131,3 +131,18 @@ section:hover {
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6);
   background: rgba(255, 255, 255, 0.08);
 }
+
+document.body.insertAdjacentHTML("afterbegin", `
+  <header class="sticky top-0 z-50 flex items-center justify-center gap-3 px-4 pt-4 pb-1 backdrop-blur-md bg-black/40 border-b border-white/10 shadow-sm">
+    <img src="/icons/icon-512x512.png" alt="Logo" class="w-24 h-24 rounded-md">
+    <h1 class="text-lg font-semibold text-white tracking-wide">DStaub</h1>
+  </header>
+`);
+
+header.auto-hide {
+  transition: transform 0.3s ease;
+}
+header.auto-hide.hide {
+  transform: translateY(-100%);
+}
+

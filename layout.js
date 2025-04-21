@@ -49,12 +49,12 @@ if (window.matchMedia('(display-mode: standalone)').matches) {
 
 document.addEventListener("DOMContentLoaded", () => {
   // Top header
-  document.body.insertAdjacentHTML("afterbegin", `
-    <header class="sticky top-0 z-50 flex items-center justify-center gap-3 px-4 pt-4 pb-1 backdrop-blur-md bg-black/40 border-b border-white/10 shadow-sm">
-      <img src="/icons/icon-512x512.png" alt="Logo" class="w-24 h-24 rounded-md">
-      <h1 class="text-lg font-semibold text-white tracking-wide">DStaub</h1>
-    </header>
-  `);
+    document.body.insertAdjacentHTML("afterbegin", `
+      <header id="mainHeader" class="auto-hide sticky top-0 z-50 flex items-center justify-center gap-3 px-4 pt-4 pb-1 backdrop-blur-md bg-black/40 border-b border-white/10 shadow-sm">
+        <img src="/icons/icon-512x512.png" alt="Logo" class="w-24 h-24 rounded-md">
+        <h1 class="text-lg font-semibold text-white tracking-wide">DStaub</h1>
+      </header>
+    `);
 
   // Bottom nav
 document.body.insertAdjacentHTML("beforeend", `
