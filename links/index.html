@@ -16,6 +16,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/style.css" />
   <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
   <script src="/layout.js" defer></script>
   <script src="/app.js" defer></script>
 </head>
@@ -23,21 +34,17 @@
 <body class="bg-slate-200 dark:bg-zinc-900 text-zinc-800 dark:text-white font-sans leading-relaxed px-6 pb-[7rem] max-w-4xl mx-auto">
 
   <main class="max-w-xl mx-auto mt-20 text-center">
-    <div class="glass bg-white/40 dark:bg-white/10 border border-white/10 backdrop-blur-sm p-10 rounded-xl">
-
-<section class="px-6 py-8 text-lg leading-relaxed">
-  <h2 class="text-2xl font-semibold mb-4">Sitemap</h2>
-  <ul class="space-y-3">
-    <li><a href="/" class="underline hover:text-blue-400 transition">Home</a></li>
-    <li><a href="/resume" class="underline hover:text-blue-400 transition">Resume</a></li>
-    <li><a href="/pre-interview" class="underline hover:text-blue-400 transition">Pre-Interview Q&amp;A</a></li>
-    <li><a href="/contact" class="underline hover:text-blue-400 transition">Contact Me</a></li>
-    <li><a href="/music" class="underline hover:text-blue-400 transition">My Music</a></li>
-    <li><a href="/links" class="underline hover:text-blue-400 transition">Links</a></li>
-  </ul>
-</section>
-
-    </div>
+    <nav aria-label="Sitemap" class="bg-white/40 dark:bg-white/10 border border-white/10 backdrop-blur-sm p-10 rounded-xl">
+      <h2 class="text-xl font-semibold text-red-400 dark:text-red-300 mb-4">Sitemap</h2>
+      <ul class="space-y-3 text-lg text-left">
+        <li><a href="/" class="underline hover:text-blue-400 transition-colors duration-200">Home</a></li>
+        <li><a href="/resume" class="underline hover:text-blue-400 transition-colors duration-200">Resume</a></li>
+        <li><a href="/pre-interview" class="underline hover:text-blue-400 transition-colors duration-200">Pre-Interview Q&amp;A</a></li>
+        <li><a href="/music" class="underline hover:text-blue-400 transition-colors duration-200">My Music</a></li>
+        <li><a href="/links" class="underline hover:text-blue-400 transition-colors duration-200">Links</a></li>
+        <li><a href="/contact" class="underline hover:text-blue-400 transition-colors duration-200">Contact Me</a></li>
+      </ul>
+    </nav>
   </main>
 
 </body>
