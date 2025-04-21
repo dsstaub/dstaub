@@ -1,82 +1,92 @@
 <!DOCTYPE html>
-<html lang="en" class="transition-colors duration-300">
+<html lang="en" class="dark">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>D Staub • Now</title>
+
+  <!-- Theme & Icons -->
+  <meta name="theme-color" content="#121212" />
   <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#111111" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
+  <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+
+  <!-- Styles & Scripts -->
   <link rel="stylesheet" href="/style.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="/layout.js" defer></script>
   <script src="/app.js" defer></script>
-  <title>D Staub • Now</title>
 </head>
 
-<body
-  class="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 font-sans leading-relaxed px-6 pb-[7rem] max-w-4xl mx-auto">
-  <main class="max-w-xl mx-auto mt-10 text-left">
-    <h1 class="text-4xl font-bold text-center">The Current Version of Me</h1>
-    <h2 class="max-w-3xl font-bold text-center text-gray-300 mt-4">Not final. Never perfect.<br>Always honest.</h2>
-    <p class="text-center text-zinc-500 dark:text-zinc-400 text-sm italic">Last updated: April 2025</p>
-    </br>
-    <!-- CALL TO RESUMÉ PAGE -->
-    <section>
-      <h2 class="text-2xl font-semibold mb-2 text-cyan-500">View/Download My Resumé</h2>
-      <ul class="list-disc pl-6 space-y-1 text-zinc-700 dark:text-zinc-300">
-        <li>My current <a href="/resume/index.html" class="text-cyan-500 no-underline hover:underline">resumé</a> is
+<body class="bg-[#121212] text-white font-sans leading-relaxed px-6 pb-[7rem] max-w-4xl mx-auto">
+
+  <main class="max-w-xl mx-auto mt-12 fade-in">
+    <h1 class="text-4xl font-bold text-center text-white">The Current Version of Me</h1>
+    <h2 class="max-w-3xl font-semibold text-center text-[#AAAAAA] mt-4">Not final. Never perfect.<br>Always honest.</h2>
+    <p class="text-center text-[#777] text-sm italic">Last updated: April 2025</p>
+    <br />
+
+    <!-- RESUME -->
+    <section class="bg-[#1e1e1e] rounded-xl p-6 mb-6 shadow-md hover:shadow-lg transition">
+      <h2 class="text-xl font-semibold mb-3 text-[#00C2FF]">View/Download My Resumé</h2>
+      <ul class="list-disc pl-5 space-y-2 text-[#CCCCCC]">
+        <li>
+          My current <a href="/resume/index.html" class="text-[#00C2FF] hover:underline">resumé</a> is
           available to view or download in the navigation menu at the bottom of the screen.
         </li>
       </ul>
     </section>
-    <br>
+
     <!-- CURRENTLY BUILDING -->
-    <section>
-      <h2 class="text-2xl font-semibold mb-2 text-cyan-500">Currently Building</h2>
-      <ul class="list-disc pl-6 space-y-1 text-zinc-700 dark:text-zinc-300">
-        <li>My personal website (this one!) — mobile-first, dark mode, PWA-ready (just choose to save this to your
-          homescreen and youll always be one tap away from me!)</li>
-        <li>An online resume that can show more of who I am, and that evolves with me, not against me</li>
-        <li>My own music hub for sharing my original singles + new album releases (a fun personal project that gives me
-          a chance to feel free)</li>
+    <section class="bg-[#1e1e1e] rounded-xl p-6 mb-6 shadow-md hover:shadow-lg transition">
+      <h2 class="text-xl font-semibold mb-3 text-[#00C2FF]">Currently Building</h2>
+      <ul class="list-disc pl-5 space-y-2 text-[#CCCCCC]">
+        <li>This site -- mobile-first, dark-mode, PWA-ready</li>
+        <li>A personal resume that grows with me</li>
+        <li>A music hub for my singles + album drops</li>
       </ul>
     </section>
-    <br>
+
     <!-- LEARNING & EXPLORING -->
-    <section>
-      <h2 class="text-2xl font-semibold mb-2 text-cyan-500">Learning & Exploring</h2>
-      <ul class="list-disc pl-6 space-y-1 text-zinc-700 dark:text-zinc-300">
-        <li>Still learning some basic front end coding (html, js, Tailwind CSS, and others)</li>
-        <li>Beginning to teach myself how to make iOS and Android Mobile Apps</li>
-        <li>Technology + generative AI tools that enrich personal learning and intellectual growth</li>
+    <section class="bg-[#1e1e1e] rounded-xl p-6 mb-6 shadow-md hover:shadow-lg transition">
+      <h2 class="text-xl font-semibold mb-3 text-[#00C2FF]">Learning & Exploring</h2>
+      <ul class="list-disc pl-5 space-y-2 text-[#CCCCCC]">
+        <li>Still learning frontend coding (HTML, JS, Tailwind, etc.)</li>
+        <li>Starting on iOS + Android mobile apps</li>
+        <li>Exploring tech + AI tools that support personal growth</li>
         <li>Writing lyrics, building vibes</li>
       </ul>
     </section>
-    <br>
+
     <!-- CURRENT VIBES -->
-    <section>
-      <h2 class="text-2xl font-semibold mb-2 text-cyan-500">What I’m Into</h2>
-      <ul class="list-disc pl-6 space-y-1 text-zinc-700 dark:text-zinc-300">
-        <li>Yeti drinkware. I've got a massive collection (ask me about it and watch me light up)</li>
-        <li>Stretching my legs and going for a walk (figuratively and literally)</li>
+    <section class="bg-[#1e1e1e] rounded-xl p-6 mb-6 shadow-md hover:shadow-lg transition">
+      <h2 class="text-xl font-semibold mb-3 text-[#00C2FF]">What I’m Into</h2>
+      <ul class="list-disc pl-5 space-y-2 text-[#CCCCCC]">
+        <li>Yeti drinkware obsession (ask me!)</li>
+        <li>Walking -- both kinds</li>
         <li>Overthinking fonts and layout spacing</li>
-        <li>Honestly, probably just overthinking</li>
-        <li>AirPods in. Tunnel vision on. Homemade Diet Dr Pepper in a Yeti mug.</li>
+        <li>Honestly, just overthinking</li>
+        <li>AirPods in. Tunnel vision on. Homemade Diet Dr P in a Yeti mug.</li>
       </ul>
     </section>
-    <br>
+
     <!-- ON THE HORIZON -->
-    <section>
-      <h2 class="text-2xl font-semibold mb-2 text-cyan-500">What’s Coming Up</h2>
-      <ul class="list-disc pl-6 space-y-1 text-zinc-700 dark:text-zinc-300">
-        <li>Major job transition — change is in the air</li>
+    <section class="bg-[#1e1e1e] rounded-xl p-6 mb-6 shadow-md hover:shadow-lg transition">
+      <h2 class="text-xl font-semibold mb-3 text-[#00C2FF]">What’s Coming Up</h2>
+      <ul class="list-disc pl-5 space-y-2 text-[#CCCCCC]">
+        <li>Major job transition -- change is in the air</li>
         <li>More life. More happiness. More personal pride.</li>
-        <li>Updating Resumé and prepping for whatever's next</li>
+        <li>Updating resumé + prepping for what’s next</li>
       </ul>
     </section>
-    <br>
   </main>
+
 </body>
 
 </html>
