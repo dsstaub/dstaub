@@ -1,32 +1,52 @@
-/* Reset */
+/* === RESET === */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-/* iOS safe-area support */
-body {
-  font-family: sans-serif;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+/* === DARK MODE ROOT COLORS === */
+:root {
+  --menu-bg: rgba(24, 24, 27, 0.95);
+  --menu-color: #fff;
+  --bg: #111827;
+  --bg-soft: #1f2937;
+  --text: #f1f5f9;
+  --accent: #06b6d4;
+  --border: #334155;
+  --card: #1e293b;
 }
 
-/* Sticky top header injected site-wide */
+/* === BASE BODY === */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* === STICKY SITE-WIDE HEADER === */
 header {
   padding-top: var(--safe-top);
+  background-color: var(--bg);
+  z-index: 20;
 }
 
-/* Sticky section headers (e.g. in resume page) */
+/* === STICKY SECTION HEADERS === */
 .sticky-header {
   position: sticky;
   top: 0;
-  z-index: 0;
-  background-color: inherit;
+  z-index: 10;
+  background-color: var(--bg-soft);
   padding-top: 2.5rem;
   padding-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: 1.25rem;
 }
 
-/* Bottom navigation bar */
+/* === BOTTOM NAVIGATION BAR === */
 #bottomNav {
   position: fixed;
   bottom: 0;
@@ -36,42 +56,29 @@ header {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  padding: 1.25rem 1rem; /* py-5 */
+  padding: 1.25rem 1rem;
   padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 1.25rem);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   background-color: var(--menu-bg);
   color: var(--menu-color);
-  border-top: 1px solid #ccc;
+  border-top: 1px solid var(--border);
   font-size: 1rem;
   font-weight: 600;
 }
 
-/* Light/Dark mode menu color theming */
-:root {
-  --menu-bg: rgba(255, 255, 255, 0.9);
-  --menu-color: #111;
-}
-.dark {
-  --menu-bg: rgba(24, 24, 27, 0.95);
-  --menu-color: #fff;
-}
-
-/* Nav link base styles */
+/* === NAVIGATION LINK STYLES === */
 .nav-link {
-  color: rgb(63, 63, 70); /* zinc-700 */
+  color: var(--menu-color);
   position: relative;
   text-decoration: none;
   transition: color 0.2s ease;
 }
-.dark .nav-link {
-  color: rgb(244, 244, 245); /* zinc-100 */
-}
+
 .nav-link:hover {
-  color: #06b6d4; /* cyan-500 */
+  color: var(--accent);
 }
 
-/* Active underline indicator */
 .nav-link.underline::after {
   content: '';
   position: absolute;
@@ -97,6 +104,71 @@ header {
   opacity: 1;
 }
 
+/* === CARDS / CONTAINERS === */
+.card {
+  background-color: var(--card);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+/* === HEADINGS === */
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: white;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+/* === BUTTONS === */
+button {
+  background-color: var(--accent);
+  color: black;
+  border: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #0891b2;
+}
+
+/* === INPUTS / TEXTAREAS === */
+input,
+textarea,
+select {
+  background-color: var(--bg-soft);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 0.625rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  font-size: 1rem;
+}
+
+/* === LINKS === */
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* === COLLAPSIBLE SECTIONS === */
 .collapsible {
   transition: max-height 0.3s ease;
   overflow: hidden;
@@ -104,6 +176,33 @@ header {
 }
 
 .collapsible.open {
-  max-height: 2000px; /* or whatever height works */
+  max-height: 2000px;
 }
 
+/* === UTILITY === */
+.text-center {
+  text-align: center;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* === ANIMATION ON LOAD (OPTIONAL) === */
+body {
+  opacity: 0;
+}
+
+body.loaded {
+  opacity: 1;
+  transition: opacity 0.5s ease-in;
+}
