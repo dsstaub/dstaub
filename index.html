@@ -124,29 +124,38 @@
   </div>
 
   <script>
-    function openModal() {
-      document.getElementById("imageModal").classList.remove("hidden");
-      document.getElementById("imageModal").classList.add("flex");
-    }
-    function closeModal() {
-      document.getElementById("imageModal").classList.remove("flex");
-      document.getElementById("imageModal").classList.add("hidden");
-    }
-    document.getElementById("imageModal").addEventListener("click", (e) => {
-      if (e.target.id === "imageModal") closeModal();
-    });
-    
-  fetch('/data/facts.json')
-    .then(response => response.json())
-    .then(facts => {
-      const randomFact = facts[Math.floor(Math.random() * facts.length)];
-      
-document.getElementById("randomFact").innerHTML = `${randomFact}<br><span class="text-xs opacity-60">Disclaimer: these facts are just for fun!</span>`;
-    })
-    .catch(error => {
-      console.error("Couldn't load facts.json", error);
-      document.getElementById("randomFact").textContent = "Couldn't load my brain today.";
-    });
+    // Easter Egg Popup Logic
+      function openModal() {
+        document.getElementById("imageModal").classList.remove("hidden");
+        document.getElementById("imageModal").classList.add("flex");
+      }
+      function closeModal() {
+        document.getElementById("imageModal").classList.remove("flex");
+        document.getElementById("imageModal").classList.add("hidden");
+      }
+      document.getElementById("imageModal").addEventListener("click", (e) => {
+        if (e.target.id === "imageModal") closeModal();
+      });
+ 
+    // Random Fact Logic   
+      fetch('/data/facts.json')
+        .then(response => response.json())
+        .then(facts => {
+          const randomFact = facts[Math.floor(Math.random() * facts.length)];
+          
+          document.getElementById("randomFact").innerHTML = `
+            ${randomFact}
+            <br>
+            <div class="text-xs opacity-60 mt-2">
+              <strong>Disclaimer</strong><hr class="my-1">
+              These facts are just for fun!
+            </div>
+          `;
+        })
+        .catch(error => {
+          console.error("Couldn't load facts.json", error);
+          document.getElementById("randomFact").textContent = "Couldn't load my brain today.";
+        });
     
   </script>
 </body>
