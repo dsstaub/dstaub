@@ -36,7 +36,6 @@
       <section class="glass bg-yellow-100 dark:bg-yellow-950 p-6 mb-6">
         <h2 class="text-xl font-semibold mb-3 text-yellow-400">
         One Random Fact About Me</h2>
-        <br>
 <div id="randomFact" class="my-4 text-sm italic text-gray-400 text-center">
   Loading a random fact about me…
 </div>
@@ -142,7 +141,7 @@
     .then(facts => {
       const randomFact = facts[Math.floor(Math.random() * facts.length)];
       
-document.getElementById("randomFact").innerHTML = `${randomFact}<br><br><span class="text-xs opacity-60">*Disclaimer: these facts are just for fun!</span>`;
+document.getElementById("randomFact").innerHTML = `${randomFact}<span class="text-xs opacity-60">*Disclaimer: these facts are just for fun!</span>`;
     })
     .catch(error => {
       console.error("Couldn't load facts.json", error);
