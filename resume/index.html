@@ -150,7 +150,33 @@
           section.innerHTML += '<p class="text-red-600 dark:text-red-400">Could not load skills list.</p>';
         });
   
-  
+      // Fetch Contact
+    fetch('/data/resume_cards/contact.json')
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('contactTitle').textContent = data.title;
+
+        const ul = document.getElementById('contactList');
+        data.items.forEach(item => {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+
+          li.textContent = item.type + ': ';
+          a.href = item.href;
+          a.textContent = item.text;
+          a.className = 'text-cyan-600 dark:text-cyan-400 hover:underline';
+          a.target = item.href.startsWith('http') ? '_blank' : '_self';
+
+          li.appendChild(a);
+          ul.appendChild(li);
+        });
+      })
+      .catch(error => {
+        console.error('Failed to load contact.json:', error);
+        const section = document.getElementById('contactSection');
+        section.innerHTML += '<p class="text-red-600 dark:text-red-400">Could not load contact info.</p>';
+      });
+      
 </script>
 
 </body>
