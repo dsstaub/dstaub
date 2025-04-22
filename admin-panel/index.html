@@ -49,62 +49,109 @@
 
   <p id="status" class="mt-4 text-sm text-zinc-400"></p>
 
-  <script>
-    const PIN = "6446";
-    const pinLock = document.getElementById("pinLock");
-    const pinInput = document.getElementById("pinInput");
-    const pinStatus = document.getElementById("pinStatus");
+<script>
+  const PIN = "6446";
+  const pinLock = document.getElementById("pinLock");
+  const pinInput = document.getElementById("pinInput");
+  const pinStatus = document.getElementById("pinStatus");
 
-    pinInput.addEventListener("keyup", (e) => {
-      if (e.key === "Enter" || pinInput.value.length === 4) {
-        if (pinInput.value === PIN) {
-          pinLock.classList.add("hidden");
-          loadJSON(); // Load default on entry
-        } else {
-          pinStatus.textContent = "Wrong PIN.";
-          pinInput.value = "";
-        }
-      }
-    });
-
-    const editor = document.getElementById("editor");
-    const fileSelect = document.getElementById("fileSelect");
-    const status = document.getElementById("status");
-
-    function loadJSON() {
-      const path = fileSelect.value;
-      fetch(path)
-        .then(res => res.json())
-        .then(data => {
-          editor.value = JSON.stringify(data, null, 2);
-          status.textContent = `Loaded ${path}`;
-        })
-        .catch(err => {
-          console.error(err);
-          status.textContent = `Error loading ${path}`;
-        });
-    }
-
-    function saveJSON() {
-      try {
-        const parsed = JSON.parse(editor.value);
-        console.log("Parsed JSON (would save):", parsed);
-        status.textContent = "✅ JSON is valid. Saving not yet implemented.";
-      } catch (err) {
-        status.textContent = "❌ Invalid JSON. Fix it before saving.";
+  pinInput.addEventListener("keyup", (e) => {
+    if (e.key === "Enter" || pinInput.value.length === 4) {
+      if (pinInput.value === PIN) {
+        pinLock.classList.add("hidden");
+        loadJSON(); // Load default
+      } else {
+        pinStatus.textContent = "Wrong PIN.";
+        pinInput.value = "";
       }
     }
+  });
 
-    function validateJSON() {
-      try {
-        JSON.parse(editor.value);
-        status.textContent = "✅ JSON is valid.";
-      } catch {
-        status.textContent = "❌ Invalid JSON.";
+  const editor = document.getElementById("editor");
+  const fileSelect = document.getElementById("fileSelect");
+  const status = document.getElementById("status");
+
+  fileSelect.addEventListener("change", loadJSON);
+
+  // GitHub Save Logic
+  const githubUser = "dsstaub";
+  const githubRepo = "dstaub";
+  const githubBranch = "main";
+
+  let githubToken = localStorage.getItem("gh_token") || "";
+
+  if (!githubToken) {
+    githubToken = prompt("Enter your GitHub token:");
+    if (githubToken) localStorage.setItem("gh_token", githubToken);
+  }
+
+  function loadJSON() {
+    const path = fileSelect.value;
+    fetch(path)
+      .then(res => res.json())
+      .then(data => {
+        editor.value = JSON.stringify(data, null, 2);
+        status.textContent = `Loaded ${path}`;
+      })
+      .catch(err => {
+        console.error(err);
+        status.textContent = `Error loading ${path}`;
+      });
+  }
+
+  async function saveJSON() {
+    const path = fileSelect.value.replace("/data/", "data/");
+    const apiUrl = `https://api.github.com/repos/${githubUser}/${githubRepo}/contents/${path}`;
+
+    try {
+      const newContent = editor.value;
+      const parsed = JSON.parse(newContent);
+
+      const getRes = await fetch(apiUrl, {
+        headers: { Authorization: `token ${githubToken}` }
+      });
+
+      const fileData = await getRes.json();
+      const sha = fileData.sha;
+
+      const commitMessage = `Admin Panel Update: ${path}`;
+      const payload = {
+        message: commitMessage,
+        content: btoa(unescape(encodeURIComponent(JSON.stringify(parsed, null, 2)))),
+        sha,
+        branch: githubBranch
+      };
+
+      const putRes = await fetch(apiUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `token ${githubToken}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (putRes.ok) {
+        status.textContent = `✅ Saved ${path} to GitHub!`;
+      } else {
+        const err = await putRes.json();
+        console.error(err);
+        status.textContent = `❌ GitHub error: ${err.message}`;
       }
+    } catch (err) {
+      console.error("Save failed:", err);
+      status.textContent = "❌ Could not save. Check console for details.";
     }
+  }
 
-    fileSelect.addEventListener("change", loadJSON);
-  </script>
+  function validateJSON() {
+    try {
+      JSON.parse(editor.value);
+      status.textContent = "✅ JSON is valid.";
+    } catch {
+      status.textContent = "❌ Invalid JSON.";
+    }
+  }
+</script>
 </body>
 </html>
