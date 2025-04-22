@@ -1,15 +1,10 @@
 {
-  "title": "Education & Training",
+  "title": "Education",
   "items": [
     {
       "institution": "Wheeling Park High School",
       "credential": "Diploma",
       "year": "1992"
-    },
-    {
-      "institution": "Dale Carnegie Leadership Course",
-      "credential": "Completed",
-      "year": ""
     }
   ]
 }
