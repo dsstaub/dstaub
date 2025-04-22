@@ -141,7 +141,8 @@
     .then(response => response.json())
     .then(facts => {
       const randomFact = facts[Math.floor(Math.random() * facts.length)];
-      document.getElementById("randomFact").textContent = `One random fact about me: ${randomFact}`;
+      
+document.getElementById("randomFact").innerHTML = `${randomFact}<br><br><span class="text-xs opacity-60">*Disclaimer: these facts are just for fun!</span>`;
     })
     .catch(error => {
       console.error("Couldn't load facts.json", error);
