@@ -30,7 +30,7 @@
     </div>
   </main>
   <script>
-  // *** RANDOM SNARKY REMARK LOGIC *** //
+    // *** RANDOM SNARKY REMARK LOGIC *** //
     fetch('/data/error_messages.json')
       .then(response => response.json())
       .then(messages => {
@@ -42,6 +42,11 @@
         console.error("Couldn't load 404 messages.", error);
         document.getElementById("notFoundMessage").textContent = "404 error. And now we’re both confused.";
       });
-</script>
+
+    // *** REDIRECT AFTER 10 SECONDS *** //
+    setTimeout(() => {
+      window.location.href = "/"; // just "/" to root index.html (add another path here if needed)
+    }, 10000);
+  </script>
 </body>
 </html>
