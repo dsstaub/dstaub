@@ -32,6 +32,26 @@
       <p class="text-center text-sm italic">Last updated: April 2025</p>
       <br />
 
+<div id="randomFact" class="my-4 text-sm italic text-gray-400 text-center"></div>
+
+<script>
+  const facts = [
+    "I’ve given names to at least 3 pieces of ground equipment.",
+    "I once fixed a thing with a gum wrapper and never told anyone.",
+    "I can taste the difference between ‘cold coffee’ and ‘coffee that got cold.’",
+    "I almost built a startup just to avoid texting someone back.",
+    "My ideal job title is ‘Operations Gremlin.’",
+    "One time I made eye contact with a raccoon at 4:17 AM and it changed my life.",
+    "I dream in command-line prompts sometimes.",
+    "I secretly believe most productivity is about control, not time.",
+    "If I could legally marry a Yeti tumbler, I might consider it.",
+    "I’ve rage-quit a job and coded a tool out of spite. Twice."
+  ];
+
+  const randomFact = facts[Math.floor(Math.random() * facts.length)];
+  document.getElementById("randomFact").textContent = `One random fact about me: ${randomFact}`;
+</script>
+
       <!-- RESUME -->
       <section class="glass bg-red-100 dark:bg-red-950 p-6 mb-6">
         <h2 class="text-xl font-semibold mb-3 text-red-400">View/Download My Resumé</h2>
