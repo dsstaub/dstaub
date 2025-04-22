@@ -30,17 +30,34 @@
       </p>
     </section>
 
-    <section class="glass bg-green-100 dark:bg-red-950 p-6 mb-12">
-      <h2 class="text-xl font-semibold text-red-400 mb-3">Contact Me</h2>
-      <ul class="space-y-1 text-sm text-zinc-600 dark:text-zinc-400">
-        <li>Email: <a href="mailto:resume@dstaub.app" class="text-cyan-600 dark:text-cyan-400 hover:underline">resume@dstaub.app</a></li>
-        <li>Phone: <a href="tel:+18787871376" class="text-cyan-600 dark:text-cyan-400 hover:underline">87.87.87.1376</a></li>
-        <li>Telegram: <a href="https://t.me/DStaub" class="text-cyan-600 dark:text-cyan-400 hover:underline">@DStaub</a></li>
-        <li>Web App: <a href="https://dstaub.app" target="_blank" class="text-cyan-600 dark:text-cyan-400 hover:underline">DStaub.app</a></li>
-        <li>Download PDF: <a href="https://github.com/dsstaub/dstaub/raw/main/documents/David_Staub_Resume_2024-04_v2.0.0.pdf" target="_blank" class="text-cyan-600 dark:text-cyan-400 underline">Resume</a></li>
-      </ul>
-    </section>
-
+    <!-- Contact Card -->
+      <section id="contactSection" class="glass bg-red-100 dark:bg-red-950 p-6 mb-12">
+        <h2 id="contactTitle" class="text-xl font-semibold text-red-400 mb-3"></h2>
+        <ul id="contactList" class="space-y-1 text-sm text-zinc-600 dark:text-zinc-400"></ul>
+      </section>
+      
   </main>
+  <script>
+
+  // Fetch Contact
+  fetch('/data/resume_cards/contact.json')
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('contactTitle').textContent = data.title;
+
+      const ul = document.getElementById('contactList');
+      data.items.forEach(item => {
+        const li = document.createElement('li');
+        li.innerHTML = `${item.type}: <a href="${item.href}" class="text-cyan-600 dark:text-cyan-400 hover:underline"${item.href.startsWith('http') ? ' target="_blank"' : ''}>${item.text}</a>`;
+        ul.appendChild(li);
+      });
+    })
+    .catch(error => {
+      console.error('Failed to load contact.json:', error);
+      const section = document.getElementById('contactSection');
+      section.innerHTML += '<p class="text-red-600 dark:text-red-400">Could not load contact info.</p>';
+    });
+
+  </script>
 </body>
 </html>
