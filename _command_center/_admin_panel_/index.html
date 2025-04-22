@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Command Center</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-zinc-900 text-white font-mono p-6">
+
+  <!-- PIN LOCK -->
+  <div id="pinLock" class="fixed inset-0 bg-zinc-950 flex flex-col items-center justify-center z-50">
+    <h2 class="text-2xl mb-4">Enter PIN</h2>
+    <input id="pinInput" type="password" maxlength="4" class="text-center p-2 rounded bg-zinc-800 border border-zinc-600 w-24 text-xl tracking-widest" autofocus />
+    <p id="pinStatus" class="mt-3 text-red-500 text-sm"></p>
+  </div>
+
+  <!-- ADMIN UI -->
+  <h1 class="text-3xl font-bold mb-4">/_command_center/</h1>
+
+  <label for="fileSelect" class="block mb-2 text-lg">Choose a JSON file to edit:</label>
+  <select id="fileSelect" class="mb-4 p-2 bg-zinc-800 rounded text-white w-full">
+    <optgroup label="Now">
+      <option value="/data/now/current.json">current.json</option>
+      <option value="/data/now/exploring.json">exploring.json</option>
+      <option value="/data/now/into.json">into.json</option>
+      <option value="/data/now/whats_next.json">whats_next.json</option>
+    </optgroup>
+    <optgroup label="Résumé">
+      <option value="/data/resume_cards/contact.json">contact.json</option>
+      <option value="/data/resume_cards/education.json">education.json</option>
+      <option value="/data/resume_cards/experience.json">experience.json</option>
+      <option value="/data/resume_cards/skills.json">skills.json</option>
+      <option value="/data/resume_cards/summary.json">summary.json</option>
+    </optgroup>
+    <optgroup label="Misc">
+      <option value="/data/facts.json">facts.json</option>
+      <option value="/data/error_messages.json">error_messages.json</option>
+    </optgroup>
+  </select>
+
+  <textarea id="editor" class="w-full h-[60vh] p-4 text-sm bg-zinc-800 text-green-300 rounded resize-none mb-4"></textarea>
+
+  <div class="flex gap-3">
+    <button onclick="saveJSON()" class="bg-green-600 hover:bg-green-500 px-4 py-2 rounded">Save</button>
+    <button onclick="loadJSON()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded">Reload</button>
+    <button onclick="validateJSON()" class="bg-yellow-600 hover:bg-yellow-500 px-4 py-2 rounded">Validate</button>
+  </div>
+
+  <p id="status" class="mt-4 text-sm text-zinc-400"></p>
+
+  <script>
+    const PIN = "6446";
+    const pinLock = document.getElementById("pinLock");
+    const pinInput = document.getElementById("pinInput");
+    const pinStatus = document.getElementById("pinStatus");
+
+    pinInput.addEventListener("keyup", (e) => {
+      if (e.key === "Enter" || pinInput.value.length === 4) {
+        if (pinInput.value === PIN) {
+          pinLock.classList.add("hidden");
+          loadJSON(); // Load default on entry
+        } else {
+          pinStatus.textContent = "Wrong PIN.";
+          pinInput.value = "";
+        }
+      }
+    });
+
+    const editor = document.getElementById("editor");
+    const fileSelect = document.getElementById("fileSelect");
+    const status = document.getElementById("status");
+
+    function loadJSON() {
+      const path = fileSelect.value;
+      fetch(path)
+        .then(res => res.json())
+        .then(data => {
+          editor.value = JSON.stringify(data, null, 2);
+          status.textContent = `Loaded ${path}`;
+        })
+        .catch(err => {
+          console.error(err);
+          status.textContent = `Error loading ${path}`;
+        });
+    }
+
+    function saveJSON() {
+      try {
+        const parsed = JSON.parse(editor.value);
+        console.log("Parsed JSON (would save):", parsed);
+        status.textContent = "✅ JSON is valid. Saving not yet implemented.";
+      } catch (err) {
+        status.textContent = "❌ Invalid JSON. Fix it before saving.";
+      }
+    }
+
+    function validateJSON() {
+      try {
+        JSON.parse(editor.value);
+        status.textContent = "✅ JSON is valid.";
+      } catch {
+        status.textContent = "❌ Invalid JSON.";
+      }
+    }
+
+    fileSelect.addEventListener("change", loadJSON);
+  </script>
+</body>
+</html>
