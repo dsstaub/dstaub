@@ -68,6 +68,37 @@
   });
 
   const editor = document.getElementById("editor");
+      function normalizeQuotes(text) {
+      return text
+        .replace(/[""]/g, '"')
+        .replace(/[‘’]/g, "'")
+        .replace(/\u2013|\u2014/g, "-")
+        .replace(/\u00A0/g, " ");
+    }
+
+    // Clean input in real time
+    editor.addEventListener("input", () => {
+      const clean = normalizeQuotes(editor.value);
+      if (editor.value !== clean) {
+        const cursor = editor.selectionStart;
+        editor.value = clean;
+        editor.setSelectionRange(cursor, cursor); // preserve cursor position
+      }
+    });
+
+    // Clean on paste too, just in case
+    editor.addEventListener("paste", (e) => {
+      e.preventDefault();
+      const paste = (e.clipboardData || window.clipboardData).getData("text");
+      const cleaned = normalizeQuotes(paste);
+      const start = editor.selectionStart;
+      const end = editor.selectionEnd;
+      const before = editor.value.slice(0, start);
+      const after = editor.value.slice(end);
+      editor.value = before + cleaned + after;
+      const cursor = start + cleaned.length;
+      editor.setSelectionRange(cursor, cursor);
+    });
   const fileSelect = document.getElementById("fileSelect");
   const status = document.getElementById("status");
 
