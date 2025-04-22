@@ -137,7 +137,6 @@
       if (e.target.id === "imageModal") closeModal();
     });
     
-    <script>
   fetch('/data/facts.json')
     .then(response => response.json())
     .then(facts => {
@@ -148,7 +147,7 @@
       console.error("Couldn't load facts.json", error);
       document.getElementById("randomFact").textContent = "Couldn't load my brain today.";
     });
-</script>
+    
   </script>
 </body>
 </html>
