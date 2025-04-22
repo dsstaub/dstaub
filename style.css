@@ -49,7 +49,7 @@ header {
 
 /* Bottom nav links */
 #bottomNav a {
-  font-size: 1.1rem;
+  font-size: 1.0rem;
   text-align: center;
   transition: color 0.2s ease;
 }
