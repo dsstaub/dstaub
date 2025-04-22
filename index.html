@@ -53,61 +53,17 @@
         </ul>
       </section>
 
-      <!-- CURRENTLY BUILDING -->
-      <section class="glass bg-green-100 dark:bg-green-950 p-6 mb-6">
-        <h2 class="text-xl font-semibold mb-3 text-green-400">Currently Building</h2>
-        <ul class="list-disc pl-5 space-y-2">
-          <li>This site (from scratch) -- self-written, hosted on my own domain, mobile-first, dark-mode, PWA-ready</li>
-          <li>A personal resumé that grows with me</li>
-          <li>A music hub (just for kicks) to show off my original singles + album drops</li>
-        </ul>
-      </section>
+      <!-- CURRENTLY BUILDING CARD -->
+      <section id="currentlyBuildingSection" class="glass bg-green-100 dark:bg-green-950 p-6 mb-6"></section>
 
-      <!-- LEARNING & EXPLORING -->
-      <section class="glass bg-blue-100 dark:bg-blue-950 p-6 mb-6">
-        <h2 class="text-xl font-semibold mb-3 text-sky-400">Learning & Exploring</h2>
-        <ul class="list-disc pl-5 space-y-2">
-          <li>Still learning frontend coding (HTML, JS, Tailwind, etc.)</li>
-          <li>Starting on iOS + Android mobile apps</li>
-          <li>Exploring tech + AI tools that support personal growth</li>
-          <li>Writing lyrics, building vibes</li>
-        </ul>
-      </section>
+      <!-- LEARNING & EXPLORING CARD -->
+      <section id="learningExploringSection" class="glass bg-blue-100 dark:bg-blue-950 p-6 mb-6"></section>
 
-      <!-- CURRENT VIBES -->
-      <section class="glass bg-yellow-100 dark:bg-yellow-950 p-6 mb-6">
-        <h2 class="text-xl font-semibold mb-3 text-yellow-400">What I’m Into</h2>
-        <ul class="list-disc pl-5 space-y-2">
-          <li>
-            I have a Yeti drinkware obsession (ask me!). 
-            <a href="https://www.icloud.com/sharedalbum/#B1sGlKcM6GOG6Ck" 
-               class="hover:text-blue-400 transition-colors duration-200" 
-               target="_blank" 
-               rel="noopener noreferrer">
-              Here's a small batch of them.
-            </a>
-          </li>
-          <li>Walking -- both kinds</li>
-          <li>Overthinking fonts and layout spacing</li>
-          <li>
-            Honestly,
-            <span onclick="openModal()" class="cursor-pointer hover:opacity-70 select-none">
-              just overthinking.
-            </span>
-          </li>
-          <li>AirPods in. Tunnel vision on. Homemade Diet Dr Pepper in a Yeti mug.</li>
-        </ul>
-      </section>
+      <!-- CURRENT VIBES CARD -->
+      <section id="currentVibesSection" class="glass bg-yellow-100 dark:bg-yellow-950 p-6 mb-6"></section>
 
-      <!-- ON THE HORIZON -->
-      <section class="glass bg-red-100 dark:bg-red-950 p-6 mb-6">
-        <h2 class="text-xl font-semibold mb-3 text-red-400">What’s Coming Up</h2>
-        <ul class="list-disc pl-5 space-y-2">
-          <li>Major job transition -- change is in the air</li>
-          <li>More life. More happiness. More personal pride.</li>
-          <li>Updating resumé + prepping for what’s next</li>
-        </ul>
-      </section>
+      <!-- ON THE HORIZON CARD -->
+      <section id="onTheHorizonSection" class="glass bg-red-100 dark:bg-red-950 p-6 mb-6"></section>
       
       <div class="text-center">
         <a href="/contact/index.html" class="btn">Contact Me!</a>
@@ -124,7 +80,7 @@
   </div>
 
   <script>
-    // EASTER EGG POPUP LOGIC
+    // *** EASTER EGG POPUP LOGIC *** //
       function openModal() {
         document.getElementById("imageModal").classList.remove("hidden");
         document.getElementById("imageModal").classList.add("flex");
@@ -137,7 +93,7 @@
         if (e.target.id === "imageModal") closeModal();
       });
  
-    // RANDOM FACT LOGIC   
+    // *** RANDOM FACT LOGIC *** //
       fetch('/data/facts.json')
         .then(response => response.json())
         .then(facts => {
@@ -156,7 +112,104 @@
           console.error("Couldn't load facts.json", error);
           document.getElementById("randomFact").textContent = "Couldn't load my brain today.";
         });
-    
+
+    // *** CURRENTLY BUILDING CARD LOGIC *** //
+      fetch('/data/current.json')
+        .then(response => response.json())
+        .then(data => {
+          const section = document.getElementById("currentlyBuildingSection");
+
+          // Build the section header
+          const header = `<h2 class="text-xl font-semibold mb-3 text-green-400">${data.title}</h2>`;
+
+          // Build the list of items
+          const listItems = data.items.map(item => `<li>${item}</li>`).join("");
+          const list = `<ul class="list-disc pl-5 space-y-2">${listItems}</ul>`;
+
+          section.innerHTML = `${header}${list}`;
+        })
+        .catch(error => {
+          console.error("Couldn't load currently-building.json", error);
+          document.getElementById("currentlyBuildingSection").innerHTML = `<p class="text-red-500">Couldn’t load build data.</p>`;
+        });
+
+    // *** LEARNING & EXPLORING CARD LOGIC *** //
+      fetch('/data/exploring.json')
+        .then(response => response.json())
+        .then(data => {
+          const section = document.getElementById("learningExploringSection");
+
+          // Build the section header
+          const header = `<h2 class="text-xl font-semibold mb-3 text-sky-400">${data.title}</h2>`;
+
+          // Build the list of items
+          const listItems = data.items.map(item => `<li>${item}</li>`).join("");
+          const list = `<ul class="list-disc pl-5 space-y-2">${listItems}</ul>`;
+
+          section.innerHTML = `${header}${list}`;
+        })
+        .catch(error => {
+          console.error("Couldn't load learning-exploring.json", error);
+          document.getElementById("learningExploringSection").innerHTML = `<p class="text-red-500">Couldn’t load learning data.</p>`;
+        });
+
+    // *** CURRENT VIBES CARD LOGIC *** // 
+      fetch('/data/into.json')
+        .then(response => response.json())
+        .then(data => {
+          const section = document.getElementById("currentVibesSection");
+
+          // Title
+          const header = `<h2 class="text-xl font-semibold mb-3 text-yellow-400">${data.title}</h2>`;
+
+          // List items with conditional logic
+          const listItems = data.items.map(item => {
+            let content = item.text;
+
+            // Link included
+            if (item.link) {
+              content += ` <a href="${item.link.href}" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400 transition-colors duration-200">${item.link.text}</a>`;
+            }
+
+            // Action included
+            if (item.action) {
+              content = content.replace(
+                item.text,
+                `<span onclick="${item.action}()" class="cursor-pointer hover:opacity-70 select-none">${item.text}</span>`
+              );
+            }
+
+            return `<li>${content}</li>`;
+          }).join("");
+
+          section.innerHTML = `${header}<ul class="list-disc pl-5 space-y-2">${listItems}</ul>`;
+        })
+        .catch(error => {
+          console.error("Couldn't load current-vibes.json", error);
+          document.getElementById("currentVibesSection").innerHTML = `<p class="text-red-500">Couldn’t load vibes data.</p>`;
+        });
+        
+     // *** ON THE HORIZON CARD LOGIC *** //
+       fetch('/data/whats_next.json')
+        .then(response => response.json())
+        .then(data => {
+          const section = document.getElementById("onTheHorizonSection");
+
+          // Header
+          const header = `<h2 class="text-xl font-semibold mb-3 text-red-400">${data.title}</h2>`;
+
+          // List Items
+          const listItems = data.items.map(item => `<li>${item}</li>`).join("");
+          const list = `<ul class="list-disc pl-5 space-y-2">${listItems}</ul>`;
+
+          section.innerHTML = `${header}${list}`;
+        })
+        .catch(error => {
+          console.error("Couldn't load on-the-horizon.json", error);
+          document.getElementById("onTheHorizonSection").innerHTML = `<p class="text-red-500">Couldn’t load future plans.</p>`;
+        });
+
+
   </script>
 </body>
 </html>

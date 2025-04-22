@@ -25,7 +25,7 @@
     <div class="glass bg-white/40 dark:bg-white/10 p-10 rounded-xl backdrop-blur-sm border border-white/20">
       <h1 class="text-xl font-semibold mb-2 text-zinc-800 dark:text-white">DStaub</h1>
       <h2 class="text-4xl font-bold mb-4">404 – Not Found</h2>
-      <p class="mb-6 text-zinc-600 dark:text-zinc-400">Well this is awkward. That page doesn’t exist.</p>
+      <p id="notFoundMessage" class="mb-6 text-zinc-600 dark:text-zinc-400"></p>
       <a href="/" class="text-cyan-600 dark:text-cyan-400 hover:underline font-medium">Return to homepage</a>
       <p class="mt-10 text-sm text-zinc-500 dark:text-zinc-400">
         Or keep digging… maybe there’s something fun hiding in the
@@ -33,5 +33,19 @@
       </p>
     </div>
   </main>
+  <script>
+  // *** RANDOM SNARKY REMARK LOGIC *** //
+    fetch('/data/error_messages.json')
+      .then(response => response.json())
+      .then(messages => {
+        const randomIndex = Math.floor(Math.random() * messages.length);
+        const message = messages[randomIndex];
+        document.getElementById("notFoundMessage").textContent = message;
+      })
+      .catch(error => {
+        console.error("Couldn't load 404 messages.", error);
+        document.getElementById("notFoundMessage").textContent = "404 error. And now we’re both confused.";
+      });
+</script>
 </body>
 </html>
