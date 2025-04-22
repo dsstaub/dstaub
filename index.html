@@ -33,30 +33,15 @@
       <br />
 
       <!-- RANDOM FUN FACT -->
-      <section class="glass bg-green-100 dark:bg-yellow-950 p-6 mb-6">
+      <section class="glass bg-yellow-100 dark:bg-yellow-950 p-6 mb-6">
         <h2 class="text-xl font-semibold mb-3 text-yellow-400">
-        Random Fact About Me</h2>
+        One Random Fact About Me</h2>
         <br>
-<div id="randomFact" class="my-4 text-sm italic text-center"></div>
+<div id="randomFact" class="my-4 text-sm italic text-gray-400 text-center">
+  Loading a random fact about me…
+</div>
     </section>
     
-<script>
-  const facts = [
-    "I’ve given names to at least 3 pieces of ground equipment.",
-    "I once fixed a thing with a gum wrapper and never told anyone.",
-    "I can taste the difference between ‘cold coffee’ and ‘coffee that got cold.’",
-    "I almost built a startup just to avoid texting someone back.",
-    "My ideal job title is ‘Operations Gremlin.’",
-    "One time I made eye contact with a raccoon at 4:17 AM and it changed my life.",
-    "I dream in command-line prompts sometimes.",
-    "I secretly believe most productivity is about control, not time.",
-    "If I could legally marry a Yeti tumbler, I might consider it.",
-    "I’ve rage-quit a job and coded a tool out of spite. Twice."
-  ];
-
-  const randomFact = facts[Math.floor(Math.random() * facts.length)];
-  document.getElementById("randomFact").textContent = `One random fact about me: ${randomFact}`;
-</script>
 
       <!-- RESUME -->
       <section class="glass bg-red-100 dark:bg-red-950 p-6 mb-6">
@@ -151,6 +136,19 @@
     document.getElementById("imageModal").addEventListener("click", (e) => {
       if (e.target.id === "imageModal") closeModal();
     });
+    
+    <script>
+  fetch('/data/facts.json')
+    .then(response => response.json())
+    .then(facts => {
+      const randomFact = facts[Math.floor(Math.random() * facts.length)];
+      document.getElementById("randomFact").textContent = `One random fact about me: ${randomFact}`;
+    })
+    .catch(error => {
+      console.error("Couldn't load facts.json", error);
+      document.getElementById("randomFact").textContent = "Couldn't load my brain today.";
+    });
+</script>
   </script>
 </body>
 </html>
