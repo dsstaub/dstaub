@@ -1,0 +1,25 @@
+{
+  "title": "What I’m Into",
+  "items": [
+    {
+      "text": "I have a Yeti drinkware obsession (ask me!)",
+      "link": {
+        "text": "Here's a small batch of them.",
+        "href": "https://www.icloud.com/sharedalbum/#B1sGlKcM6GOG6Ck"
+      }
+    },
+    {
+      "text": "Walking -- both kinds"
+    },
+    {
+      "text": "Overthinking fonts and layout spacing"
+    },
+    {
+      "text": "Honestly, just overthinking.",
+      "action": "openModal"
+    },
+    {
+      "text": "AirPods in. Tunnel vision on. Homemade Diet Dr Pepper in a Yeti mug."
+    }
+  ]
+}

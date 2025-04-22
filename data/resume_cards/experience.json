@@ -1,0 +1,43 @@
+[
+  {
+    "title": "Ramp Agent / Lav & Water Agent",
+    "company": "Jetstream Ground Services",
+    "location": "PIT",
+    "start": "2024-10",
+    "end": "2024-04",
+    "details": [
+      "Service aircraft potable water & lavatory systems",
+      "Supports ramp ops incl. marshaling, baggage, pushback",
+      "Conducts safety inspections on GSE",
+      "Communicates with gate and flight crews"
+    ]
+  },
+  {
+    "title": "Shift/Operations Assistant",
+    "company": "Amazon Logistics",
+    "location": "",
+    "start": "2019",
+    "end": "2024",
+    "details": [
+      "Led teams of 20–200 during peak periods",
+      "Created workflow simplifications adopted network-wide",
+      "Delivered daily peer coaching & training",
+      "Advanced leadership readiness philosophy"
+    ]
+  },
+  {
+    "title": "Assistant Operations Manager",
+    "company": "The Kroger Co",
+    "location": "",
+    "start": "2013",
+    "end": "2019",
+    "details": [
+      "Oversaw Fuel Centers, Pharmacies, Grocery, General Merchandise, and Perishable Depts",
+      "Managed compliance for EPA, FDA, USDA, OSHA, Health Code",
+      "Tracked product recalls and Country-of-Origin labeling",
+      "Acted as OSHA Officer, Safety Director of Ops, and supported internal training",
+      "Coordinated delivery schedules with minimal shrink",
+      "Mentored leads and associates toward advancement"
+    ]
+  }
+]

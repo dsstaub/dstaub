@@ -1,0 +1,30 @@
+{
+  "title": "Contact Me",
+  "items": [
+    {
+      "type": "Email",
+      "text": "resume@dstaub.app",
+      "href": "mailto:resume@dstaub.app"
+    },
+    {
+      "type": "Phone",
+      "text": "87.87.87.1376",
+      "href": "tel:+18787871376"
+    },
+    {
+      "type": "Telegram",
+      "text": "@DStaub",
+      "href": "https://t.me/DStaub"
+    },
+    {
+      "type": "Web App",
+      "text": "DStaub.app",
+      "href": "https://dstaub.app"
+    },
+    {
+      "type": "Download PDF",
+      "text": "Resume",
+      "href": "https://github.com/dsstaub/dstaub/raw/main/documents/David_Staub_Resume_2024-04_v2.0.0.pdf"
+    }
+  ]
+}
