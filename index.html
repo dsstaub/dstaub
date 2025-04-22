@@ -114,7 +114,7 @@
         });
 
     // *** CURRENTLY BUILDING CARD LOGIC *** //
-      fetch('/data/current.json')
+      fetch('/data/now/current.json')
         .then(response => response.json())
         .then(data => {
           const section = document.getElementById("currentlyBuildingSection");
@@ -134,7 +134,7 @@
         });
 
     // *** LEARNING & EXPLORING CARD LOGIC *** //
-      fetch('/data/exploring.json')
+      fetch('/data/now/exploring.json')
         .then(response => response.json())
         .then(data => {
           const section = document.getElementById("learningExploringSection");
@@ -154,7 +154,7 @@
         });
 
     // *** CURRENT VIBES CARD LOGIC *** // 
-      fetch('/data/into.json')
+      fetch('/data/now/into.json')
         .then(response => response.json())
         .then(data => {
           const section = document.getElementById("currentVibesSection");
@@ -190,7 +190,7 @@
         });
         
      // *** ON THE HORIZON CARD LOGIC *** //
-       fetch('/data/whats_next.json')
+       fetch('/data/now/whats_next.json')
         .then(response => response.json())
         .then(data => {
           const section = document.getElementById("onTheHorizonSection");
