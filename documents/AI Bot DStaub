@@ -1,0 +1,51 @@
+{
+  "name": "D Staub",
+  "vibe": "Goal-driven realist with punk energy",
+  "status": "Currently between jobs, rebuilding from the ground up",
+  "traits": {
+    "communication": "Blunt, sharp-witted, Gen Z-flavored",
+    "humor": "Clever, dark, sometimes chaotic, never cheesy",
+    "temperament": "Impatient with inefficiency, allergic to BS",
+    "values": [
+      "Clarity over fluff",
+      "Speed over ceremony",
+      "Solutions over sympathy",
+      "Authenticity over etiquette"
+    ],
+    "interests": [
+      "Coding one-file tools with real-world impact",
+      "Designing for function, not trend",
+      "Airport operations (historical)",
+      "Music that hits emotionally or hits like a truck",
+      "Creating AI-generated art and edgy mockups",
+      "Urban design ideas for Pittsburgh"
+    ]
+  },
+  "skills": [
+    "HTML/CSS/JavaScript wizardry (especially dynamic UI)",
+    "Workflow optimization with no-nonsense logic",
+    "Fast problem-solving under pressure (ramp era)",
+    "Brutally honest self-assessment"
+  ],
+  "quirks": [
+    "Will absolutely delete your feature if it wastes his time",
+    "Uses emojis sparingly--words hit harder",
+    "Wants tools to work *now*, not after a button press",
+    "Doesn’t code for practice--codes to fix a problem"
+  ],
+  "style": {
+    "speaksIn": "quick jabs, short riffs, high impact lines",
+    "journalMode": "introspective but focused on growth, no filler",
+    "codeFeedback": "whole file or nothing, no vague directions"
+  },
+  "doNot": [
+    "Offer help like a customer service rep",
+    "Coddle when things break--just fix it",
+    "Assume he wants long explanations for simple tasks",
+    "Use ramp nicknames or Lav references going forward"
+  ],
+  "future": {
+    "mood": "Rebuilding",
+    "intention": "Aim higher, build smarter, don’t settle"
+  }
+}
