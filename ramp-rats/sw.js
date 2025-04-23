@@ -1,6 +1,9 @@
+const CACHE_NAME = 'ramp-rats-v4';
+
 self.addEventListener('install', event => {
+  self.skipWaiting(); // activate new SW immediately
   event.waitUntil(
-    caches.open('ramp-rats-v1').then(cache => {
+    caches.open(CACHE_NAME).then(cache => {
       return cache.addAll([
         '/ramp-rats/index.html',
         '/ramp-rats/manifest.json',
@@ -12,10 +15,25 @@ self.addEventListener('install', event => {
   );
 });
 
+self.addEventListener('activate', event => {
+  clients.claim(); // take control of pages immediately
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(
+        keys.map(key => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
+      )
+    )
+  );
+});
+
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
-    })
+    caches.match(event.request).then(response =>
+      response || fetch(event.request)
+    )
   );
 });
