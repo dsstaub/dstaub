@@ -93,6 +93,7 @@
 
   <script>
     let questions = [];
+    let usedQuestions = [];
 
     const chat = document.getElementById('chat');
     const options = document.getElementById('options');
@@ -121,23 +122,43 @@
 
     function showOptions() {
       options.innerHTML = '';
-      questions.forEach((q) => {
-        const btn = document.createElement('button');
-        btn.className = 'option';
-        btn.innerText = q.question;
-        btn.onclick = () => {
-          addMessage(q.question, 'user');
+      if (questions.length > 0) {
+        questions.forEach((q, index) => {
+          const btn = document.createElement('button');
+          btn.className = 'option';
+          btn.innerText = q.question;
+          btn.onclick = () => {
+            addMessage(q.question, 'user');
+            const answer = q.answer;
+            usedQuestions.push(q);
+            questions.splice(index, 1);
+            showTypingIndicator();
+            setTimeout(() => {
+              removeTypingIndicator();
+              addMessage(answer, 'bot');
+              showOptions();
+            }, 1300);
+          };
+          options.appendChild(btn);
+        });
+      } else {
+        const finalBtn = document.createElement('button');
+        finalBtn.className = 'option';
+        finalBtn.innerText = 'How do I offer you an in-person interview?';
+        finalBtn.onclick = () => {
+          addMessage('How do I offer you an in-person interview?', 'user');
           showTypingIndicator();
           setTimeout(() => {
             removeTypingIndicator();
-            addMessage(q.answer, 'bot');
+            addMessage("You can contact me directly at dstaub.app/contact. Thanks for your time! I look forward to meeting you in real life!", 'bot');
+            options.innerHTML = '';
           }, 1300);
         };
-        options.appendChild(btn);
-      });
+        options.appendChild(finalBtn);
+      }
     }
 
-    fetch('/interview-simulator/data-interview-simulator.json')
+    fetch('questions.json')
       .then(res => res.json())
       .then(data => {
         questions = data;
