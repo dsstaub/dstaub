@@ -234,8 +234,21 @@ And I knew just when to stop
 <hr>
 
 <section id="contactCard" style="max-width: 600px; background: rgba(0,0,0,0.5); padding: 1.5rem; border-radius: 10px; margin-top: 4rem; text-align: center; box-shadow: 0 0 12px rgba(0,0,0,0.6);">
-  <h2 style="margin-bottom: 1rem;">Loading Contact Info...</h2>
-  <ul id="contactList" style="list-style: none; padding: 0; margin: 0;"></ul>
+  <h2 style="margin-bottom: 1rem;">Stay in Touch</h2>
+  <ul style="list-style: none; padding: 0; margin: 0;">
+    <li style="margin: 0.5rem 0;">
+      <strong>Email:</strong>
+      <a href="mailto:ramp-rats@dstaub.app" style="color: #66ccff; text-decoration: none;">
+        ramp-rats@dstaub.app
+      </a>
+    </li>
+    <li style="margin: 0.5rem 0;">
+      <strong>Phone:</strong>
+      <a href="tel:+18787871376" style="color: #66ccff; text-decoration: none;">
+        87.87.87.1376 (yea, it's a real number)
+      </a>
+    </li>
+  </ul>
 </section>
 
   <footer>
@@ -250,34 +263,6 @@ And I knew just when to stop
         .then(() => console.log('Service Worker registered.'))
         .catch(err => console.error('Service Worker failed:', err));
     }
-    
-      fetch('/data/resume_cards/contact.json')
-    .then(res => res.json())
-    .then(data => {
-      const section = document.getElementById('contactCard');
-      const title = section.querySelector('h2');
-      const list = document.getElementById('contactList');
-
-      title.textContent = data.title;
-
-      data.items.forEach(item => {
-        const li = document.createElement('li');
-        li.style.margin = '0.5rem 0';
-
-        li.innerHTML = `
-          <strong>${item.type}:</strong>
-          <a href="${item.href}" style="color: #66ccff; text-decoration: none;" target="_blank" rel="noopener noreferrer">
-            ${item.text}
-          </a>
-        `;
-
-        list.appendChild(li);
-      });
-    })
-    .catch(err => {
-      document.getElementById('contactCard').innerHTML = '<p style="color: #ccc;">Could not load contact info.</p>';
-      console.error('Failed to load contact.json:', err);
-    });
 
   </script>
 </body>
