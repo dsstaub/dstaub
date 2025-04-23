@@ -25,13 +25,14 @@
       border-bottom: 1px solid #333;
     }
 
-    #chat {
-      flex-grow: 1;
-      padding: 1rem;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-    }
+      #chat {
+        flex-grow: 1;
+        overflow-y: auto;
+        max-height: calc(100vh - 150px); /* keeps room for header and buttons */
+        display: flex;
+        flex-direction: column;
+        scroll-behavior: smooth;
+      }
 
     .msg {
       max-width: 75%;
@@ -98,13 +99,18 @@
     const chat = document.getElementById('chat');
     const options = document.getElementById('options');
 
-    function addMessage(text, sender = 'bot') {
-      const msg = document.createElement('div');
-      msg.classList.add('msg', sender);
-      msg.innerHTML = text;
-      chat.appendChild(msg);
-      chat.scrollTop = chat.scrollHeight;
-    }
+      function addMessage(text, sender = 'bot') {
+        const msg = document.createElement('div');
+        msg.classList.add('msg', sender);
+        msg.innerHTML = text;
+        chat.appendChild(msg);
+
+        if (sender === 'bot') {
+          msg.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          chat.scrollTop = chat.scrollHeight; // default for user messages
+        }
+      }
 
     function showTypingIndicator() {
       const typing = document.createElement('div');
