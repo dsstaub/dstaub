@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ramp-rats-v4';
+const CACHE_NAME = 'ramp-rats-v5';
 
 self.addEventListener('install', event => {
   self.skipWaiting(); // activate new SW immediately
