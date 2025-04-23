@@ -1,0 +1,14 @@
+[
+  {
+    "question": "Tell me about a time you solved a problem.",
+    "answer": "**Situation:** Our ground ops system was glitching during a high-volume turnaround window...\n\n**Task:** I needed to manually coordinate five aircraft using broken or unavailable ground equipment...\n\n**Action:** I organized a backup crew, leveraged available GSE, then built a digital tool after the shift to optimize turnaround planning...\n\n**Result:** We avoided delay codes, and I later deployed the tool shift-wide, cutting coordination time by 30%."
+  },
+  {
+    "question": "What's your greatest strength?",
+    "answer": "**Situation:** I'm often dropped into chaotic, high-pressure environments...\n\n**Task:** My goal is to bring clarity and direction without slowing things down...\n\n**Action:** I created systems, dashboards, and workflows--especially under time pressure...\n\n**Result:** People rely on me to 'make sense of the madness' and turn stress into strategy."
+  },
+  {
+    "question": "Tell me about a failure and how you handled it.",
+    "answer": "**Situation:** I once tried to implement a scheduling tool without properly consulting the team using it...\n\n**Task:** The tool technically worked--but adoption was near zero.\n\n**Action:** I stopped development, asked for feedback, rebuilt based on real needs...\n\n**Result:** Usage shot up and people actually thanked me for it. I learned user input is king."
+  }
+]

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interview Simulator</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #0a0a0a;
+      font-family: "Courier New", monospace;
+      color: #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background: #111;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: bold;
+      border-bottom: 1px solid #333;
+    }
+
+    #chat {
+      flex-grow: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .msg {
+      max-width: 75%;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 1rem;
+      line-height: 1.4;
+      white-space: pre-wrap;
+    }
+
+    .user {
+      background-color: #007aff;
+      color: white;
+      align-self: flex-end;
+      margin-left: auto;
+    }
+
+    .bot {
+      background-color: #333;
+      color: #e0e0e0;
+      align-self: flex-start;
+      margin-right: auto;
+    }
+
+    #options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      padding: 1rem;
+      background-color: #111;
+      border-top: 1px solid #333;
+    }
+
+    .option {
+      background-color: #1f1f1f;
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      cursor: pointer;
+      border: 1px solid #444;
+      font-size: 0.875rem;
+      transition: background-color 0.2s;
+    }
+
+    .option:hover {
+      background-color: #007aff;
+      color: white;
+    }
+
+    .typing {
+      font-style: italic;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <header>Interview Simulator</header>
+  <div id="chat"></div>
+  <div id="options"></div>
+
+  <script>
+    let questions = [];
+
+    const chat = document.getElementById('chat');
+    const options = document.getElementById('options');
+
+    function addMessage(text, sender = 'bot') {
+      const msg = document.createElement('div');
+      msg.classList.add('msg', sender);
+      msg.innerText = text;
+      chat.appendChild(msg);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+      const typing = document.createElement('div');
+      typing.id = "typingIndicator";
+      typing.className = 'msg bot typing';
+      typing.innerText = '...';
+      chat.appendChild(typing);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function removeTypingIndicator() {
+      const typing = document.getElementById("typingIndicator");
+      if (typing) typing.remove();
+    }
+
+    function showOptions() {
+      options.innerHTML = '';
+      questions.forEach((q) => {
+        const btn = document.createElement('button');
+        btn.className = 'option';
+        btn.innerText = q.question;
+        btn.onclick = () => {
+          addMessage(q.question, 'user');
+          showTypingIndicator();
+          setTimeout(() => {
+            removeTypingIndicator();
+            addMessage(q.answer, 'bot');
+          }, 1300);
+        };
+        options.appendChild(btn);
+      });
+    }
+
+    fetch('questions.json')
+      .then(res => res.json())
+      .then(data => {
+        questions = data;
+        addMessage("Hey. Let’s pretend this is an interview. Pick a question below.");
+        showOptions();
+      })
+      .catch(err => {
+        addMessage("Failed to load questions. Try again later.");
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
