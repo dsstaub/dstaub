@@ -40,163 +40,43 @@
     "answer": "**Situation:** I was dropped into a situation where that skill was the only thing keeping the operation upright...\n\n**Task:** I had to step up and handle it without waiting for direction...\n\n**Action:** I improvised, optimized, and kept it moving--leaning fully on my ability to adapt and act fast...\n\n**Result:** We not only pulled it off--we actually improved the process moving forward."
   },
   {
-    "question": "Tell me about a time you demonstrated time management.",
-    "answer": "**Situation:** I was balancing multiple plane turns, equipment assignments, and a training session for a new hire...\n\n**Task:** Make sure all flights stayed on time while onboarding someone new...\n\n**Action:** I built a mini schedule with flex slots for chaos. Stuck to 10-minute blocks and delegated smartly...\n\n**Result:** Everything ran on time, the new hire felt supported, and no task got half-assed."
+    "question": "Tell me about a time you improved efficiency in a warehouse setting.",
+    "answer": "**Situation:** At Amazon, our conveyor belt packing area kept getting jammed during peak shifts...\n\n**Task:** Identify the choke point and improve throughput without extra headcount...\n\n**Action:** I shadowed the workflow, built a basic FPH (flow per hour) calculator, and identified where bottlenecks were happening...\n\n**Result:** After we rebalanced the roles, throughput jumped 18% in the first week--and I got moved into a problem-solving role full-time."
   },
   {
-    "question": "Describe a time you had to work under pressure.",
-    "answer": "**Situation:** Multiple inbound flights landed early, and our crew was already stretched...\n\n**Task:** Turn two jets with the same equipment, back-to-back, without causing delay codes...\n\n**Action:** I rerouted gear, cleared one faster than standard, and hustled like hell...\n\n**Result:** Both turned on time. One of the flight crews even said, 'Damn, that was fast.'"
+    "question": "Describe a time you handled a high-pressure situation at work.",
+    "answer": "**Situation:** During Black Friday at Kroger, our POS system froze while lines were wrapped through the store...\n\n**Task:** Keep customers calm and get things moving again...\n\n**Action:** I redirected traffic to working registers, used a calculator and clipboard to process returns manually, and kept a running total for backup...\n\n**Result:** We made it through the hour with zero walkouts, and my store manager said it was the calmest chaos he’d seen."
   },
   {
-    "question": "Give an example of a time you improved team performance.",
-    "answer": "**Situation:** Morale was tanking on back-to-back rainy shifts...\n\n**Task:** Keep people from burning out or slacking off...\n\n**Action:** I made a rotating task system with dry breaks, pushed for more direct comms with ops, and brought donuts...\n\n**Result:** The vibe changed, productivity came back, and people actually signed up for the next weekend voluntarily."
+    "question": "Tell me about a time you created or used a system to solve a recurring issue.",
+    "answer": "**Situation:** Inventory tracking was off at Kroger, especially during truck unloads...\n\n**Task:** Reduce missed items and shrinkage during receiving...\n\n**Action:** I made a printable intake sheet with barcodes and pre-assigned zones that the team could scan and log quickly...\n\n**Result:** Errors dropped by 90%, and we started catching warehouse mis-pulls before they hit shelves."
   },
   {
-    "question": "Describe a time when you exceeded expectations.",
-    "answer": "**Situation:** I was asked to clean up a single line of data in our logs...\n\n**Task:** Just fix the row--nothing more...\n\n**Action:** I fixed it... and then built a validator that prevented that kind of entry issue ever again...\n\n**Result:** My lead said, 'I didn’t ask for that, but thank you for doing it anyway.'"
+    "question": "Describe a time you had to take initiative without being told.",
+    "answer": "**Situation:** At Amazon, leadership was rotating and no one was owning the floor assignment board...\n\n**Task:** Avoid a mid-shift mess from people not knowing where to go...\n\n**Action:** I made a dry-erase template with shift role slots, then started assigning based on previous performance and real-time needs...\n\n**Result:** We didn’t just avoid chaos--we improved pack rates, and new leads started copying my system."
   },
   {
-    "question": "Tell me about a time you helped someone improve.",
-    "answer": "**Situation:** A new team member kept making the same checklist mistake...\n\n**Task:** Help them fix it without embarrassing them...\n\n**Action:** I casually walked the process with them, asking questions, letting them find the slip-up themselves...\n\n**Result:** They got it. Didn’t miss a step again. Even started helping others by week two."
+    "question": "Tell me about a time you turned a bad situation into a win.",
+    "answer": "**Situation:** A key Kroger department manager called off last-minute during a holiday rush...\n\n**Task:** Keep the department covered without backup or warning...\n\n**Action:** I divided the must-do tasks into micro-tasks, trained a new hire on one thing only, and took over the rest...\n\n**Result:** The floor stayed shoppable, and regional didn’t even notice the absence."
   },
   {
-    "question": "Tell me about a time you had to say no.",
-    "answer": "**Situation:** A lead wanted me to skip a lav check due to time pressure...\n\n**Task:** Maintain safety standards without stalling ops...\n\n**Action:** I respectfully pushed back, offered to split the task while they briefed the gate agent...\n\n**Result:** Lav was handled, ops didn’t slow, and the lead later admitted I was right to push back."
+    "question": "Tell me about a time you handled a disagreement with a coworker.",
+    "answer": "**Situation:** At Amazon, a peer kept overriding my station flow changes mid-shift...\n\n**Task:** Address it without making it a turf war...\n\n**Action:** I pulled him aside, showed the impact stats, and asked what his logic was--we ended up combining ideas into something better...\n\n**Result:** He respected the data, I gained an ally, and our zone beat record output later that week."
   },
   {
-    "question": "Tell me about a time you handled conflicting priorities.",
-    "answer": "**Situation:** One jet needed pushback, another needed water service--and I was alone...\n\n**Task:** Decide which to prioritize without causing delays...\n\n**Action:** I checked timelines, flagged ops, delayed the water 6 mins to get the push out...\n\n**Result:** Both aircraft departed on time. Nobody noticed the split-second triage."
+    "question": "Describe a time you helped someone improve their performance.",
+    "answer": "**Situation:** A new Kroger cashier was struggling with speed and accuracy...\n\n**Task:** Help them get faster without making them feel dumb...\n\n**Action:** I stood with them on break, showed my scanning tricks, explained how to read customers’ body language for prep, and gave them confidence...\n\n**Result:** Their rate jumped 30% and they stopped dreading the job."
   },
   {
-    "question": "Describe a time when you received tough feedback.",
-    "answer": "**Situation:** I was told I was coming across ‘intense’ to new hires...\n\n**Task:** Dial it back without becoming less effective...\n\n**Action:** I asked for specifics, reworded how I coached, and shifted tone from directive to collaborative...\n\n**Result:** New hires said they felt more supported, and my results didn’t dip at all."
+    "question": "Tell me about a time you had to juggle multiple responsibilities.",
+    "answer": "**Situation:** At Amazon, I was assigned both flow monitoring and zone support during peak...\n\n**Task:** Make sure both roles were covered without sacrificing either...\n\n**Action:** I created a color-coded alert board to show me where support was needed and rotated every 20 minutes to walk the floor...\n\n**Result:** I kept output high and actually shaved down stoppages during the most chaotic shift of the quarter."
   },
   {
-    "question": "Tell me about a time you turned a mistake into a win.",
-    "answer": "**Situation:** I loaded the wrong lav log into the tracker...\n\n**Task:** Fix it and improve the process...\n\n**Action:** I owned the error, flagged it publicly, and then added a cross-check script to the system...\n\n**Result:** Mistake didn’t repeat, and it led to fewer log issues site-wide."
+    "question": "Describe a time when you had to learn new tech or tools quickly.",
+    "answer": "**Situation:** Amazon rolled out a new logistics tool with no training mid-week...\n\n**Task:** Understand it fast and help others use it...\n\n**Action:** I dug into the UI, figured out the logic behind the alerts, and made a one-pager cheat sheet for the team...\n\n**Result:** We were the only team not bottlenecked by confusion--and we hit our pack rate anyway."
   },
   {
-    "question": "Tell me about a time you disagreed with a decision.",
-    "answer": "**Situation:** A scheduling call was made to cut ramp coverage during a snow forecast...\n\n**Task:** Speak up about the risk without pissing off leadership...\n\n**Action:** I brought backup data, showed past delay codes tied to snow ops, and offered an alternate staffing plan...\n\n**Result:** They kept a skeleton crew, and we avoided a mess when the flurries hit early."
-  },
-  {
-    "question": "Describe a time you had to deal with unclear instructions.",
-    "answer": "**Situation:** A supervisor handed me a vague request to ‘check the gates’ without context...\n\n**Task:** Figure out what they actually needed, fast...\n\n**Action:** I asked one clarifying question, then walked the gates with a mental checklist of the usual issues...\n\n**Result:** Found a broken headset cable and a lav leak, both fixed before they became a problem."
-  },
-  {
-    "question": "Tell me about a time you handled something outside your job description.",
-    "answer": "**Situation:** An agent left a passenger wheelchair in the jetbridge during an inbound arrival...\n\n**Task:** Not my role, but it was a safety issue...\n\n**Action:** I flagged the situation to ops and moved the chair myself while maintaining ground clearance...\n\n**Result:** Ops thanked me, and that small moment avoided a bigger liability."
-  },
-  {
-    "question": "Give an example of when you had to work with someone very different from you.",
-    "answer": "**Situation:** I was paired with a new team member who had zero aviation background and a very different work pace...\n\n**Task:** Get through the shift without dragging or clashing...\n\n**Action:** I matched their tempo but stayed direct, and quietly picked up the slack while keeping comms clear...\n\n**Result:** They got faster by watching. We worked together again and crushed it."
-  },
-  {
-    "question": "Describe a time when you solved a problem before it happened.",
-    "answer": "**Situation:** I noticed a belt loader had a weird whine before a triple-turn day...\n\n**Task:** Flag and fix it without losing it from the pool...\n\n**Action:** I tagged it for repair, swapped it for a backup, and reworked the GSE plan before anyone else noticed...\n\n**Result:** No downtime, and maintenance thanked me for the early catch."
-  },
-  {
-    "question": "Tell me about a time you had to prioritize customer experience.",
-    "answer": "**Situation:** An older passenger’s wheelchair wasn’t delivered to the gate after landing...\n\n**Task:** Ensure they didn’t wait and feel forgotten...\n\n**Action:** I radioed the crew, jogged back to grab the chair, and personally rolled them to meet their family...\n\n**Result:** They got emotional. The family thanked me, and it reminded me why details matter."
-  },
-  {
-    "question": "Tell me about a time you automated or simplified a task.",
-    "answer": "**Situation:** Equipment checkout logs were handwritten and often illegible...\n\n**Task:** Make it idiot-proof...\n\n**Action:** I created a touch-based tracker that auto-filled operator ID and timestamped usage...\n\n**Result:** We stopped losing GSE, and no one had to chase down who had what."
-  },
-  {
-    "question": "Describe a time when you had to be resourceful.",
-    "answer": "**Situation:** Our normal pushback tug was dead, and dispatch had no backup ready...\n\n**Task:** Move an A319 without delay...\n\n**Action:** I secured a belt loader as a tow tug, radioed the switch to ops, and coordinated a new marshal...\n\n**Result:** We pushed with one minute to spare using a fully improvised plan."
-  },
-  {
-    "question": "Tell me about a time you received recognition for your work.",
-    "answer": "**Situation:** After revamping the jet lav logging system...\n\n**Task:** My only goal was to make it better, not get noticed...\n\n**Action:** I rolled it out without drama, trained others in under 5 minutes, and kept using it shift after shift...\n\n**Result:** My manager nominated me for a station award. I didn’t expect it, but it hit hard."
-  },
-  {
-    "question": "Tell me about a time when you mentored someone.",
-    "answer": "**Situation:** A new ramp hire was struggling to remember headset procedures...\n\n**Task:** Help them without overwhelming them...\n\n**Action:** I shadowed their next turn, gave real-time reminders, and showed them my cheat sheet...\n\n**Result:** By the end of the day, they nailed it solo and asked if they could copy my sheet."
-  },
-  {
-    "question": "Give an example of how you handle boring or repetitive tasks.",
-    "answer": "**Situation:** Midnights can get slow. And prepping GSE logs can be mind-numbing...\n\n**Task:** Stay focused and precise even when it’s quiet...\n\n**Action:** I gamified it--timed myself, added visual indicators, tracked accuracy...\n\n**Result:** Not only stayed sharp--I ended up improving the template itself for speed and clarity."
-  },
-  {
-    "question": "Describe a time you spotted an opportunity others missed.",
-    "answer": "**Situation:** Our team was wasting time waiting for ops updates that were always late...\n\n**Task:** Reduce the waiting game and give the crew more control...\n\n**Action:** I scraped the internal ops log and mirrored real-time updates to a shared sheet the team could check instantly...\n\n**Result:** No more idle waiting. Turn times dropped, and we looked way more organized without even trying."
-  },
-  {
-    "question": "Tell me about a time you worked with limited resources.",
-    "answer": "**Situation:** We had one lav truck and three aircraft needing service within 25 minutes...\n\n**Task:** Serve all three jets without delay...\n\n**Action:** I planned the order by departure time, pre-filled the truck, and coordinated with the crew leads...\n\n**Result:** All three got done, no delays, and one supervisor said ‘that was surgical.’"
-  },
-  {
-    "question": "Give an example of when you had to explain something complex to someone unfamiliar.",
-    "answer": "**Situation:** A new hire was totally lost trying to understand why we ground service in a certain order...\n\n**Task:** Break it down so it actually stuck...\n\n**Action:** I used metaphors, drew it out visually, and tied it to their personal habits so it clicked...\n\n**Result:** They got it. No more reminders. They started teaching it to others by week two."
-  },
-  {
-    "question": "Describe a time when you prevented a potential safety issue.",
-    "answer": "**Situation:** I spotted an oil trail near a parked 737 that ops hadn’t flagged...\n\n**Task:** Confirm the issue and report it quickly...\n\n**Action:** I verified it wasn’t ours, tagged it, radioed maintenance, and posted a no-move hold on the flight...\n\n**Result:** It turned out to be hydraulic. If we’d pushed, we would’ve had a brake failure. Bullet dodged."
-  },
-  {
-    "question": "Tell me about a time you had to rebuild trust.",
-    "answer": "**Situation:** I once made a decision that accidentally overloaded another crew’s timeline...\n\n**Task:** Own it and smooth things over...\n\n**Action:** I apologized, explained my reasoning, and built a shared dispatch schedule we could all see...\n\n**Result:** The tension disappeared. They actually thanked me for being upfront."
-  },
-  {
-    "question": "Tell me about a time you dealt with burnout.",
-    "answer": "**Situation:** We were mid-peak season, multiple shifts deep, with no light at the end...\n\n**Task:** Stay sharp and not collapse mentally...\n\n**Action:** I built micro routines--stretch breaks, equipment rituals, blackout recovery plans...\n\n**Result:** Not only did I avoid burnout--I ended up helping two coworkers do the same."
-  },
-  {
-    "question": "Describe a time you found a workaround to a broken system.",
-    "answer": "**Situation:** The equipment assignment board was offline for hours...\n\n**Task:** Keep track of gear without screwing up usage flow...\n\n**Action:** I built a temporary whiteboard system with visual codes and even printed mini flags...\n\n**Result:** No one missed a turn, and when the digital board came back, it felt slower in comparison."
-  },
-  {
-    "question": "Tell me about a time you had to quickly earn credibility.",
-    "answer": "**Situation:** I transferred to a new team where nobody knew what I could do...\n\n**Task:** Prove I wasn’t dead weight...\n\n**Action:** I took the least desirable job first, got it done fast, then showed someone how to cut 4 minutes off belt load...\n\n**Result:** By the second shift, I was the one they asked to lead the triple-turn."
-  },
-  {
-    "question": "Tell me about a time you had to make a decision without full info.",
-    "answer": "**Situation:** An inbound jet hadn’t confirmed if lav service was needed, but we were tight on time...\n\n**Task:** Choose whether to prep for it or not...\n\n**Action:** I assumed yes, prepped the truck, and got clearance just as I rolled up...\n\n**Result:** Perfect timing. No delay. My lead just nodded and said, ‘You think ahead.’"
-  },
-  {
-    "question": "Describe a time you saw a bigger picture opportunity and took it.",
-    "answer": "**Situation:** I noticed that flight delays were often caused by the same three equipment handoffs...\n\n**Task:** Dig into it and offer a real fix...\n\n**Action:** I charted usage flow, proposed a staggered dispatch schedule, and backed it with actual numbers...\n\n**Result:** Delays dropped. The leads started using my template for every shift."
-  },
-  {
-    "question": "Tell me about a time you had to stay calm in a chaotic situation.",
-    "answer": "**Situation:** A lightning delay lifted mid-turn, and suddenly five aircraft were requesting immediate pushbacks...\n\n**Task:** Keep my crew calm and sequence everything without error...\n\n**Action:** I triaged based on priority codes, reassigned gear, and ran ops comms myself for 10 minutes straight...\n\n**Result:** Every aircraft pushed safely. It looked insane--but we ran it like a playbook."
-  },
-  {
-    "question": "Describe a time when you changed someone’s mind.",
-    "answer": "**Situation:** A manager was convinced our tracking logs didn’t need digital updates...\n\n**Task:** Show them how much better it could be...\n\n**Action:** I ran both systems side by side, logged accuracy stats, and showed the time savings...\n\n**Result:** We went fully digital a week later. Now that manager brags about ‘our’ new system."
-  },
-  {
-    "question": "Tell me about a time you improved a system without being asked.",
-    "answer": "**Situation:** No one had touched the jet service log design since the Clinton administration...\n\n**Task:** Modernize it without making it overcomplicated...\n\n**Action:** I rebuilt it to be mobile-friendly, added auto-sorting, and pre-filled most fields...\n\n**Result:** Everyone started using it voluntarily. No announcement needed."
-  },
-  {
-    "question": "Give an example of a time you collaborated cross-functionally.",
-    "answer": "**Situation:** Baggage and ramp weren’t syncing up during early morning turns...\n\n**Task:** Create better communication without stepping on toes...\n\n**Action:** I initiated a shared checklist system that both teams updated in real time via tablet...\n\n**Result:** No more surprises. Turns ran smoother, and the AM shift had fewer delays."
-  },
-  {
-    "question": "Tell me about a time you taught someone something valuable.",
-    "answer": "**Situation:** A new hire didn’t understand why headset safety calls mattered...\n\n**Task:** Show them it wasn’t just a formality...\n\n**Action:** I explained it through real scenarios, let them listen to a saved recording, and had them try it with supervision...\n\n**Result:** They took it seriously after that--and nailed every call since."
-  },
-  {
-    "question": "Describe a time when your attention to detail paid off.",
-    "answer": "**Situation:** I noticed a belt loader’s guard rail was bent just slightly...\n\n**Task:** Make sure it didn’t become a safety issue...\n\n**Action:** I tagged it, filed a report, and requested backup gear for the next turn...\n\n**Result:** Maintenance later confirmed the unit had a cracked weld. My catch prevented a possible injury."
-  },
-  {
-    "question": "Tell me about a time you turned around a bad situation.",
-    "answer": "**Situation:** A miscommunication caused a catering truck to block the push path...\n\n**Task:** Clear it fast, fix the delay, and prevent a repeat...\n\n**Action:** I coordinated with catering, flagged ops, and wrote a new signage protocol for blocked zones...\n\n**Result:** We missed the window by 3 mins, but the new signage saved four delays the following week."
-  },
-  {
-    "question": "Describe a time you went above and beyond.",
-    "answer": "**Situation:** A crew’s inbound shift forgot to fill the water tank on a cross-country route...\n\n**Task:** Fix it before boarding started, even though it wasn’t technically my shift...\n\n**Action:** I grabbed the truck, filled the tank, and updated the log while they were still walking to the gate...\n\n**Result:** Boarding began on time, and the captain gave me a verbal kudos over the headset."
-  },
-  {
-    "question": "Tell me about a time when you had to keep things moving with no help.",
-    "answer": "**Situation:** I showed up to an AM shift with one coworker and three overlapping flights...\n\n**Task:** Keep the ramp moving without backup...\n\n**Action:** I mapped the entire shift by minute, set up every GSE unit in advance, and coordinated with ops like it was war...\n\n**Result:** It worked. Everything got done. My hands were frozen but the flights left clean."
-  },
-  {
-    "question": "Tell me about a time your work made someone else's job easier.",
-    "answer": "**Situation:** My manager kept juggling equipment assignments manually on paper...\n\n**Task:** Build something they could rely on...\n\n**Action:** I created a drag-and-drop web UI with preloaded GSE, flight, and time data...\n\n**Result:** She used it every day after that. Never once asked how it worked--just smiled and said thanks."
+    "question": "Tell me about a time you received feedback and acted on it.",
+    "answer": "**Situation:** A Kroger shift lead told me I was ‘a little too intense’ during store close...\n\n**Task:** Adjust my tone without losing my edge...\n\n**Action:** I started asking people what they needed instead of just assigning, and used humor instead of pressure...\n\n**Result:** My team started moving faster *on their own*, and the vibe improved across the entire late crew."
   }
 ]
