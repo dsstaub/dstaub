@@ -4,40 +4,36 @@
     "answer": "**Situation:** Our entire ramp crew was short-staffed during a peak holiday travel weekend...\n\n**Task:** Make sure flights still departed on time without burning out the remaining crew...\n\n**Action:** I broke the team into micro-crews and assigned rotating cooldowns. I also stepped in personally to run bags on a few flights...\n\n**Result:** Not a single delay code, and a few newer employees said it was the most organized chaos they'd ever seen."
   },
   {
-    "question": "Describe a time when you had to learn something quickly to complete a task.",
-    "answer": "**Situation:** A new airline partner switched software platforms for tracking jet servicing...\n\n**Task:** Learn the system on-the-fly and still meet daily service quotas...\n\n**Action:** I watched two quick tutorials, reverse-engineered the UI logic, and built a cheat sheet for the rest of the team...\n\n**Result:** We hit 100% compliance on the first day. One of their managers asked for a copy of my sheet."
+  "question": "Describe a time when you had to learn something quickly to complete a task.",
+  "answer": "**Situation:** Amazon rolled out a new pack station label printer the morning of Prime Week, and nobody had trained on it...\n\n**Task:** Get the new system running and help the team avoid bottlenecks with live orders piling up...\n\n**Action:** I ran through the setup manual in 10 minutes, watched a YouTube teardown, then wrote a one-page cheat sheet and taped it to every station...\n\n**Result:** Nobody missed a scan, our line ran at normal speed, and even the area manager started using my cheat sheet on other shifts."
   },
   {
     "question": "Tell me about a time you made a process more efficient.",
-    "answer": "**Situation:** Lav service logs were being tracked by hand, and errors were common...\n\n**Task:** Reduce errors and streamline tracking...\n\n**Action:** I built a basic app that logged time, tail number, and crew ID with one button press...\n\n**Result:** Audit errors dropped to zero, and the app’s still in use by people who have no idea I made it."
+    "answer": "**Situation:** Lav service logs were being tracked by hand, and errors were common...\n\n**Task:** Reduce errors and streamline tracking...\n\n**Action:** I built a basic app that logged time, tail number, and flight number with one button press...\n\n**Result:** Audit errors dropped to zero, and the app’s still in use by people who have no idea I made it."
   },
   {
-    "question": "Tell me about a time you demonstrated leadership.",
-    "answer": "**Situation:** I was dropped into a situation where that skill was the only thing keeping the operation upright...\n\n**Task:** I had to step up and handle it without waiting for direction...\n\n**Action:** I improvised, optimized, and kept it moving--leaning fully on my ability to adapt and act fast...\n\n**Result:** We not only pulled it off--we actually improved the process moving forward."
+  "question": "Tell me about a time you demonstrated leadership.",
+  "answer": "**Situation:** During a critical outbound shift at Amazon, our manager was pulled to another zone with no warning...\n\n**Task:** Keep pick flow moving, handle headcount gaps, and prevent the whole shift from falling behind...\n\n**Action:** I quickly reassigned key roles based on who I knew could handle pressure, ran a whiteboard tracker to flag issues in real-time, and stayed on headset to coordinate support...\n\n**Result:** We not only avoided falling behind--we beat the pick rate goal, and the shift lead asked me to take over coverage again the next day."
   },
   {
-    "question": "Tell me about a time you demonstrated adaptability.",
-    "answer": "**Situation:** I was dropped into a situation where that skill was the only thing keeping the operation upright...\n\n**Task:** I had to step up and handle it without waiting for direction...\n\n**Action:** I improvised, optimized, and kept it moving--leaning fully on my ability to adapt and act fast...\n\n**Result:** We not only pulled it off--we actually improved the process moving forward."
-  },
+  "question": "Tell me about a time you demonstrated communication.",
+  "answer": "**Situation:** During a peak shift at Amazon, multiple zones were short-staffed and comms between inbound, stow, and problem solve were falling apart...\n\n**Task:** Keep the floor connected so no one duplicated work or let issues slip through...\n\n**Action:** I jumped on headset, ran quick updates every 15 minutes, created a visible tracker for problem aisles, and made sure every shift lead knew exactly where help was needed...\n\n**Result:** Dwelling dropped instantly, stow rate increased, and the shift manager told me later that my comms kept the building from collapsing under pressure."
+  }
   {
-    "question": "Tell me about a time you demonstrated communication.",
-    "answer": "**Situation:** I was dropped into a situation where that skill was the only thing keeping the operation upright...\n\n**Task:** I had to step up and handle it without waiting for direction...\n\n**Action:** I improvised, optimized, and kept it moving--leaning fully on my ability to adapt and act fast...\n\n**Result:** We not only pulled it off--we actually improved the process moving forward."
-  },
-  {
-    "question": "Tell me about a time you demonstrated initiative.",
-    "answer": "**Situation:** I was dropped into a situation where that skill was the only thing keeping the operation upright...\n\n**Task:** I had to step up and handle it without waiting for direction...\n\n**Action:** I improvised, optimized, and kept it moving--leaning fully on my ability to adapt and act fast...\n\n**Result:** We not only pulled it off--we actually improved the process moving forward."
+  "question": "Tell me about a time you demonstrated initiative.",
+  "answer": "**Situation:** One of Amazon’s conveyor zones kept getting backed up during late shifts, but no one was addressing the root cause...\n\n**Task:** Prevent overflow and missed scan rates without waiting for leadership to step in...\n\n**Action:** I tracked scan intervals myself, mapped the choke points, and built a visual dashboard that showed flow in real time...\n\n**Result:** I shared it with my manager and the inbound team started using it nightly. It reduced backups by over 20%, and I didn’t need to be asked--I just did it."
   },
   {
     "question": "Tell me about a time you demonstrated creativity.",
-    "answer": "**Situation:** I was dropped into a situation where that skill was the only thing keeping the operation upright...\n\n**Task:** I had to step up and handle it without waiting for direction...\n\n**Action:** I improvised, optimized, and kept it moving--leaning fully on my ability to adapt and act fast...\n\n**Result:** We not only pulled it off--we actually improved the process moving forward."
+    "answer": "**Situation:** Our Amazon site didn’t have a centralized way to track live shift operations--things like headcount, flow disruptions, and equipment issues were scattered across tools and whiteboards...\n\n**Task:** Create a better system for real-time coordination without any formal support or platform access...\n\n**Action:** I built a custom in-house dashboard from scratch using available data exports and manual updates. It tracked real-time productivity, active issues, and staffing gaps--then I manually kept it alive for weeks...\n\n**Result:** Leadership noticed and eventually rebuilt the Station Command Center interface based on my tool. It went from a side project to the site’s new operations heartbeat."
   },
   {
     "question": "Tell me about a time you demonstrated technical ability.",
-    "answer": "**Situation:** I was dropped into a situation where that skill was the only thing keeping the operation upright...\n\n**Task:** I had to step up and handle it without waiting for direction...\n\n**Action:** I improvised, optimized, and kept it moving--leaning fully on my ability to adapt and act fast...\n\n**Result:** We not only pulled it off--we actually improved the process moving forward."
+    "answer": "**Situation:** At Amazon, I noticed that several daily tasks--like tracking equipment usage, reporting issues, and monitoring shift progress--were handled through fragmented tools and manual processes.\n\n**Task:** Streamline these operations by creating a unified, efficient system that would reduce errors and save time.\n\n**Action:** I developed a web-based application that consolidated these functions. The app featured QR code integration for quick equipment check-ins, real-time dashboards for shift monitoring, and automated reporting tools. I built it using internal resources and ensured it was user-friendly for the team.\n\n**Result:** The tool significantly improved operational efficiency, reducing manual entry errors by 40% and saving countless hours weekly. It gained widespread adoption across the station, and leadership eventually expanded its use, integrating it into broader operational workflows."
   },
   {
     "question": "Tell me about a time you demonstrated problem-solving.",
-    "answer": "**Situation:** I was dropped into a situation where that skill was the only thing keeping the operation upright...\n\n**Task:** I had to step up and handle it without waiting for direction...\n\n**Action:** I improvised, optimized, and kept it moving--leaning fully on my ability to adapt and act fast...\n\n**Result:** We not only pulled it off--we actually improved the process moving forward."
+    "answer": "**Situation:** At the airport, I once had five aircraft inbound within ten minutes, and our key ground equipment was either broken or already in use on other gates...\n\n**Task:** Prevent any delay codes while servicing all aircraft with limited resources and zero room for error...\n\n**Action:** I quickly mapped out arrival times, coordinated with other crews to share equipment without overlap, and manually staged gear at the nearest viable gates. Then I built a digital scheduling tool later that would've prevented the scramble in the first place...\n\n**Result:** Every aircraft turned on time. No delays, no chaos. And pushed for the tool I created to get adopted by leads for future shift planning."
   },
   {
     "question": "Tell me about a time you improved efficiency in a warehouse setting.",
