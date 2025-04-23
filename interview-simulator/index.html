@@ -25,14 +25,15 @@
       border-bottom: 1px solid #333;
     }
 
-      #chat {
-        flex-grow: 1;
-        overflow-y: auto;
-        max-height: calc(100vh - 250px); /* keeps room for header and buttons */
-        display: flex;
-        flex-direction: column;
-        scroll-behavior: smooth;
-      }
+    #chat {
+      flex-grow: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      scroll-behavior: smooth;
+      max-height: calc(100vh - 200px); /* header + options buffer */
+    }
 
     .msg {
       max-width: 75%;
@@ -64,6 +65,7 @@
       padding: 1rem;
       background-color: #111;
       border-top: 1px solid #333;
+      justify-content: center;
     }
 
     .option {
@@ -93,24 +95,33 @@
   <div id="options"></div>
 
   <script>
-    let questions = [];
-    let usedQuestions = [];
+    let allQuestions = [];
+    let selectedQuestions = [];
+    let currentOptions = [];
+    let answeredCount = 0;
 
     const chat = document.getElementById('chat');
     const options = document.getElementById('options');
 
-      function addMessage(text, sender = 'bot') {
-        const msg = document.createElement('div');
-        msg.classList.add('msg', sender);
-        msg.innerHTML = text;
-        chat.appendChild(msg);
-
-        if (sender === 'bot') {
-          msg.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else {
-          chat.scrollTop = chat.scrollHeight; // default for user messages
-        }
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
       }
+      return array;
+    }
+
+    function addMessage(text, sender = 'bot') {
+      const msg = document.createElement('div');
+      msg.classList.add('msg', sender);
+      msg.innerHTML = text;
+      chat.appendChild(msg);
+      if (sender === 'bot') {
+        msg.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        chat.scrollTop = chat.scrollHeight;
+      }
+    }
 
     function showTypingIndicator() {
       const typing = document.createElement('div');
@@ -126,28 +137,10 @@
       if (typing) typing.remove();
     }
 
-    function showOptions() {
+    function renderOptions() {
       options.innerHTML = '';
-      if (questions.length > 0) {
-        questions.forEach((q, index) => {
-          const btn = document.createElement('button');
-          btn.className = 'option';
-          btn.innerText = q.question;
-          btn.onclick = () => {
-            addMessage(q.question, 'user');
-            const answer = q.answer;
-            usedQuestions.push(q);
-            questions.splice(index, 1);
-            showTypingIndicator();
-            setTimeout(() => {
-              removeTypingIndicator();
-              addMessage(answer, 'bot');
-              showOptions();
-            }, 1300);
-          };
-          options.appendChild(btn);
-        });
-      } else {
+
+      if (answeredCount >= 5) {
         const finalBtn = document.createElement('button');
         finalBtn.className = 'option';
         finalBtn.innerText = 'How do I offer you an in-person interview?';
@@ -158,18 +151,43 @@
             removeTypingIndicator();
             addMessage('You can contact me directly at <a href="https://dstaub.app/contact" target="_blank" style="color:#4ea1ff;text-decoration:underline;">dstaub.app/contact</a>. Thanks for your time! I look forward to meeting you in real life!', 'bot');
             options.innerHTML = '';
-          }, 1300);
+          }, 1200);
         };
         options.appendChild(finalBtn);
+        return;
       }
+
+      // Show only 2 at a time
+      currentOptions = selectedQuestions.slice(0, 2);
+      currentOptions.forEach((q, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'option';
+        btn.innerText = q.question;
+        btn.onclick = () => {
+          addMessage(q.question, 'user');
+          showTypingIndicator();
+
+          setTimeout(() => {
+            removeTypingIndicator();
+            addMessage(q.answer, 'bot');
+            answeredCount++;
+
+            // Remove this question from selectedQuestions
+            selectedQuestions.splice(selectedQuestions.indexOf(q), 1);
+            renderOptions();
+          }, 1200);
+        };
+        options.appendChild(btn);
+      });
     }
 
     fetch('questions.json')
       .then(res => res.json())
       .then(data => {
-        questions = data;
+        allQuestions = shuffle(data);
+        selectedQuestions = allQuestions.slice(0, 5);
         addMessage("Hey. Let’s pretend this is an interview. Pick a question below.");
-        showOptions();
+        renderOptions();
       })
       .catch(err => {
         addMessage("Failed to load questions. Try again later.");
