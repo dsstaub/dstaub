@@ -101,7 +101,7 @@
     function addMessage(text, sender = 'bot') {
       const msg = document.createElement('div');
       msg.classList.add('msg', sender);
-      msg.innerText = text;
+      msg.innerHTML = text;
       chat.appendChild(msg);
       chat.scrollTop = chat.scrollHeight;
     }
@@ -150,7 +150,7 @@
           showTypingIndicator();
           setTimeout(() => {
             removeTypingIndicator();
-            addMessage("You can contact me directly at dstaub.app/contact. Thanks for your time! I look forward to meeting you in real life!", 'bot');
+            addMessage('You can contact me directly at <a href="https://dstaub.app/contact" target="_blank" style="color:#4ea1ff;text-decoration:underline;">dstaub.app/contact</a>. Thanks for your time! I look forward to meeting you in real life!', 'bot');
             options.innerHTML = '';
           }, 1300);
         };
