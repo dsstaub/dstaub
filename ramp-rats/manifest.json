@@ -1,0 +1,20 @@
+{
+  "name": "Ramp Rats Tribute",
+  "short_name": "RampRats",
+  "start_url": "/ramp-rats/index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/ramp-rats/icon-real-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/ramp-rats/icon-real-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
