@@ -263,7 +263,20 @@ Shiddy Doo … out.
     </li>
   </ul>
 </section>
-
+<button id="checkUpdatesBtn" style="
+  position: fixed;
+  bottom: 60px;
+  right: 10px;
+  padding: 10px 14px;
+  font-size: 12px;
+  background: #333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  z-index: 9999;
+">
+  Check for Updates
+</button>
   <footer>
     <p>Page by D Staub</p>
     <p></p>    <p></p>
@@ -278,26 +291,20 @@ Shiddy Doo … out.
         .catch(err => console.error('Service Worker failed:', err));
     }
   </script>
-  <script type="module">
-  import { SW_VERSION } from '/sw-version.js';
-
-  const badge = document.createElement('div');
-  badge.textContent = `SW Version: ${SW_VERSION}`;
-  Object.assign(badge.style, {
-    position: 'fixed',
-    bottom: '10px',
-    right: '10px',
-    background: 'rgba(0,0,0,0.6)',
-    color: '#fff',
-    padding: '6px 10px',
-    fontSize: '12px',
-    fontFamily: 'monospace',
-    borderRadius: '6px',
-    zIndex: 9999,
-    pointerEvents: 'none',
-  });
-
-  document.body.appendChild(badge);
+<script type="module">
+  import { SW_VERSION } from '/sw-version.js?v=' + Date.now();
+  const el = document.createElement('div');
+  el.textContent = 'Version: ' + SW_VERSION;
+  el.style.position = 'fixed';
+  el.style.bottom = '10px';
+  el.style.right = '10px';
+  el.style.background = 'rgba(0,0,0,0.7)';
+  el.style.color = 'white';
+  el.style.padding = '6px';
+  el.style.fontSize = '12px';
+  el.style.fontFamily = 'monospace';
+  el.style.zIndex = 9999;
+  document.body.appendChild(el);
 </script>
 <script>
   if ('serviceWorker' in navigator) {
@@ -326,6 +333,33 @@ Shiddy Doo … out.
       window.location.reload();
     });
   }
+</script>
+<script>
+  const checkBtn = document.getElementById('checkUpdatesBtn');
+
+  checkBtn?.addEventListener('click', async () => {
+    if ('serviceWorker' in navigator) {
+      const reg = await navigator.serviceWorker.getRegistration();
+      if (reg) {
+        console.log('[SW] Forcing update check...');
+        await reg.update();
+
+        if (reg.waiting) {
+          console.log('[SW] New version found, activating...');
+          reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+        } else {
+          alert('No updates found.');
+        }
+      } else {
+        alert('No service worker registered.');
+      }
+    }
+  });
+
+  navigator.serviceWorker?.addEventListener('controllerchange', () => {
+    console.log('[SW] Controller changed. Reloading...');
+    location.reload();
+  });
 </script>
 </body>
 </html>
