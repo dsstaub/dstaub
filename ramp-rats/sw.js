@@ -1,4 +1,4 @@
-importScripts('/sw-version.js');
+importScripts('/sw-version.js?v=' + Date.now());
 const CACHE_NAME = 'ramp-rats-' + SW_VERSION;
 
 self.addEventListener('install', event => {
