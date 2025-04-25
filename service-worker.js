@@ -1,6 +1,7 @@
 // service-worker.js
 
-importScripts('/sw-version.js');
+importScripts('/sw-version.js?v=' + Date.now()); // bust cache
+console.log('[SW] Loaded version:', SW_VERSION);
 const CACHE_VERSION = SW_VERSION;
 const CACHE_NAME = `my-pwa-cache-${CACHE_VERSION}`;
 
