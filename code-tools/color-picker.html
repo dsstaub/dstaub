@@ -1,64 +1,114 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tailwind Color Playground 3.0 - Filter + Copy</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tailwind Color Combos - Auto Dark Mode</title>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'media' // USE SYSTEM PREFERENCE
+    }
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
+
   <style>
     body {
       font-family: sans-serif;
+      background-color: #e7e5e4; /* Light stone */
     }
-    .color-block {
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #181818; /* Dark mode background */
+      }
+    }
+
+    #colors {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.5rem 1rem;
-      margin-bottom: 2px;
-      color: black;
-      font-size: 0.875rem;
-      font-weight: 500;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      width: 240px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       cursor: pointer;
-      transition: background-color 0.2s, transform 0.1s;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s ease;
+      position: relative;
     }
-    .color-block:hover {
+
+    .card:hover {
       transform: scale(1.02);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
-    .dark .color-block {
-      color: white;
+
+    .card-title {
+      font-weight: 700;
+      text-align: center;
+      padding: 0.75rem;
+      background: #f5f5f4;
+      font-size: 1rem;
     }
-    .copied {
-      animation: flash 0.5s;
+
+    .half {
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
     }
-    @keyframes flash {
-      0% { background-color: rgba(255,255,255,0.5); }
-      100% { background-color: inherit; }
+
+    .half.light {
+      background: #ffffff;
     }
+
+    .half.dark {
+      background: #1a1a1a;
+    }
+
+    .pill {
+      border-radius: 9999px;
+      padding: 0.5rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+      text-align: center;
+      text-transform: none;
+    }
+
     #searchInput {
       display: block;
-      width: 100%;
-      max-width: 400px;
       margin: 0 auto 2rem auto;
       padding: 0.75rem 1rem;
       border-radius: 0.5rem;
       font-size: 1rem;
-      background-color: #f0f0f0;
-      color: black;
+      max-width: 400px;
+      background: #f0f0f0;
       border: none;
     }
-    .dark #searchInput {
-      background-color: #333;
-      color: white;
+
+    @media (prefers-color-scheme: dark) {
+      #searchInput {
+        background: #333;
+        color: white;
+      }
     }
   </style>
 </head>
-<body class="bg-white dark:bg-zinc-900 text-black dark:text-white p-6">
-  <h1 class="text-3xl font-bold mb-6 text-center">Tailwind Background Colors 3.0</h1>
-  <p class="text-center mb-4 text-sm opacity-80">Click a color block to copy its class name!</p>
 
-  <input type="text" id="searchInput" placeholder="Filter colors... (e.g. green, 500, blue-300)" />
+<body class="text-black dark:text-white p-6">
 
-  <div id="colors" class="space-y-8"></div>
+  <h1 class="text-3xl font-bold text-center mb-6">Tailwind Color Combos</h1>
+  <input id="searchInput" type="text" placeholder="Filter colors..." />
+
+  <div id="colors"></div>
 
   <script>
     const colors = [
@@ -68,54 +118,79 @@
       'blue', 'indigo', 'violet', 'purple', 'fuchsia',
       'pink', 'rose'
     ];
-    const shades = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
+
     const container = document.getElementById('colors');
+    const searchInput = document.getElementById('searchInput');
+    let allCards = [];
 
-    let allBlocks = [];
-
-    function createBlocks() {
+    function createCards() {
       container.innerHTML = '';
+      allCards = [];
+
       colors.forEach(color => {
-        const section = document.createElement('div');
-        section.innerHTML = `<h2 class="text-2xl font-semibold mb-4 capitalize">${color}</h2>`;
-        shades.forEach(shade => {
-          const className = `bg-${color}-${shade}`;
-          const block = document.createElement('div');
-          block.className = `color-block ${className}`;
-          block.dataset.classname = className;
-          block.innerHTML = `<span>${className}</span><span class="text-xs opacity-70">${shade}</span>`;
+        const bgLight = `bg-${color}-100`;
+        const textLight = `text-${color}-800`;
+        const bgDark = `bg-${color}-700`;
+        const textDark = `text-${color}-100`;
 
-          block.addEventListener('click', () => {
-            navigator.clipboard.writeText(className)
-              .then(() => {
-                block.classList.add('copied');
-                setTimeout(() => block.classList.remove('copied'), 500);
-              })
-              .catch(err => {
-                console.error('Failed to copy!', err);
-              });
-          });
+        const fullClass = `${bgLight} dark:${bgDark} ${textLight} dark:${textDark}`;
 
-          section.appendChild(block);
-          allBlocks.push(block);
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.dataset.copy = fullClass;
+
+        const title = document.createElement('div');
+        title.className = 'card-title';
+        title.textContent = color;
+
+        const lightHalf = document.createElement('div');
+        lightHalf.className = 'half light';
+        const lightPill = document.createElement('div');
+        lightPill.className = `pill ${bgLight} ${textLight}`;
+        lightPill.innerHTML = `${bgLight}<br>${textLight}`;
+        lightHalf.appendChild(lightPill);
+
+        const darkHalf = document.createElement('div');
+        darkHalf.className = 'half dark';
+        const darkPill = document.createElement('div');
+        darkPill.className = `pill ${bgDark} ${textDark}`;
+        darkPill.innerHTML = `${bgDark}<br>${textDark}`;
+        darkHalf.appendChild(darkPill);
+
+        card.appendChild(title);
+        card.appendChild(lightHalf);
+        card.appendChild(darkHalf);
+
+        card.addEventListener('click', async (e) => {
+          try {
+            await navigator.clipboard.writeText(card.dataset.copy);
+            card.style.transform = "scale(1.1)";
+            setTimeout(() => {
+              card.style.transform = "scale(1)";
+            }, 150);
+          } catch (err) {
+            console.error('Copy failed:', err);
+          }
         });
-        container.appendChild(section);
+
+        container.appendChild(card);
+        allCards.push(card);
       });
     }
 
-    function filterBlocks(query) {
-      const lowerQuery = query.toLowerCase();
-      allBlocks.forEach(block => {
-        const match = block.dataset.classname.includes(lowerQuery);
-        block.style.display = match ? 'flex' : 'none';
+    function filterCards(query) {
+      const lower = query.toLowerCase();
+      allCards.forEach(card => {
+        const match = card.dataset.copy.includes(lower) || card.innerText.toLowerCase().includes(lower);
+        card.style.display = match ? 'flex' : 'none';
       });
     }
 
-    createBlocks();
-
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-      filterBlocks(e.target.value);
+    searchInput.addEventListener('input', (e) => {
+      filterCards(e.target.value);
     });
+
+    createCards();
   </script>
 </body>
 </html>

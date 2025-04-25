@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tailwind Color Builder 11.0 - Daddy's Final</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    .swatch {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 9999px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.2s ease, border 0.2s ease;
+      background-color: #d4d4d4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .swatch:hover {
+      transform: scale(1.2);
+      border: 2px solid white;
+    }
+    .swatch.selected {
+      transform: scale(1.3);
+      border: 2px solid black;
+    }
+    .swatch-group, .pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .pill {
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      background-color: #e5e5e5;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .pill:hover {
+      background-color: #d1d5db;
+    }
+    .pill.selected {
+      background-color: #6b7280;
+      color: white;
+    }
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    .color-flex {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 2rem;
+    }
+    .preview-box {
+      flex: 1 1 300px;
+      padding: 2rem;
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 200px;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      text-align: center;
+      position: relative;
+    }
+    .preview-box:hover {
+      transform: scale(1.02);
+    }
+    .copied {
+      animation: flash 0.5s;
+    }
+    @keyframes flash {
+      0% { background-color: rgba(255,255,255,0.4); }
+      100% { background-color: inherit; }
+    }
+    .code-box {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      background-color: #f3f4f6;
+      border-radius: 0.5rem;
+      font-family: monospace;
+      font-size: 0.9rem;
+      overflow-wrap: anywhere;
+      cursor: pointer;
+    }
+    .dark .code-box {
+      background-color: #374151;
+      color: white;
+    }
+    .favorites {
+      margin-top: 2rem;
+    }
+    .favorite-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      background: #f3f4f6;
+      border-radius: 0.5rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .favorite-item:hover {
+      background: #e5e7eb;
+    }
+    .dark .favorite-item {
+      background: #374151;
+    }
+    .delete-btn {
+      color: red;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body class="bg-white dark:bg-zinc-900 text-black dark:text-white p-6">
+  <h1 class="text-3xl font-bold mb-6 text-center">Tailwind Color Builder 11.0</h1>
+  <p class="text-center mb-6 text-sm opacity-80">
+    Pick family, shade, utilities. See live previews. Save, randomize, inject real HTML. Click anything to copy!
+  </p>
+
+  <div class="flex justify-center gap-4 mb-6">
+    <button id="randomBtn" class="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg">Randomize</button>
+    <button id="saveBtn" class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg">Save Favorite</button>
+  </div>
+
+  <div id="pickers" class="space-y-8"></div>
+
+  <div class="section-title">Add Utilities</div>
+  <div id="pills" class="pill-group"></div>
+
+  <div class="color-flex">
+    <div>
+      <div id="lightPreview" class="preview-box bg-white text-black border border-zinc-300">
+        Light Mode Preview
+      </div>
+      <div id="lightCode" class="code-box mt-2">Classes will appear here...</div>
+    </div>
+    <div>
+      <div id="darkPreview" class="preview-box bg-zinc-900 text-white border border-zinc-700">
+        Dark Mode Preview
+      </div>
+      <div id="darkCode" class="code-box mt-2">Classes will appear here...</div>
+    </div>
+  </div>
+
+  <div class="favorites">
+    <h2 class="text-xl font-semibold mt-10 mb-4 text-center">Saved Favorites</h2>
+    <div id="favoritesList" class="space-y-2"></div>
+  </div>
+
+  <div class="paste-section mt-12">
+    <h2 class="text-xl font-semibold mb-4 text-center">Paste Your HTML Snippet</h2>
+    <textarea id="pasteInput" class="w-full p-4 rounded-lg bg-gray-100 dark:bg-gray-700 text-black dark:text-white mb-4" rows="5" placeholder="Paste your HTML here..."></textarea>
+
+    <div class="flex justify-center items-center gap-4 mb-6">
+      <label class="flex items-center gap-2">
+        <input type="radio" name="injectMode" value="replace" checked class="accent-indigo-500">
+        Replace class=""
+      </label>
+      <label class="flex items-center gap-2">
+        <input type="radio" name="injectMode" value="wrap" class="accent-indigo-500">
+        Wrap in new div
+      </label>
+    </div>
+
+    <button id="injectBtn" class="px-6 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-lg w-full mb-4">Inject & Generate</button>
+
+    <div id="injectOutput" class="code-box hidden"></div>
+  </div>
+
+<script>
+const families = [
+  'slate', 'gray', 'zinc', 'neutral', 'stone',
+  'red', 'orange', 'amber', 'yellow', 'lime',
+  'green', 'emerald', 'teal', 'cyan', 'sky',
+  'blue', 'indigo', 'violet', 'purple', 'fuchsia',
+  'pink', 'rose'
+];
+const shades = [50,100,200,300,400,500,600,700,800,900,950];
+const layers = ['Background', 'Text', 'Border', 'Ring'];
+
+const utilities = [
+  { label: 'opacity-50', group: 'opacity' },
+  { label: 'opacity-75', group: 'opacity' },
+  { label: 'shadow', group: 'shadow' },
+  { label: 'shadow-md', group: 'shadow' },
+  { label: 'shadow-lg', group: 'shadow' },
+  { label: 'shadow-2xl', group: 'shadow' },
+  { label: 'rounded', group: 'rounded' },
+  { label: 'rounded-md', group: 'rounded' },
+  { label: 'rounded-lg', group: 'rounded' },
+  { label: 'rounded-full', group: 'rounded' },
+  { label: 'transition', group: 'effect' },
+  { label: 'hover:opacity-80', group: 'effect' },
+  { label: 'hover:shadow-lg', group: 'effect' }
+];
+
+let state = {
+  Background: { family: '', shade: '' },
+  Text: { family: '', shade: '' },
+  Border: { family: '', shade: '' },
+  Ring: { family: '', shade: '' },
+  Utilities: []
+};
+
+function randomPick(array) {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
+function smartRandomize() {
+  layers.forEach(layer => {
+    const family = randomPick(families);
+    let shade = 500;
+    if (layer === 'Background') shade = randomPick([50,100,200]);
+    if (layer === 'Text') shade = randomPick([600,700,800]);
+    if (layer === 'Border' || layer === 'Ring') shade = randomPick([400,500,600]);
+    state[layer] = { family, shade };
+  });
+
+  // Clear utilities
+  state.Utilities = [];
+
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('selected'));
+  document.querySelectorAll('.swatch').forEach(s => s.classList.remove('selected'));
+  updatePreviews();
+  updateCodeBoxes();
+}
+
+function createPicker(layer) {
+  const container = document.getElementById('pickers');
+
+  const title = document.createElement('div');
+  title.className = 'section-title';
+  title.textContent = layer;
+
+  const familyGroup = document.createElement('div');
+  familyGroup.className = 'swatch-group';
+
+  const noneSwatch = document.createElement('div');
+  noneSwatch.className = 'swatch';
+  noneSwatch.innerHTML = '<span class="text-xs">×</span>';
+  noneSwatch.addEventListener('click', () => {
+    state[layer] = { family: '', shade: '' };
+    updatePreviews();
+    updateCodeBoxes();
+  });
+  familyGroup.appendChild(noneSwatch);
+
+  families.forEach(family => {
+    const swatch = document.createElement('div');
+    swatch.className = `swatch bg-${family}-400`;
+    swatch.title = family;
+    swatch.addEventListener('click', () => {
+      state[layer].family = family;
+      updatePreviews();
+      updateCodeBoxes();
+    });
+    familyGroup.appendChild(swatch);
+  });
+
+  container.appendChild(title);
+  container.appendChild(familyGroup);
+}
+function createPills() {
+  const pillContainer = document.getElementById('pills');
+  utilities.forEach(util => {
+    const pill = document.createElement('div');
+    pill.className = 'pill';
+    pill.textContent = util.label;
+    pill.dataset.group = util.group;
+    pill.addEventListener('click', () => {
+      const group = util.group;
+      state.Utilities = state.Utilities.filter(u => {
+        const g = utilities.find(x => x.label === u)?.group;
+        return g !== group;
+      });
+
+      if (!pill.classList.contains('selected')) {
+        pill.classList.add('selected');
+        state.Utilities.push(util.label);
+      } else {
+        pill.classList.remove('selected');
+      }
+      updatePreviews();
+      updateCodeBoxes();
+    });
+    pillContainer.appendChild(pill);
+  });
+}
+
+function buildClasses(isDark = false) {
+  let classes = [...state.Utilities];
+
+  if (state.Background.family)
+    classes.push(isDark ? `bg-${state.Background.family}-950` : `bg-${state.Background.family}-100`);
+  if (state.Text.family)
+    classes.push(isDark ? `text-${state.Text.family}-200` : `text-${state.Text.family}-700`);
+  if (state.Border.family)
+    classes.push('border-4', isDark ? `border-${state.Border.family}-700` : `border-${state.Border.family}-400`);
+  if (state.Ring.family)
+    classes.push('ring-4', isDark ? `ring-${state.Ring.family}-700` : `ring-${state.Ring.family}-400`);
+
+  return classes.join(' ');
+}
+
+function updatePreviews() {
+  document.getElementById('lightPreview').className = `preview-box ${buildClasses(false)}`;
+  document.getElementById('darkPreview').className = `preview-box ${buildClasses(true)}`;
+}
+
+function updateCodeBoxes() {
+  document.getElementById('lightCode').textContent = buildClasses(false);
+  document.getElementById('darkCode').textContent = buildClasses(true);
+}
+
+function copyText(e) {
+  navigator.clipboard.writeText(e.target.textContent.trim())
+    .then(() => {
+      e.target.classList.add('copied');
+      setTimeout(() => e.target.classList.remove('copied'), 400);
+    });
+}
+
+function saveFavorite() {
+  const name = prompt('Name this combo (e.g., Hero Background, Footer CTA)');
+  if (!name) return;
+  const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+  favorites.push({ name, state: JSON.stringify(state) });
+  localStorage.setItem('favorites', JSON.stringify(favorites));
+  loadFavorites();
+}
+
+function loadFavorites() {
+  const favoritesList = document.getElementById('favoritesList');
+  favoritesList.innerHTML = '';
+  const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+
+  favorites.forEach((fav, index) => {
+    const item = document.createElement('div');
+    item.className = 'favorite-item';
+    item.innerHTML = `
+      <span>${fav.name}</span>
+      <span class="delete-btn" data-index="${index}">&times;</span>
+    `;
+    item.querySelector('span').addEventListener('click', () => {
+      state = JSON.parse(fav.state);
+      updatePreviews();
+      updateCodeBoxes();
+      document.querySelectorAll('.pill').forEach(p => p.classList.remove('selected'));
+    });
+    item.querySelector('.delete-btn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      favorites.splice(index, 1);
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+      loadFavorites();
+    });
+    favoritesList.appendChild(item);
+  });
+}
+
+function injectCode() {
+  const raw = document.getElementById('pasteInput').value.trim();
+  const mode = document.querySelector('input[name="injectMode"]:checked').value;
+  const output = document.getElementById('injectOutput');
+  output.classList.remove('hidden');
+
+  if (mode === 'replace') {
+    const replaced = raw.replace(/class="[^"]*"/, `class="${buildClasses(false)}"`);
+    output.textContent = replaced;
+  } else {
+    output.textContent = `<div class="${buildClasses(false)}">\n${raw}\n</div>`;
+  }
+}
+// Final bindings
+document.getElementById('randomBtn').addEventListener('click', () => {
+  smartRandomize();
+});
+document.getElementById('saveBtn').addEventListener('click', () => {
+  saveFavorite();
+});
+document.getElementById('injectBtn').addEventListener('click', () => {
+  injectCode();
+});
+
+document.getElementById('lightCode').addEventListener('click', copyText);
+document.getElementById('darkCode').addEventListener('click', copyText);
+document.getElementById('injectOutput').addEventListener('click', copyText);
+
+// Initialize everything
+layers.forEach(layer => createPicker(layer));
+createPills();
+loadFavorites();
+updatePreviews();
+updateCodeBoxes();
+</script>
+</body>
+</html>
