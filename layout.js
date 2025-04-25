@@ -78,7 +78,7 @@ document.body.insertAdjacentHTML("beforeend", `
         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25V5.25a2.25 2.25 0 00-2.25-2.25h-10.5A2.25 2.25 0 004.5 5.25v13.5A2.25 2.25 0 006.75 21h10.5a2.25 2.25 0 002.25-2.25v-4.5zM8.25 9.75h7.5M8.25 12.75h7.5M8.25 15.75h4.5" />
         </svg>
-        Resumé
+        Résumé
       </a>
       <a href="/music/index.html" class="flex flex-col items-center hover:text-cyan-500">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
