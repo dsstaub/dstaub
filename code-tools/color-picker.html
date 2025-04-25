@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tailwind Color Playground 3.0 - Filter + Copy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    .color-block {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 1rem;
+      margin-bottom: 2px;
+      color: black;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+    .color-block:hover {
+      transform: scale(1.02);
+    }
+    .dark .color-block {
+      color: white;
+    }
+    .copied {
+      animation: flash 0.5s;
+    }
+    @keyframes flash {
+      0% { background-color: rgba(255,255,255,0.5); }
+      100% { background-color: inherit; }
+    }
+    #searchInput {
+      display: block;
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto 2rem auto;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      background-color: #f0f0f0;
+      color: black;
+      border: none;
+    }
+    .dark #searchInput {
+      background-color: #333;
+      color: white;
+    }
+  </style>
+</head>
+<body class="bg-white dark:bg-zinc-900 text-black dark:text-white p-6">
+  <h1 class="text-3xl font-bold mb-6 text-center">Tailwind Background Colors 3.0</h1>
+  <p class="text-center mb-4 text-sm opacity-80">Click a color block to copy its class name!</p>
+
+  <input type="text" id="searchInput" placeholder="Filter colors... (e.g. green, 500, blue-300)" />
+
+  <div id="colors" class="space-y-8"></div>
+
+  <script>
+    const colors = [
+      'slate', 'gray', 'zinc', 'neutral', 'stone',
+      'red', 'orange', 'amber', 'yellow', 'lime',
+      'green', 'emerald', 'teal', 'cyan', 'sky',
+      'blue', 'indigo', 'violet', 'purple', 'fuchsia',
+      'pink', 'rose'
+    ];
+    const shades = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950];
+    const container = document.getElementById('colors');
+
+    let allBlocks = [];
+
+    function createBlocks() {
+      container.innerHTML = '';
+      colors.forEach(color => {
+        const section = document.createElement('div');
+        section.innerHTML = `<h2 class="text-2xl font-semibold mb-4 capitalize">${color}</h2>`;
+        shades.forEach(shade => {
+          const className = `bg-${color}-${shade}`;
+          const block = document.createElement('div');
+          block.className = `color-block ${className}`;
+          block.dataset.classname = className;
+          block.innerHTML = `<span>${className}</span><span class="text-xs opacity-70">${shade}</span>`;
+
+          block.addEventListener('click', () => {
+            navigator.clipboard.writeText(className)
+              .then(() => {
+                block.classList.add('copied');
+                setTimeout(() => block.classList.remove('copied'), 500);
+              })
+              .catch(err => {
+                console.error('Failed to copy!', err);
+              });
+          });
+
+          section.appendChild(block);
+          allBlocks.push(block);
+        });
+        container.appendChild(section);
+      });
+    }
+
+    function filterBlocks(query) {
+      const lowerQuery = query.toLowerCase();
+      allBlocks.forEach(block => {
+        const match = block.dataset.classname.includes(lowerQuery);
+        block.style.display = match ? 'flex' : 'none';
+      });
+    }
+
+    createBlocks();
+
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      filterBlocks(e.target.value);
+    });
+  </script>
+</body>
+</html>

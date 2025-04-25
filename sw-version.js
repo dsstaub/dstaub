@@ -1,1 +1,1 @@
-export const SW_VERSION = 'v2.5.5';
+export const SW_VERSION = 'v2.5.50';
