@@ -277,7 +277,27 @@ Shiddy Doo … out.
         .then(() => console.log('Service Worker registered.'))
         .catch(err => console.error('Service Worker failed:', err));
     }
-
   </script>
+  <script type="module">
+  import { SW_VERSION } from '/sw-version.js';
+
+  const badge = document.createElement('div');
+  badge.textContent = `SW Version: ${SW_VERSION}`;
+  Object.assign(badge.style, {
+    position: 'fixed',
+    bottom: '10px',
+    right: '10px',
+    background: 'rgba(0,0,0,0.6)',
+    color: '#fff',
+    padding: '6px 10px',
+    fontSize: '12px',
+    fontFamily: 'monospace',
+    borderRadius: '6px',
+    zIndex: 9999,
+    pointerEvents: 'none',
+  });
+
+  document.body.appendChild(badge);
+</script>
 </body>
 </html>
