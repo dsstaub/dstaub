@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tailwind Color Picker</title>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'media'
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #e7e5e4;
+    }
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #181818;
+      }
+    }
+    #recentColors {
+      overflow-x: auto;
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.5rem 0;
+    }
+    .fixed-bottom {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #e7e5e4;
+      padding: 1rem;
+      text-align: center;
+      z-index: 10;
+    }
+    @media (prefers-color-scheme: dark) {
+      .fixed-bottom {
+        background: #181818;
+      }
+    }
+  </style>
+</head>
+
+<body class="text-black dark:text-white p-4 pb-24">
+
+  <h1 class="text-3xl font-bold text-center mb-6" id="screenTitle">Pick a Color Family</h1>
+
+  <div id="recentColors" class="mb-6"></div>
+
+  <div id="mainArea" class="grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-md mx-auto"></div>
+
+  <div id="backButton" class="fixed-bottom hidden">
+    <button onclick="goBack()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl text-lg">
+      ⬅️ Back
+    </button>
+  </div>
+
+  <script>
+    const families = [
+      'slate', 'gray', 'zinc', 'neutral', 'stone',
+      'red', 'orange', 'amber', 'yellow', 'lime',
+      'green', 'emerald', 'teal', 'cyan', 'sky',
+      'blue', 'indigo', 'violet', 'purple', 'fuchsia',
+      'pink', 'rose'
+    ];
+
+    const shades = [50,100,200,300,400,500,600,700,800,900];
+
+    const mainArea = document.getElementById('mainArea');
+    const backButton = document.getElementById('backButton');
+    const screenTitle = document.getElementById('screenTitle');
+    const recentColors = document.getElementById('recentColors');
+
+    let currentFamily = null;
+    let recents = JSON.parse(localStorage.getItem('recentColors') || '[]');
+
+    function saveRecent(colorClass) {
+      recents = [colorClass, ...recents.filter(c => c !== colorClass)];
+      recents = recents.slice(0, 10);
+      localStorage.setItem('recentColors', JSON.stringify(recents));
+      renderRecents();
+    }
+
+    function renderRecents() {
+      recentColors.innerHTML = '';
+      recents.forEach(color => {
+        const pill = document.createElement('div');
+        pill.className = `rounded-full px-4 py-2 text-xs font-bold cursor-pointer ${color}`;
+        pill.textContent = color;
+        pill.onclick = () => {
+          navigator.clipboard.writeText(color);
+          saveRecent(color);
+        };
+        recentColors.appendChild(pill);
+      });
+    }
+
+    function renderFamilies() {
+      screenTitle.textContent = 'Pick a Color Family';
+      backButton.classList.add('hidden');
+      mainArea.innerHTML = '';
+      families.forEach(family => {
+        const pill = document.createElement('div');
+        pill.className = `rounded-full py-6 text-center font-bold bg-${family}-400 dark:bg-${family}-600 text-white text-lg cursor-pointer hover:scale-105 transition`;
+        pill.textContent = family;
+        pill.onclick = () => pickFamily(family);
+        mainArea.appendChild(pill);
+      });
+    }
+
+    function pickFamily(family) {
+      currentFamily = family;
+      screenTitle.textContent = `Pick a ${family.charAt(0).toUpperCase() + family.slice(1)} Shade`;
+      backButton.classList.remove('hidden');
+      mainArea.innerHTML = '';
+      shades.forEach(shade => {
+        const className = `bg-${family}-${shade}`;
+        const pill = document.createElement('div');
+        pill.className = `rounded-full py-6 text-center font-bold ${className} text-white text-lg cursor-pointer hover:scale-105 transition`;
+        pill.textContent = `${family}-${shade}`;
+        pill.onclick = () => {
+          navigator.clipboard.writeText(className);
+          saveRecent(className);
+        };
+        mainArea.appendChild(pill);
+      });
+    }
+
+    function goBack() {
+      currentFamily = null;
+      renderFamilies();
+    }
+
+    renderFamilies();
+    renderRecents();
+  </script>
+
+</body>
+</html>
