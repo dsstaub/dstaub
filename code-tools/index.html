@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="apple-touch-icon" href="/code-tools/icons/icon-apple-touch.png" />
+  <title>Code Tools Hub</title>
+
+  <!-- Tailwind setup -->
+  <script>
+    tailwind.config = {
+      darkMode: 'media'
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/code-tools/manifest.json" />
+  <meta name="theme-color" content="#e7e5e4">
+  <link rel="apple-touch-icon" href="/code-tools/icon-192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #e7e5e4;
+    }
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #181818;
+      }
+    }
+  </style>
+</head>
+
+<body class="text-black dark:text-white p-8">
+
+  <h1 class="text-3xl font-bold text-center mb-8">Code Tools Hub</h1>
+
+  <div class="max-w-md mx-auto flex flex-col gap-6">
+    <!-- Color Picker Tool -->
+    <a href="/code-tools/color-picker.html" class="block p-6 rounded-xl bg-white dark:bg-zinc-800 shadow text-center text-lg font-bold hover:scale-105 transition-transform">
+      🎨 Tailwind Color Picker
+    </a>
+
+    <!-- Code Block Temp Pad (coming soon) -->
+    <div class="block p-6 rounded-xl bg-gray-300 dark:bg-zinc-700 opacity-60 text-center text-lg font-bold cursor-not-allowed">
+      📋 Code Block Temp Pad (Coming Soon)
+    </div>
+
+    <!-- Future tools here -->
+
+  </div>
+
+  <footer class="text-center text-xs opacity-50 mt-12">
+    Built for coding flow, mobile assist style.
+  </footer>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/code-tools/sw.js').then(function(reg) {
+        console.log('SW registered:', reg);
+      });
+    }
+  </script>
+
+</body>
+</html>
