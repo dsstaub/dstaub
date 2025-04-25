@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pastebin - Code Tools</title>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'media'
+    }
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #e7e5e4;
+    }
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #181818;
+      }
+    }
+  </style>
+</head>
+
+<body class="text-black dark:text-white p-6">
+  <h1 class="text-3xl font-bold text-center mb-6">Pastebin</h1>
+
+  <div class="max-w-xl mx-auto flex flex-col gap-4">
+
+    <input id="title" type="text" placeholder="Paste Title" class="p-3 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700">
+    <textarea id="content" placeholder="Paste your code or text here..." rows="8" class="p-3 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700"></textarea>
+
+    <div class="flex flex-col gap-2">
+      <label class="text-sm opacity-70">Delete After:</label>
+      <select id="expiry" class="p-2 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700">
+        <option value="7">7 days</option>
+        <option value="14">14 days</option>
+        <option value="21">21 days</option>
+        <option value="never">Never delete</option>
+      </select>
+    </div>
+
+    <button id="saveBtn" class="p-3 rounded bg-blue-600 text-white font-bold hover:bg-blue-700 transition">
+      Save Paste
+    </button>
+
+    <h2 class="text-2xl font-semibold mt-8">Saved Pastes</h2>
+    <div id="pastes" class="flex flex-col gap-3 mt-2"></div>
+
+  </div>
+
+  <script>
+    const titleInput = document.getElementById('title');
+    const contentInput = document.getElementById('content');
+    const expirySelect = document.getElementById('expiry');
+    const saveBtn = document.getElementById('saveBtn');
+    const pastesDiv = document.getElementById('pastes');
+
+    let pastes = JSON.parse(localStorage.getItem('pastes') || '[]');
+
+    function savePaste() {
+      const title = titleInput.value.trim();
+      const content = contentInput.value.trim();
+      const expiry = expirySelect.value;
+
+      if (!title || !content) {
+        alert('Please fill in both title and content.');
+        return;
+      }
+
+      const paste = {
+        id: Date.now(),
+        title,
+        content,
+        created: new Date().toISOString(),
+        expiry
+      };
+
+      pastes.push(paste);
+      localStorage.setItem('pastes', JSON.stringify(pastes));
+      titleInput.value = '';
+      contentInput.value = '';
+      expirySelect.value = '7';
+      renderPastes();
+    }
+
+    function copyContent(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Copied to clipboard!');
+      });
+    }
+
+    function deletePaste(id) {
+      pastes = pastes.filter(p => p.id !== id);
+      localStorage.setItem('pastes', JSON.stringify(pastes));
+      renderPastes();
+    }
+
+    function renderPastes() {
+      cleanupExpired();
+      pastesDiv.innerHTML = '';
+
+      if (pastes.length === 0) {
+        pastesDiv.innerHTML = '<div class="text-sm opacity-50">No pastes saved yet.</div>';
+        return;
+      }
+
+      pastes.slice().reverse().forEach(paste => {
+        const card = document.createElement('div');
+        card.className = 'p-4 rounded-lg bg-white dark:bg-zinc-800 shadow flex flex-col gap-2';
+
+        const titleRow = document.createElement('div');
+        titleRow.className = 'flex justify-between items-center';
+
+        const title = document.createElement('div');
+        title.className = 'font-bold';
+        title.textContent = paste.title;
+        title.onclick = () => {
+          titleInput.value = paste.title;
+          contentInput.value = paste.content;
+        };
+
+        const copyBtn = document.createElement('button');
+        copyBtn.className = 'text-sm text-blue-600 hover:underline';
+        copyBtn.textContent = 'Copy';
+        copyBtn.onclick = () => copyContent(paste.content);
+
+        titleRow.appendChild(title);
+        titleRow.appendChild(copyBtn);
+
+        const meta = document.createElement('div');
+        meta.className = 'text-xs opacity-60';
+        meta.textContent = `Saved: ${new Date(paste.created).toLocaleString()}${paste.expiry !== 'never' ? ` • Expires in ${paste.expiry} days` : ''}`;
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'text-xs text-red-600 hover:underline self-end';
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.onclick = () => deletePaste(paste.id);
+
+        card.appendChild(titleRow);
+        card.appendChild(meta);
+        card.appendChild(deleteBtn);
+
+        pastesDiv.appendChild(card);
+      });
+    }
+
+    function cleanupExpired() {
+      const now = new Date();
+      pastes = pastes.filter(paste => {
+        if (paste.expiry === 'never') return true;
+        const created = new Date(paste.created);
+        const diffDays = (now - created) / (1000 * 60 * 60 * 24);
+        return diffDays <= parseInt(paste.expiry);
+      });
+      localStorage.setItem('pastes', JSON.stringify(pastes));
+    }
+
+    saveBtn.addEventListener('click', savePaste);
+
+    renderPastes();
+  </script>
+
+</body>
+</html>
