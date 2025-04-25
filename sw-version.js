@@ -1,0 +1,1 @@
+export const SW_VERSION = 'v2.1';
