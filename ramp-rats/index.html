@@ -299,5 +299,33 @@ Shiddy Doo … out.
 
   document.body.appendChild(badge);
 </script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/ramp-rats/sw.js').then(reg => {
+      if (reg.waiting) {
+        // Immediately activate the waiting SW
+        reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+      }
+
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (
+            newWorker.state === 'installed' &&
+            navigator.serviceWorker.controller
+          ) {
+            console.log('[SW] New version installed, reloading...');
+            window.location.reload();
+          }
+        });
+      });
+    });
+
+    // Reload when the new SW takes control
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      window.location.reload();
+    });
+  }
+</script>
 </body>
 </html>
