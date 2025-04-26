@@ -109,6 +109,7 @@ document.body.insertAdjacentHTML('beforeend', '<div class="fixed bottom-4 left-4
         expirySelect.value = '7';
       } catch (err) {
         console.error('Error saving paste:', err);
+        alert('Failed to save paste: ' + err.message);
       }
     }
 
