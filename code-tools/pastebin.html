@@ -83,7 +83,7 @@
     const pastesDiv = document.getElementById('pastes');
 
     async function savePaste() {
-      console.log('Save button tapped!');
+document.body.insertAdjacentHTML('beforeend', '<div class="fixed bottom-4 left-4 bg-black text-white p-2 text-xs">Save tapped</div>');
       
       const title = titleInput.value.trim();
       const content = contentInput.value.trim();
