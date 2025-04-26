@@ -89,8 +89,7 @@
       <textarea id="educationInput" rows="6" placeholder="One school per line: Name | Degree | Year" class="w-full p-3 rounded border"></textarea>
       <button onclick="saveEducation()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save Education</button>
     </section>
-
-    <!-- Experience -->
+        <!-- Experience -->
     <section class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow">
       <h2 class="text-xl font-bold mb-4">Experience</h2>
 
@@ -102,17 +101,25 @@
       <input id="titleInput" type="text" placeholder="Job Title" class="w-full p-2 mb-2 rounded border">
       <input id="startInput" type="text" placeholder="Start Date (e.g. Jan 2021)" class="w-full p-2 mb-2 rounded border">
       <input id="endInput" type="text" placeholder="End Date (e.g. Present)" class="w-full p-2 mb-2 rounded border">
-      <textarea id="descriptionInput" placeholder="Job Description" rows="4" class="w-full p-3 mb-2 rounded border"></textarea>
+
+      <!-- Modular Bullets for Job Description -->
+      <div class="flex flex-col gap-2 mb-4">
+        <h4 class="text-lg font-semibold">Job Description Bullets</h4>
+        <ul id="descriptionList" class="flex flex-col gap-2"></ul>
+
+        <div class="flex gap-2 mt-4">
+          <input id="newBulletInput" type="text" placeholder="New bullet point..." class="flex-1 p-2 rounded border">
+          <button onclick="addBullet()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Add</button>
+        </div>
+      </div>
 
       <div class="flex gap-2">
         <button id="saveExperienceBtn" onclick="saveExperience()" class="flex-1 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save Experience</button>
         <button id="cancelEditBtn" onclick="cancelEdit()" class="hidden flex-1 px-6 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Cancel Edit</button>
       </div>
     </section>
-
   </div>
-
-  <script>
+    <script>
     const googleLogin = document.getElementById('googleLogin');
     const logoutBtn = document.getElementById('logoutBtn');
     const authSection = document.getElementById('authSection');
@@ -120,6 +127,7 @@
 
     let skillsArray = [];
     let editingExperienceId = null;
+    let bulletArray = [];
 
     googleLogin.addEventListener('click', async () => {
       const provider = new firebase.auth.GoogleAuthProvider();
@@ -176,7 +184,6 @@
         }
 
         await loadExperience();
-
       } catch (err) {
         console.error('Failed to load resume:', err.message);
       }
@@ -260,7 +267,11 @@
 
         const desc = document.createElement('div');
         desc.className = 'text-sm mt-2';
-        desc.textContent = job.description;
+        if (Array.isArray(job.description)) {
+          desc.innerHTML = '<ul class="list-disc list-inside">' + job.description.map(d => `<li>${d}</li>`).join('') + '</ul>';
+        } else {
+          desc.textContent = job.description || '';
+        }
 
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'absolute top-2 right-2 text-red-600 text-xs hover:underline';
@@ -286,7 +297,10 @@
       document.getElementById('titleInput').value = job.title || '';
       document.getElementById('startInput').value = job.start || '';
       document.getElementById('endInput').value = job.end || '';
-      document.getElementById('descriptionInput').value = job.description || '';
+
+      bulletArray = Array.isArray(job.description) ? job.description : [job.description];
+      renderBullets();
+
       document.getElementById('saveExperienceBtn').textContent = "Save Changes";
       document.getElementById('cancelEditBtn').classList.remove('hidden');
     }
@@ -300,7 +314,70 @@
       document.getElementById('titleInput').value = '';
       document.getElementById('startInput').value = '';
       document.getElementById('endInput').value = '';
-      document.getElementById('descriptionInput').value = '';
+      bulletArray = [];
+      renderBullets();
+    }
+
+    function renderBullets() {
+      const list = document.getElementById('descriptionList');
+      list.innerHTML = '';
+
+      bulletArray.forEach((bullet, index) => {
+        const li = document.createElement('li');
+        li.className = 'flex items-center justify-between p-2 bg-gray-200 dark:bg-zinc-700 rounded cursor-move';
+        li.draggable = true;
+        li.dataset.index = index;
+
+        li.ondragstart = (e) => {
+          e.dataTransfer.setData('text/plain', index);
+          e.dropEffect = 'move';
+        };
+
+        li.ondragover = (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          li.classList.add('bg-gray-300', 'dark:bg-zinc-600');
+        };
+
+        li.ondragleave = (e) => {
+          li.classList.remove('bg-gray-300', 'dark:bg-zinc-600');
+        };
+
+        li.ondrop = (e) => {
+          e.preventDefault();
+          const draggedIndex = e.dataTransfer.getData('text/plain');
+          const targetIndex = li.dataset.index;
+          moveBullet(draggedIndex, targetIndex);
+        };
+
+        li.innerHTML = `
+          <span>${bullet}</span>
+          <button onclick="removeBullet(${index})" class="text-red-600 font-bold text-lg ml-2">×</button>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    function addBullet() {
+      const bulletInput = document.getElementById('newBulletInput');
+      const bullet = bulletInput.value.trim();
+      if (bullet) {
+        bulletArray.push(bullet);
+        bulletInput.value = '';
+        renderBullets();
+      }
+    }
+
+    function removeBullet(index) {
+      bulletArray.splice(index, 1);
+      renderBullets();
+    }
+
+    function moveBullet(fromIndex, toIndex) {
+      if (fromIndex === toIndex) return;
+      const moved = bulletArray.splice(fromIndex, 1)[0];
+      bulletArray.splice(toIndex, 0, moved);
+      renderBullets();
     }
 
     async function saveExperience() {
@@ -308,14 +385,13 @@
       const title = document.getElementById('titleInput').value.trim();
       const start = document.getElementById('startInput').value.trim();
       const end = document.getElementById('endInput').value.trim();
-      const description = document.getElementById('descriptionInput').value.trim();
 
-      if (!company || !title || !start || !end || !description) {
-        alert('Please fill in all fields.');
+      if (!company || !title || !start || !end || bulletArray.length === 0) {
+        alert('Please fill in all fields and add at least one bullet.');
         return;
       }
 
-      const jobData = { company, title, start, end, description };
+      const jobData = { company, title, start, end, description: bulletArray };
 
       if (editingExperienceId) {
         await db.collection('resume').doc('experience').collection('jobs').doc(editingExperienceId).update(jobData);
