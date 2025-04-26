@@ -61,6 +61,26 @@
       color: #ffffff;
       border: 1px solid #52525b;
     }
+      .delete-zone {
+    border: 2px dashed #ef4444;
+    background-color: rgba(239, 68, 68, 0.1);
+    border-radius: 0.5rem;
+    width: 3rem;
+    height: 3rem;
+    min-width: 3rem;
+    min-height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #ef4444;
+    transition: background-color 0.3s;
+  }
+  html.dark .delete-zone {
+    border-color: rgba(239, 68, 68, 0.6);
+    background-color: rgba(239, 68, 68, 0.05);
+  }
+
   </style>
 </head>
 
@@ -70,11 +90,12 @@
 
   <div id="editor" class="space-y-12"></div>
 
-  <div class="flex justify-center gap-4 mt-10">
-    <button id="saveBtn" class="px-6 py-3 rounded-lg bg-orange-600 hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-400 text-white font-bold transition-colors duration-500">
-      Save Changes
-    </button>
-  </div>
+<div class="flex justify-center gap-6 mt-10 items-center">
+  <button id="saveBtn" class="px-6 py-3 rounded-lg bg-orange-600 hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-400 text-white font-bold transition-colors duration-500">
+    Save Changes
+  </button>
+  <div id="deleteZone" class="delete-zone">🗑️</div>
+</div>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -381,6 +402,18 @@ saveBtn.addEventListener('click', async () => {
 
 // Initial load
 loadData();
+
+// Enable delete drop
+new Sortable(deleteZone, {
+  group: 'shared',
+  pull: false,
+  put: true,
+  onAdd: (evt) => {
+    if (confirm('Delete this item?')) {
+      evt.item.remove();
+    }
+  }
+});
 </script>
 
 </body>
