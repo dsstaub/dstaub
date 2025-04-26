@@ -30,13 +30,14 @@
       border-radius: 0.5rem;
       padding: 0.75rem 1rem;
       margin-bottom: 0.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       font-size: 1rem;
       user-select: none;
       cursor: grab;
       text-align: center;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .dark .sortable-item {
       background-color: #3f3f46;
@@ -48,12 +49,15 @@
       background-color: rgba(239, 68, 68, 0.1);
       border-radius: 0.5rem;
       height: 3rem;
+      min-height: 48px;
+      min-width: 120px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.875rem;
+      font-size: 1.5rem;
       color: #ef4444;
       transition: background-color 0.3s;
+      cursor: pointer;
     }
     .delete-zone.dragging-over {
       background-color: rgba(239, 68, 68, 0.4);
@@ -137,7 +141,7 @@
 
     const deleteZone = document.createElement('div');
     deleteZone.className = "flex-1 delete-zone";
-    deleteZone.textContent = "Drop Here to Delete";
+    deleteZone.innerHTML = "🗑️";
 
     controls.appendChild(addBtn);
     controls.appendChild(deleteZone);
@@ -156,18 +160,7 @@
       animation: 150,
       forceFallback: true,
       fallbackOnBody: true,
-      swapThreshold: 0.65,
-      onEnd: (evt) => {
-        if (evt.to === deleteZone) {
-          const item = evt.item;
-          const confirmDelete = confirm("Delete this item?");
-          if (confirmDelete) {
-            item.remove();
-          } else {
-            itemList.appendChild(item);
-          }
-        }
-      }
+      swapThreshold: 0.65
     });
 
     new Sortable(deleteZone, {
