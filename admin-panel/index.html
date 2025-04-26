@@ -27,8 +27,20 @@
   <style>
     body { font-family: sans-serif; background: #e7e5e4; }
     @media (prefers-color-scheme: dark) { body { background: #181818; color: white; } }
+    input, textarea, select {
+      background-color: #ffffff;
+      color: #000000;
+    }
+    @media (prefers-color-scheme: dark) {
+      input, textarea, select {
+        background-color: #27272a;
+        color: white;
+        border-color: #52525b;
+      }
+    }
   </style>
 </head>
+
 <body class="p-6">
 
   <h1 class="text-3xl font-bold text-center mb-8">Resume Admin Panel</h1>
@@ -41,29 +53,34 @@
   </div>
 
   <div id="editor" class="max-w-3xl mx-auto flex flex-col gap-8 hidden">
-
-    <!-- Summary -->
+      <!-- Summary -->
     <section class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow">
       <h2 class="text-xl font-bold mb-4">Summary</h2>
       <textarea id="summaryInput" rows="5" class="w-full p-3 rounded border"></textarea>
       <button onclick="saveSummary()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save Summary</button>
     </section>
 
-    <!-- Contact -->
+    <!-- Contact Info -->
     <section class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow">
       <h2 class="text-xl font-bold mb-4">Contact Info</h2>
       <input id="emailInput" type="text" placeholder="Email" class="w-full p-2 mb-2 rounded border">
       <input id="phoneInput" type="text" placeholder="Phone" class="w-full p-2 mb-2 rounded border">
-      <input id="linkedinInput" type="text" placeholder="LinkedIn URL" class="w-full p-2 mb-2 rounded border">
-      <input id="githubInput" type="text" placeholder="GitHub URL" class="w-full p-2 mb-2 rounded border">
+      <input id="telegramInput" type="text" placeholder="Telegram" class="w-full p-2 mb-2 rounded border">
+      <input id="webappInput" type="text" placeholder="Web App URL" class="w-full p-2 mb-2 rounded border">
       <button onclick="saveContact()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save Contact</button>
     </section>
 
     <!-- Skills -->
     <section class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow">
       <h2 class="text-xl font-bold mb-4">Skills</h2>
-      <textarea id="skillsInput" rows="4" placeholder="Comma separated skills" class="w-full p-3 rounded border"></textarea>
-      <button onclick="saveSkills()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save Skills</button>
+      <div id="skillsList" class="flex flex-wrap gap-2 mb-4"></div>
+
+      <div class="flex gap-2">
+        <input id="newSkill" type="text" placeholder="New skill" class="flex-1 p-2 rounded border">
+        <button onclick="addSkill()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Add</button>
+      </div>
+
+      <button onclick="saveSkills()" class="mt-4 px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700">Save Skills</button>
     </section>
 
     <!-- Education -->
@@ -77,19 +94,20 @@
     <section class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow">
       <h2 class="text-xl font-bold mb-4">Experience</h2>
 
-      <div class="flex flex-col gap-2 mb-6" id="experienceList">
-        <!-- Jobs will load here -->
+      <div id="experienceList" class="flex flex-col gap-2 mb-6"></div>
+
+      <h3 class="text-lg font-semibold mt-8 mb-2" id="experienceFormTitle">Add New Experience</h3>
+
+      <input id="companyInput" type="text" placeholder="Company Name" class="w-full p-2 mb-2 rounded border">
+      <input id="titleInput" type="text" placeholder="Job Title" class="w-full p-2 mb-2 rounded border">
+      <input id="startInput" type="text" placeholder="Start Date (e.g. Jan 2021)" class="w-full p-2 mb-2 rounded border">
+      <input id="endInput" type="text" placeholder="End Date (e.g. Present)" class="w-full p-2 mb-2 rounded border">
+      <textarea id="descriptionInput" placeholder="Job Description" rows="4" class="w-full p-3 mb-2 rounded border"></textarea>
+
+      <div class="flex gap-2">
+        <button id="saveExperienceBtn" onclick="saveExperience()" class="flex-1 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save Experience</button>
+        <button id="cancelEditBtn" onclick="cancelEdit()" class="hidden flex-1 px-6 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Cancel Edit</button>
       </div>
-
-      <h3 class="text-lg font-semibold mt-8 mb-2">Add New Experience</h3>
-
-      <input id="newCompany" type="text" placeholder="Company Name" class="w-full p-2 mb-2 rounded border">
-      <input id="newTitle" type="text" placeholder="Job Title" class="w-full p-2 mb-2 rounded border">
-      <input id="newStart" type="text" placeholder="Start Date (e.g. Jan 2021)" class="w-full p-2 mb-2 rounded border">
-      <input id="newEnd" type="text" placeholder="End Date (e.g. Present)" class="w-full p-2 mb-2 rounded border">
-      <textarea id="newDescription" placeholder="Job Description" rows="4" class="w-full p-3 mb-2 rounded border"></textarea>
-
-      <button onclick="addExperience()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Add Experience</button>
     </section>
 
   </div>
@@ -99,6 +117,9 @@
     const logoutBtn = document.getElementById('logoutBtn');
     const authSection = document.getElementById('authSection');
     const editor = document.getElementById('editor');
+
+    let skillsArray = [];
+    let editingExperienceId = null;
 
     googleLogin.addEventListener('click', async () => {
       const provider = new firebase.auth.GoogleAuthProvider();
@@ -138,13 +159,14 @@
           const data = contactDoc.data();
           document.getElementById('emailInput').value = data.email || '';
           document.getElementById('phoneInput').value = data.phone || '';
-          document.getElementById('linkedinInput').value = data.linkedin || '';
-          document.getElementById('githubInput').value = data.github || '';
+          document.getElementById('telegramInput').value = data.telegram || '';
+          document.getElementById('webappInput').value = data.webapp || '';
         }
 
         const skillsDoc = await db.collection('resume').doc('skills').get();
         if (skillsDoc.exists) {
-          document.getElementById('skillsInput').value = (skillsDoc.data().skills || []).join(', ');
+          skillsArray = skillsDoc.data().skills || [];
+          renderSkills();
         }
 
         const educationDoc = await db.collection('resume').doc('education').get();
@@ -154,6 +176,7 @@
         }
 
         await loadExperience();
+
       } catch (err) {
         console.error('Failed to load resume:', err.message);
       }
@@ -168,16 +191,41 @@
     async function saveContact() {
       const email = document.getElementById('emailInput').value.trim();
       const phone = document.getElementById('phoneInput').value.trim();
-      const linkedin = document.getElementById('linkedinInput').value.trim();
-      const github = document.getElementById('githubInput').value.trim();
-      await db.collection('resume').doc('contact').set({ email, phone, linkedin, github });
+      const telegram = document.getElementById('telegramInput').value.trim();
+      const webapp = document.getElementById('webappInput').value.trim();
+      await db.collection('resume').doc('contact').set({ email, phone, telegram, webapp });
       alert('Contact info saved!');
     }
 
+    function renderSkills() {
+      const skillsList = document.getElementById('skillsList');
+      skillsList.innerHTML = '';
+
+      skillsArray.forEach((skill, index) => {
+        const tag = document.createElement('div');
+        tag.className = 'px-3 py-1 bg-gray-300 dark:bg-zinc-700 rounded-full text-sm flex items-center gap-2';
+        tag.innerHTML = `${skill} <button onclick="removeSkill(${index})" class="text-red-600 font-bold ml-2">×</button>`;
+        skillsList.appendChild(tag);
+      });
+    }
+
+    function addSkill() {
+      const skillInput = document.getElementById('newSkill');
+      const skill = skillInput.value.trim();
+      if (skill) {
+        skillsArray.push(skill);
+        skillInput.value = '';
+        renderSkills();
+      }
+    }
+
+    function removeSkill(index) {
+      skillsArray.splice(index, 1);
+      renderSkills();
+    }
+
     async function saveSkills() {
-      const skillsRaw = document.getElementById('skillsInput').value.trim();
-      const skills = skillsRaw.split(',').map(s => s.trim()).filter(Boolean);
-      await db.collection('resume').doc('skills').set({ skills });
+      await db.collection('resume').doc('skills').set({ skills: skillsArray });
       alert('Skills saved!');
     }
 
@@ -199,7 +247,8 @@
       snapshot.forEach(doc => {
         const job = doc.data();
         const card = document.createElement('div');
-        card.className = 'p-4 bg-gray-100 dark:bg-zinc-700 rounded flex flex-col gap-1 relative';
+        card.className = 'p-4 bg-gray-100 dark:bg-zinc-700 rounded flex flex-col gap-1 relative cursor-pointer hover:bg-gray-200 dark:hover:bg-zinc-600 transition';
+        card.onclick = () => loadExperienceForEdit(doc.id, job);
 
         const title = document.createElement('div');
         title.className = 'font-bold';
@@ -216,7 +265,10 @@
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'absolute top-2 right-2 text-red-600 text-xs hover:underline';
         deleteBtn.textContent = 'Delete';
-        deleteBtn.onclick = () => deleteExperience(doc.id);
+        deleteBtn.onclick = (e) => {
+          e.stopPropagation();
+          deleteExperience(doc.id);
+        };
 
         card.appendChild(title);
         card.appendChild(dates);
@@ -227,35 +279,58 @@
       });
     }
 
-    async function addExperience() {
-      const company = document.getElementById('newCompany').value.trim();
-      const title = document.getElementById('newTitle').value.trim();
-      const start = document.getElementById('newStart').value.trim();
-      const end = document.getElementById('newEnd').value.trim();
-      const description = document.getElementById('newDescription').value.trim();
+    function loadExperienceForEdit(id, job) {
+      editingExperienceId = id;
+      document.getElementById('experienceFormTitle').textContent = "Edit Experience";
+      document.getElementById('companyInput').value = job.company || '';
+      document.getElementById('titleInput').value = job.title || '';
+      document.getElementById('startInput').value = job.start || '';
+      document.getElementById('endInput').value = job.end || '';
+      document.getElementById('descriptionInput').value = job.description || '';
+      document.getElementById('saveExperienceBtn').textContent = "Save Changes";
+      document.getElementById('cancelEditBtn').classList.remove('hidden');
+    }
+
+    function cancelEdit() {
+      editingExperienceId = null;
+      document.getElementById('experienceFormTitle').textContent = "Add New Experience";
+      document.getElementById('saveExperienceBtn').textContent = "Save Experience";
+      document.getElementById('cancelEditBtn').classList.add('hidden');
+      document.getElementById('companyInput').value = '';
+      document.getElementById('titleInput').value = '';
+      document.getElementById('startInput').value = '';
+      document.getElementById('endInput').value = '';
+      document.getElementById('descriptionInput').value = '';
+    }
+
+    async function saveExperience() {
+      const company = document.getElementById('companyInput').value.trim();
+      const title = document.getElementById('titleInput').value.trim();
+      const start = document.getElementById('startInput').value.trim();
+      const end = document.getElementById('endInput').value.trim();
+      const description = document.getElementById('descriptionInput').value.trim();
 
       if (!company || !title || !start || !end || !description) {
-        alert('Please fill in all experience fields.');
+        alert('Please fill in all fields.');
         return;
       }
 
-      await db.collection('resume').doc('experience').collection('jobs').add({
-        company, title, start, end, description
-      });
+      const jobData = { company, title, start, end, description };
 
-      document.getElementById('newCompany').value = '';
-      document.getElementById('newTitle').value = '';
-      document.getElementById('newStart').value = '';
-      document.getElementById('newEnd').value = '';
-      document.getElementById('newDescription').value = '';
+      if (editingExperienceId) {
+        await db.collection('resume').doc('experience').collection('jobs').doc(editingExperienceId).update(jobData);
+        alert('Experience updated!');
+      } else {
+        await db.collection('resume').doc('experience').collection('jobs').add(jobData);
+        alert('Experience added!');
+      }
 
-      alert('Experience added!');
+      cancelEdit();
       loadExperience();
     }
 
     async function deleteExperience(id) {
       if (!confirm('Delete this experience?')) return;
-
       await db.collection('resume').doc('experience').collection('jobs').doc(id).delete();
       alert('Experience deleted!');
       loadExperience();
@@ -263,4 +338,4 @@
   </script>
 
 </body>
-</html> 
+</html>
