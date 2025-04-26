@@ -99,7 +99,7 @@
     title.dataset.field = "title";
 
     const itemList = document.createElement('ul');
-    itemList.className = "space-y-2";
+    itemList.className = "space-y-2 sortable-list";
     itemList.dataset.id = id;
     itemList.dataset.field = "items";
 
@@ -119,19 +119,19 @@
     container.appendChild(addBtn);
     editSections.appendChild(container);
 
-    // DragLock mode - disable input while dragging
-    const sortable = Sortable.create(itemList, {
+    // TRUE independent SortableJS per section
+    new Sortable(itemList, {
       animation: 150,
       handle: ".drag-handle",
       forceFallback: true,
       fallbackOnBody: true,
       swapThreshold: 0.65,
       ghostClass: "bg-orange-100 dark:bg-zinc-700",
-      onStart: function () {
-        itemList.querySelectorAll('input').forEach(input => input.setAttribute('readonly', true));
+      onStart: function (evt) {
+        evt.from.querySelectorAll('input').forEach(input => input.setAttribute('readonly', true));
       },
-      onEnd: function () {
-        itemList.querySelectorAll('input').forEach(input => input.removeAttribute('readonly'));
+      onEnd: function (evt) {
+        evt.from.querySelectorAll('input').forEach(input => input.removeAttribute('readonly'));
       }
     });
   }
