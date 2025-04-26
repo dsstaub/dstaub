@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pastebin 2.2 - Code Tools</title>
+  <title>Pastebin 4.1 Ultra God Mode</title>
 
+  <!-- Tailwind -->
   <script>
     tailwind.config = { darkMode: 'media' }
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Firebase SDKs -->
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
@@ -28,30 +29,24 @@
   </script>
 
   <style>
-    body {
-      font-family: sans-serif;
-      background-color: #e7e5e4;
-    }
-    @media (prefers-color-scheme: dark) {
-      body {
-        background-color: #181818;
-      }
-    }
+    body { font-family: sans-serif; background-color: #e7e5e4; }
+    @media (prefers-color-scheme: dark) { body { background-color: #181818; } }
   </style>
 </head>
 
 <body class="text-black dark:text-white p-6">
 
-  <h1 class="text-3xl font-bold text-center mb-6">Pastebin 2.2</h1>
+  <h1 class="text-3xl font-bold text-center mb-6">Pastebin 4.1 Ultra</h1>
 
   <div class="max-w-xl mx-auto flex flex-col gap-4">
-    <!-- Search Bar -->
-    <input id="searchInput" type="text" placeholder="Search pastes..." class="p-3 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700">
 
-    <!-- New Paste Form -->
     <input id="title" type="text" placeholder="Paste Title" class="p-3 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700">
-    <textarea id="content" placeholder="Paste your code or text here..." rows="6" class="p-3 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700"></textarea>
-    <input id="tags" type="text" placeholder="Tags (comma separated)" class="p-3 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700">
+    <textarea id="content" placeholder="Paste your code or text here..." rows="8" class="p-3 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700"></textarea>
+
+    <div class="flex flex-col gap-2">
+      <label class="text-sm opacity-70">Tags (comma separated):</label>
+      <input id="tags" type="text" placeholder="e.g. html, working, color" class="p-2 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700">
+    </div>
 
     <div class="flex flex-col gap-2">
       <label class="text-sm opacity-70">Delete After:</label>
@@ -65,62 +60,74 @@
       </select>
     </div>
 
-    <button id="saveBtn" class="p-3 rounded bg-blue-600 text-white font-bold hover:bg-blue-700 transition">
-      Save Paste
-    </button>
+    <div class="flex gap-4">
+      <button id="saveBtn" class="flex-1 p-3 rounded bg-blue-600 text-white font-bold hover:bg-blue-700 transition">Save Paste</button>
+    </div>
 
-    <h2 class="text-2xl font-semibold mt-8">Saved Pastes</h2>
+    <div class="flex justify-between items-center mt-8">
+      <h2 class="text-2xl font-semibold">Saved Pastes</h2>
+      <select id="sortSelect" class="p-2 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700 text-sm">
+        <option value="pinned-newest" selected>Favorites First</option>
+        <option value="newest">Newest First</option>
+        <option value="expiring">Expiring Soonest</option>
+      </select>
+    </div>
+
+    <div id="activeFilters" class="flex flex-wrap gap-2 mt-4 hidden"></div>
     <div id="pastes" class="flex flex-col gap-3 mt-2"></div>
+
   </div>
 
   <div id="toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-full bg-green-600 text-white text-sm font-bold opacity-0 pointer-events-none transition-all duration-300">
     Copied!
   </div>
 
+  <footer class="flex justify-center mt-12">
+    <div id="footer-version" class="px-3 py-1 rounded-full bg-gray-300 dark:bg-zinc-700 text-xs font-bold opacity-70">
+      Version: Loading...
+    </div>
+  </footer>
+
+  <!-- Main functionality -->
   <script>
     const titleInput = document.getElementById('title');
     const contentInput = document.getElementById('content');
     const tagsInput = document.getElementById('tags');
     const expirySelect = document.getElementById('expiry');
     const saveBtn = document.getElementById('saveBtn');
-    const searchInput = document.getElementById('searchInput');
     const pastesDiv = document.getElementById('pastes');
+    const sortSelect = document.getElementById('sortSelect');
+    const activeFiltersDiv = document.getElementById('activeFilters');
 
-    let allPastes = [];
-
-    function autoSuggestTitle(content) {
-      if (!content) return '';
-      const firstLine = content.split('\n').find(line => line.trim() !== '') || '';
-      let words = firstLine.trim().split(/\s+/).slice(0, 8).join(' ');
-      if (words.length > 40) {
-        words = words.slice(0, 40) + '...';
-      }
-      return words;
-    }
-
-    contentInput.addEventListener('input', () => {
-      if (titleInput.value.trim() === '') {
-        titleInput.value = autoSuggestTitle(contentInput.value);
-      }
-    });
+    let activeFilters = [];
 
     async function savePaste() {
       const title = titleInput.value.trim();
       const content = contentInput.value.trim();
-      const tags = tagsInput.value.trim().split(',').map(tag => tag.trim().toLowerCase()).filter(tag => tag);
+      let tags = tagsInput.value.trim().split(',').map(t => t.trim()).filter(t => t.length > 0);
       const expiry = expirySelect.value;
 
-      if (!title || !content) {
-        alert('Please fill in both title and content.');
+      if (!title && content) {
+        const firstLine = content.split('\n')[0];
+        titleInput.value = firstLine.slice(0, 40);
+      }
+
+      if (!titleInput.value.trim() || !content) {
+        alert('Fill in title and content.');
         return;
       }
 
+      if (tags.length === 0) {
+        tags = ["misc"];
+      }
+
       const paste = {
-        title,
+        title: titleInput.value.trim(),
         content,
         tags,
         created: new Date().toISOString(),
-        expiry
+        expiry,
+        pinned: false
       };
 
       try {
@@ -130,13 +137,12 @@
         tagsInput.value = '';
         expirySelect.value = '28';
       } catch (err) {
-        console.error('Error saving paste:', err);
         alert('Failed to save paste: ' + err.message);
       }
     }
 
     function copyContent(text) {
-      navigator.clipboard.writeText(text).then(showToast);
+      navigator.clipboard.writeText(text).then(() => showToast());
     }
 
     function showToast() {
@@ -149,28 +155,75 @@
       }, 1200);
     }
 
+    async function togglePin(id, isPinned) {
+      try {
+        await db.collection('pastes').doc(id).update({ pinned: !isPinned });
+      } catch (err) {
+        alert('Failed to pin/unpin: ' + err.message);
+      }
+    }
+
     async function deletePaste(id) {
-      const confirmed = confirm('Are you sure you want to delete this paste?');
-      if (!confirmed) return;
+      if (!confirm('Are you sure you want to delete this paste?')) return;
       try {
         await db.collection('pastes').doc(id).delete();
       } catch (err) {
-        console.error('Error deleting paste:', err);
         alert('Failed to delete paste: ' + err.message);
       }
     }
 
     function renderPastes(pastesArray) {
       pastesDiv.innerHTML = '';
+      activeFiltersDiv.innerHTML = '';
+
+      if (activeFilters.length > 0) {
+        activeFiltersDiv.classList.remove('hidden');
+        activeFilters.forEach(tag => {
+          const tagEl = document.createElement('div');
+          tagEl.className = 'px-2 py-1 text-xs rounded-full bg-blue-500 text-white flex items-center gap-1 cursor-pointer';
+          tagEl.innerHTML = `${tag} <span class="text-white">✖</span>`;
+          tagEl.onclick = () => removeTagFilter(tag);
+          activeFiltersDiv.appendChild(tagEl);
+        });
+
+        const clearBtn = document.createElement('button');
+        clearBtn.className = 'px-3 py-1 rounded-full bg-red-500 text-white text-xs font-bold';
+        clearBtn.textContent = 'Clear All';
+        clearBtn.onclick = () => {
+          activeFilters = [];
+          db.collection('pastes').onSnapshot(snapshot => renderPastes(snapshot.docs));
+        };
+        activeFiltersDiv.appendChild(clearBtn);
+      } else {
+        activeFiltersDiv.classList.add('hidden');
+      }
 
       if (pastesArray.length === 0) {
         pastesDiv.innerHTML = '<div class="text-sm opacity-50">No pastes saved yet.</div>';
         return;
       }
 
-      pastesArray.slice().reverse().forEach(doc => {
+      let sortedPastes = [...pastesArray];
+
+      if (sortSelect.value === 'pinned-newest') {
+        const pinned = sortedPastes.filter(p => p.data().pinned);
+        const normal = sortedPastes.filter(p => !p.data().pinned);
+        sortedPastes = [...pinned, ...normal];
+      } else if (sortSelect.value === 'newest') {
+        sortedPastes.sort((a, b) => new Date(b.data().created) - new Date(a.data().created));
+      } else if (sortSelect.value === 'expiring') {
+        sortedPastes.sort((a, b) => {
+          const aDate = a.data().expiry === 'never' ? Infinity : new Date(a.data().created).getTime() + a.data().expiry * 86400000;
+          const bDate = b.data().expiry === 'never' ? Infinity : new Date(b.data().created).getTime() + b.data().expiry * 86400000;
+          return aDate - bDate;
+        });
+      }
+
+      sortedPastes.forEach(doc => {
         const paste = doc.data();
         const pasteId = doc.id;
+
+        if (activeFilters.length && !paste.tags.some(tag => activeFilters.includes(tag))) return;
 
         const card = document.createElement('div');
         card.className = 'p-4 rounded-lg bg-white dark:bg-zinc-800 shadow flex flex-col gap-2';
@@ -184,7 +237,8 @@
         title.onclick = () => {
           titleInput.value = paste.title;
           contentInput.value = paste.content;
-          tagsInput.value = paste.tags ? paste.tags.join(', ') : '';
+          tagsInput.value = paste.tags.join(', ');
+          expirySelect.value = paste.expiry;
         };
 
         const copyBtn = document.createElement('button');
@@ -195,75 +249,77 @@
         titleRow.appendChild(title);
         titleRow.appendChild(copyBtn);
 
-        const tagsRow = document.createElement('div');
-        tagsRow.className = 'flex flex-wrap gap-1';
-        if (paste.tags && paste.tags.length) {
-          paste.tags.forEach(tag => {
-            const tagEl = document.createElement('span');
-            tagEl.className = 'inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full';
-            tagEl.textContent = tag;
-            tagsRow.appendChild(tagEl);
-          });
-        }
-
         const meta = document.createElement('div');
         meta.className = 'text-xs opacity-60';
         meta.textContent = `Saved: ${new Date(paste.created).toLocaleString()}${paste.expiry !== 'never' ? ` • Expires in ${paste.expiry} days` : ''}`;
 
+        const tagRow = document.createElement('div');
+        tagRow.className = 'flex flex-wrap gap-2 mt-2';
+        paste.tags.forEach(tag => {
+          const tagBtn = document.createElement('button');
+          tagBtn.className = 'px-2 py-1 text-xs rounded-full bg-gray-300 dark:bg-zinc-700 hover:bg-gray-400';
+          tagBtn.textContent = tag;
+          tagBtn.onclick = () => toggleTagFilter(tag);
+          tagRow.appendChild(tagBtn);
+        });
+
+        const controlRow = document.createElement('div');
+        controlRow.className = 'flex gap-2 mt-2';
+
+        const pinBtn = document.createElement('button');
+        pinBtn.className = 'text-xs text-yellow-500 hover:underline';
+        pinBtn.textContent = paste.pinned ? 'Unpin' : 'Pin';
+        pinBtn.onclick = () => togglePin(pasteId, paste.pinned);
+
         const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'text-xs text-red-600 hover:underline self-end';
+        deleteBtn.className = 'text-xs text-red-600 hover:underline';
         deleteBtn.textContent = 'Delete';
         deleteBtn.onclick = () => deletePaste(pasteId);
 
         card.appendChild(titleRow);
-        if (tagsRow.children.length > 0) card.appendChild(tagsRow);
         card.appendChild(meta);
-        card.appendChild(deleteBtn);
+        card.appendChild(tagRow);
+        card.appendChild(controlRow);
+        controlRow.appendChild(pinBtn);
+        controlRow.appendChild(deleteBtn);
 
         pastesDiv.appendChild(card);
       });
     }
 
-    function filterPastes(query) {
-      const lower = query.toLowerCase();
-      const filtered = allPastes.filter(doc => {
-        const paste = doc.data();
-        return (
-          (paste.title && paste.title.toLowerCase().includes(lower)) ||
-          (paste.content && paste.content.toLowerCase().includes(lower)) ||
-          (paste.tags && paste.tags.some(tag => tag.includes(lower)))
-        );
-      });
-      renderPastes(filtered);
+    function toggleTagFilter(tag) {
+      if (activeFilters.includes(tag)) {
+        activeFilters = activeFilters.filter(t => t !== tag);
+      } else {
+        activeFilters.push(tag);
+      }
+      db.collection('pastes').onSnapshot(snapshot => renderPastes(snapshot.docs));
     }
 
-    async function cleanupExpiredPastes() {
-      const now = new Date();
-      allPastes.forEach(async (doc) => {
-        const paste = doc.data();
-        const pasteId = doc.id;
-        if (paste.expiry !== 'never') {
-          const created = new Date(paste.created);
-          const diffDays = (now - created) / (1000 * 60 * 60 * 24);
-          if (diffDays > parseInt(paste.expiry)) {
-            try {
-              await db.collection('pastes').doc(pasteId).delete();
-              console.log(`Auto-deleted expired paste: ${paste.title}`);
-            } catch (err) {
-              console.error('Error auto-deleting paste:', err);
-            }
-          }
-        }
-      });
+    function removeTagFilter(tag) {
+      activeFilters = activeFilters.filter(t => t !== tag);
+      db.collection('pastes').onSnapshot(snapshot => renderPastes(snapshot.docs));
     }
 
     saveBtn.addEventListener('click', savePaste);
-    searchInput.addEventListener('input', e => filterPastes(e.target.value));
+    sortSelect.addEventListener('change', () => {
+      db.collection('pastes').onSnapshot(snapshot => renderPastes(snapshot.docs));
+    });
 
     db.collection('pastes').onSnapshot(snapshot => {
-      allPastes = snapshot.docs;
-      cleanupExpiredPastes();
-      renderPastes(allPastes);
+      const pastes = snapshot.docs;
+      renderPastes(pastes);
+    });
+  </script>
+
+  <script type="module">
+    import { SW_VERSION } from '/sw-version.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const footer = document.getElementById('footer-version');
+      if (footer) {
+        footer.textContent = `v${SW_VERSION.replace(/^v/, '')}`;
+      }
     });
   </script>
 
