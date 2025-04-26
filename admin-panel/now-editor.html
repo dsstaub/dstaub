@@ -32,29 +32,38 @@
       margin-bottom: 0.5rem;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: center;
       font-size: 1rem;
       user-select: none;
       cursor: grab;
+      text-align: center;
     }
     .dark .sortable-item {
       background-color: #3f3f46;
       border-color: #52525b;
       color: white;
     }
-    .edit-btn {
-      background: none;
-      border: none;
-      color: #6b7280;
-      font-size: 1.25rem;
-      cursor: pointer;
-      padding: 0 0.5rem;
+    .delete-zone {
+      border: 2px dashed rgba(239, 68, 68, 0.7);
+      background-color: rgba(239, 68, 68, 0.1);
+      border-radius: 0.5rem;
+      height: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      color: #ef4444;
+      transition: background-color 0.3s;
     }
-    .edit-btn:hover {
-      color: #000;
+    .delete-zone.dragging-over {
+      background-color: rgba(239, 68, 68, 0.4);
     }
-    .dark .edit-btn:hover {
-      color: #fff;
+    .dark .delete-zone {
+      border-color: rgba(239, 68, 68, 0.5);
+      background-color: rgba(239, 68, 68, 0.05);
+    }
+    .dark .delete-zone.dragging-over {
+      background-color: rgba(239, 68, 68, 0.3);
     }
   </style>
 </head>
@@ -105,7 +114,7 @@
     title.dataset.field = "title";
 
     const itemList = document.createElement('div');
-    itemList.className = "sortable-list";
+    itemList.className = "sortable-list space-y-2";
     itemList.dataset.id = id;
     itemList.dataset.field = "items";
 
@@ -113,45 +122,76 @@
       itemList.appendChild(makeListItem(item));
     });
 
+    const controls = document.createElement('div');
+    controls.className = "flex gap-2";
+
     const addBtn = document.createElement('button');
     addBtn.textContent = "+ Add Item";
-    addBtn.className = "px-4 py-2 rounded bg-green-600 text-white font-bold text-sm hover:bg-green-700";
+    addBtn.className = "flex-1 px-4 py-2 rounded bg-green-600 text-white font-bold text-sm hover:bg-green-700";
     addBtn.onclick = () => {
-      itemList.appendChild(makeListItem("New Item"));
+      const newItem = prompt("Enter item text:");
+      if (newItem) {
+        itemList.appendChild(makeListItem(newItem.trim()));
+      }
     };
+
+    const deleteZone = document.createElement('div');
+    deleteZone.className = "flex-1 delete-zone";
+    deleteZone.textContent = "Drop Here to Delete";
+
+    controls.appendChild(addBtn);
+    controls.appendChild(deleteZone);
 
     container.appendChild(title);
     container.appendChild(itemList);
-    container.appendChild(addBtn);
+    container.appendChild(controls);
     editSections.appendChild(container);
 
     new Sortable(itemList, {
+      group: {
+        name: id,
+        pull: true,
+        put: true
+      },
       animation: 150,
       forceFallback: true,
       fallbackOnBody: true,
       swapThreshold: 0.65,
+      onEnd: (evt) => {
+        if (evt.to === deleteZone) {
+          const item = evt.item;
+          const confirmDelete = confirm("Delete this item?");
+          if (confirmDelete) {
+            item.remove();
+          } else {
+            itemList.appendChild(item);
+          }
+        }
+      }
+    });
+
+    new Sortable(deleteZone, {
+      group: {
+        name: id,
+        pull: false,
+        put: true
+      },
+      onAdd: (evt) => {
+        const item = evt.item;
+        const confirmDelete = confirm("Delete this item?");
+        if (confirmDelete) {
+          item.remove();
+        } else {
+          itemList.appendChild(item);
+        }
+      }
     });
   }
 
   function makeListItem(text) {
     const div = document.createElement('div');
     div.className = "sortable-item";
-
-    const span = document.createElement('span');
-    span.textContent = text || "New Item";
-
-    const editBtn = document.createElement('button');
-    editBtn.className = "edit-btn";
-    editBtn.innerHTML = "✏️";
-    editBtn.onclick = () => {
-      const newText = prompt("Edit item:", span.textContent);
-      if (newText !== null) {
-        span.textContent = newText.trim();
-      }
-    };
-
-    div.appendChild(span);
-    div.appendChild(editBtn);
+    div.textContent = text || "New Item";
     return div;
   }
 
@@ -163,7 +203,7 @@
         const titleInput = inputs[0];
         const id = titleInput.dataset.id;
         const title = titleInput.value.trim();
-        const itemDivs = container.querySelector('div.sortable-list').querySelectorAll('.sortable-item span');
+        const itemDivs = container.querySelector('div.sortable-list').querySelectorAll('.sortable-item');
         const items = Array.from(itemDivs).map(div => div.textContent.trim()).filter(t => t.length > 0);
         await db.collection('now').doc(id).set({ title, items });
       }
