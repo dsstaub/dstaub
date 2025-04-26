@@ -93,6 +93,23 @@
     }
   });
 </script>
+<div id="globalNav"></div>
 
+<script>
+  async function loadNav() {
+    try {
+      const res = await fetch('/_snippets/nav.html');
+      if (res.ok) {
+        const html = await res.text();
+        document.getElementById('globalNav').innerHTML = html;
+      } else {
+        console.error('Failed to load nav:', res.status);
+      }
+    } catch (err) {
+      console.error('Nav load error:', err);
+    }
+  }
+  loadNav();
+</script>
 </body>
 </html>
