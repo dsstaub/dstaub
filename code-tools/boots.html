@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Bootstrap Setup</title>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBYYAjY8Q7RH0jQuMeOmAAp3XPTGLAQr0k",
+      authDomain: "code-tools-pastebin.firebaseapp.com",
+      projectId: "code-tools-pastebin",
+      storageBucket: "code-tools-pastebin.appspot.com",
+      messagingSenderId: "1000713658548",
+      appId: "1:1000713658548:web:4996a3a58b1f3fd013b7e1"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+  </script>
+
+  <style>
+    body { font-family: sans-serif; padding: 2rem; background: #f4f4f5; text-align: center; }
+    button { padding: 1rem 2rem; font-size: 1.2rem; font-weight: bold; background: #3b82f6; color: white; border: none; border-radius: 0.5rem; margin-top: 2rem; }
+    button:hover { background: #2563eb; }
+  </style>
+</head>
+<body>
+
+  <h1 class="text-2xl font-bold">Resume CMS Bootstrap</h1>
+  <p class="mt-4 text-gray-600">Tap the button to create your resume Firestore structure.</p>
+
+  <button onclick="bootstrapResume()">Create Resume Structure</button>
+
+  <script>
+    async function bootstrapResume() {
+      try {
+        await auth.signInAnonymously(); // Just to initialize access (you're owner anyway)
+
+        await db.collection('resume').doc('summary').set({
+          text: "Write your professional summary here..."
+        });
+
+        await db.collection('resume').doc('contact').set({
+          email: "you@example.com",
+          phone: "555-555-5555",
+          linkedin: "https://linkedin.com/in/yourprofile",
+          github: "https://github.com/yourusername"
+        });
+
+        await db.collection('resume').doc('skills').set({
+          skills: ["HTML", "CSS", "JavaScript", "Firebase"]
+        });
+
+        await db.collection('resume').doc('education').set({
+          schools: [
+            {
+              name: "Example University",
+              degree: "B.S. in Computer Science",
+              year: "2020"
+            }
+          ]
+        });
+
+        const experienceCollection = db.collection('resume').doc('experience').collection('jobs');
+
+        await experienceCollection.add({
+          company: "Awesome Company",
+          title: "Front-End Developer",
+          start: "Jan 2021",
+          end: "Present",
+          description: "Building modern web applications with passion."
+        });
+
+        alert("Resume structure created successfully!");
+      } catch (err) {
+        console.error(err);
+        alert("Error creating resume structure: " + err.message);
+      }
+    }
+  </script>
+
+</body>
+</html>
