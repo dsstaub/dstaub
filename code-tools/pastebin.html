@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pastebin 4.2 Ultra God Mode</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pastebin 4.3 Ultra God Mode</title>
 
-  <!-- Tailwind -->
+  <!-- Tailwind setup -->
   <script>
     tailwind.config = { darkMode: 'media' }
   </script>
@@ -38,10 +38,18 @@
 
 <body class="text-black dark:text-white p-6">
 
-  <h1 class="text-3xl font-bold text-center mb-6">Pastebin 4.2 Ultra</h1>
+  <!-- LOADING SCREEN -->
+  <div id="loadingScreen" class="fixed inset-0 flex items-center justify-center bg-[#e7e5e4] dark:bg-[#181818] z-50">
+    <div class="flex flex-col items-center gap-4">
+      <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-400 border-t-transparent"></div>
+      <div class="text-lg font-bold text-gray-600 dark:text-gray-300">Loading...</div>
+    </div>
+  </div>
+
+  <h1 class="text-3xl font-bold text-center mb-6">Pastebin 4.3 Ultra</h1>
 
   <!-- Auth Section -->
-  <div id="authSection" class="max-w-xl mx-auto flex flex-col gap-4 mb-8 text-center">
+  <div id="authSection" class="max-w-xl mx-auto flex flex-col gap-4 mb-8 text-center hidden">
     <h2 class="text-2xl font-bold mb-4">Login to Access Your Pastes</h2>
 
     <button id="googleLogin" class="p-3 rounded bg-white border border-gray-300 text-black font-bold hover:bg-gray-100 transition flex items-center justify-center gap-2">
@@ -54,7 +62,7 @@
   </div>
 
   <!-- Paste Section -->
-  <div class="max-w-xl mx-auto flex flex-col gap-4 hidden">
+  <div id="pasteSection" class="max-w-xl mx-auto flex flex-col gap-4 hidden">
 
     <input id="title" type="text" placeholder="Paste Title" class="p-3 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700">
     <textarea id="content" placeholder="Paste your code or text here..." rows="8" class="p-3 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700"></textarea>
@@ -109,11 +117,12 @@
     const pastesDiv = document.getElementById('pastes');
     const sortSelect = document.getElementById('sortSelect');
     const activeFiltersDiv = document.getElementById('activeFilters');
-
+    const authSection = document.getElementById('authSection');
+    const pasteSection = document.getElementById('pasteSection');
+    const loadingScreen = document.getElementById('loadingScreen');
     const googleLogin = document.getElementById('googleLogin');
     const logoutBtn = document.getElementById('logoutBtn');
     const userInfo = document.getElementById('userInfo');
-    const pasteSection = document.querySelector('.max-w-xl.mx-auto.flex.flex-col.gap-4');
 
     let activeFilters = [];
 
@@ -131,8 +140,10 @@
     });
 
     auth.onAuthStateChanged(user => {
+      loadingScreen.classList.add('hidden'); // hide spinner once we know
+
       if (user) {
-        document.getElementById('authSection').classList.add('hidden');
+        authSection.classList.add('hidden');
         pasteSection.classList.remove('hidden');
         logoutBtn.classList.remove('hidden');
         if (userInfo) {
@@ -141,7 +152,7 @@
         }
         db.collection('pastes').where('uid', '==', user.uid).onSnapshot(snapshot => renderPastes(snapshot.docs));
       } else {
-        document.getElementById('authSection').classList.remove('hidden');
+        authSection.classList.remove('hidden');
         pasteSection.classList.add('hidden');
         logoutBtn.classList.add('hidden');
         if (userInfo) {
@@ -364,5 +375,6 @@
       db.collection('pastes').onSnapshot(snapshot => renderPastes(snapshot.docs));
     });
   </script>
+
 </body>
 </html>
