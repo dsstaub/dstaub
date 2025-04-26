@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pastebin 2.1 - Code Tools</title>
+  <title>Pastebin 2.2 - Code Tools</title>
 
   <script>
     tailwind.config = { darkMode: 'media' }
@@ -42,7 +42,7 @@
 
 <body class="text-black dark:text-white p-6">
 
-  <h1 class="text-3xl font-bold text-center mb-6">Pastebin 2.1</h1>
+  <h1 class="text-3xl font-bold text-center mb-6">Pastebin 2.2</h1>
 
   <div class="max-w-xl mx-auto flex flex-col gap-4">
     <!-- Search Bar -->
@@ -86,7 +86,23 @@
     const searchInput = document.getElementById('searchInput');
     const pastesDiv = document.getElementById('pastes');
 
-    let allPastes = []; // Cache for search
+    let allPastes = [];
+
+    function autoSuggestTitle(content) {
+      if (!content) return '';
+      const firstLine = content.split('\n').find(line => line.trim() !== '') || '';
+      let words = firstLine.trim().split(/\s+/).slice(0, 8).join(' ');
+      if (words.length > 40) {
+        words = words.slice(0, 40) + '...';
+      }
+      return words;
+    }
+
+    contentInput.addEventListener('input', () => {
+      if (titleInput.value.trim() === '') {
+        titleInput.value = autoSuggestTitle(contentInput.value);
+      }
+    });
 
     async function savePaste() {
       const title = titleInput.value.trim();
@@ -226,7 +242,6 @@
       allPastes.forEach(async (doc) => {
         const paste = doc.data();
         const pasteId = doc.id;
-
         if (paste.expiry !== 'never') {
           const created = new Date(paste.created);
           const diffDays = (now - created) / (1000 * 60 * 60 * 24);
