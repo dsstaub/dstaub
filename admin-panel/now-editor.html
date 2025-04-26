@@ -24,34 +24,37 @@
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
   <style>
-    li.sortable-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    .sortable-item {
       background-color: #f9fafb;
       border: 1px solid #d1d5db;
       border-radius: 0.5rem;
-      padding: 0.5rem 1rem;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 1rem;
       user-select: none;
+      cursor: grab;
     }
-    .dark li.sortable-item {
+    .dark .sortable-item {
       background-color: #3f3f46;
       border-color: #52525b;
       color: white;
     }
-    .drag-handle {
-      touch-action: none;
-      cursor: grab;
-      user-select: none;
-      -webkit-user-drag: none;
-      -webkit-tap-highlight-color: transparent;
-      font-size: 1.5rem;
-    }
-    .text-item {
-      flex: 1;
-      padding: 0 0.5rem;
+    .edit-btn {
+      background: none;
+      border: none;
+      color: #6b7280;
+      font-size: 1.25rem;
       cursor: pointer;
-      overflow-wrap: break-word;
+      padding: 0 0.5rem;
+    }
+    .edit-btn:hover {
+      color: #000;
+    }
+    .dark .edit-btn:hover {
+      color: #fff;
     }
   </style>
 </head>
@@ -101,8 +104,8 @@
     title.dataset.id = id;
     title.dataset.field = "title";
 
-    const itemList = document.createElement('ul');
-    itemList.className = "space-y-2 sortable-list";
+    const itemList = document.createElement('div');
+    itemList.className = "sortable-list";
     itemList.dataset.id = id;
     itemList.dataset.field = "items";
 
@@ -114,7 +117,7 @@
     addBtn.textContent = "+ Add Item";
     addBtn.className = "px-4 py-2 rounded bg-green-600 text-white font-bold text-sm hover:bg-green-700";
     addBtn.onclick = () => {
-      itemList.appendChild(makeListItem(""));
+      itemList.appendChild(makeListItem("New Item"));
     };
 
     container.appendChild(title);
@@ -124,37 +127,32 @@
 
     new Sortable(itemList, {
       animation: 150,
-      handle: ".drag-handle",
       forceFallback: true,
       fallbackOnBody: true,
       swapThreshold: 0.65,
-      ghostClass: "bg-orange-100 dark:bg-zinc-700"
     });
   }
 
   function makeListItem(text) {
-    const li = document.createElement('li');
-    li.className = "sortable-item";
+    const div = document.createElement('div');
+    div.className = "sortable-item";
 
-    const textDiv = document.createElement('div');
-    textDiv.className = "text-item";
-    textDiv.textContent = text || "New Item";
+    const span = document.createElement('span');
+    span.textContent = text || "New Item";
 
-    textDiv.addEventListener('click', () => {
-      const newText = prompt("Edit item:", textDiv.textContent);
+    const editBtn = document.createElement('button');
+    editBtn.className = "edit-btn";
+    editBtn.innerHTML = "✏️";
+    editBtn.onclick = () => {
+      const newText = prompt("Edit item:", span.textContent);
       if (newText !== null) {
-        textDiv.textContent = newText.trim();
+        span.textContent = newText.trim();
       }
-    });
+    };
 
-    const dragHandle = document.createElement('div');
-    dragHandle.textContent = "⋮⋮";
-    dragHandle.className = "drag-handle text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300";
-
-    li.appendChild(textDiv);
-    li.appendChild(dragHandle);
-
-    return li;
+    div.appendChild(span);
+    div.appendChild(editBtn);
+    return div;
   }
 
   saveBtn.addEventListener('click', async () => {
@@ -165,8 +163,8 @@
         const titleInput = inputs[0];
         const id = titleInput.dataset.id;
         const title = titleInput.value.trim();
-        const listItems = container.querySelector('ul').querySelectorAll('.text-item');
-        const items = Array.from(listItems).map(div => div.textContent.trim()).filter(t => t.length > 0);
+        const itemDivs = container.querySelector('div.sortable-list').querySelectorAll('.sortable-item span');
+        const items = Array.from(itemDivs).map(div => div.textContent.trim()).filter(t => t.length > 0);
         await db.collection('now').doc(id).set({ title, items });
       }
       alert('Saved successfully!');
