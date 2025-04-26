@@ -249,5 +249,108 @@ function renderEditor() {
 renderEditor();
 </script>
 
+<!-- Firebase Core -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
+<script>
+// === FIREBASE INITIALIZE ===
+const firebaseConfig = {
+  apiKey: "AIzaSyBYYAjY8Q7RH0jQuMeOmAAp3XPTGLAQr0k",
+  authDomain: "code-tools-pastebin.firebaseapp.com",
+  projectId: "code-tools-pastebin",
+  storageBucket: "code-tools-pastebin.appspot.com",
+  messagingSenderId: "1000713658548",
+  appId: "1:1000713658548:web:4996a3a58b1f3fd013b7e1"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+auth.signInAnonymously().catch((error) => {
+  console.error("Auth error:", error);
+});
+
+// === SAVE BUTTON FUNCTIONALITY ===
+saveBtn.addEventListener('click', async () => {
+  const docRef = db.collection('resume').doc('live');
+
+  const summary = editor.querySelector('input[placeholder=""]').value.trim();
+
+  const experiences = [];
+  editor.querySelectorAll('#editor > div:nth-child(2) .sortable-list').forEach(group => {
+    group.querySelectorAll('.space-y-2.bg-stone-100, .space-y-2.bg-zinc-700').forEach(jobDiv => {
+      const inputs = jobDiv.querySelectorAll('input');
+      const bullets = [];
+      jobDiv.querySelectorAll('.sortable-item').forEach(bulletDiv => {
+        bullets.push(bulletDiv.textContent.trim());
+      });
+      experiences.push({
+        title: inputs[0].value.trim(),
+        company: inputs[1].value.trim(),
+        location: inputs[2].value.trim(),
+        dates: inputs[3].value.trim(),
+        bullets
+      });
+    });
+  });
+
+  const skills = [];
+  editor.querySelectorAll('#editor > div:nth-child(3) .sortable-list').forEach(group => {
+    const groupNameInput = group.previousElementSibling;
+    const items = [];
+    group.querySelectorAll('.sortable-item').forEach(skillDiv => {
+      items.push(skillDiv.textContent.trim());
+    });
+    skills.push({
+      group: groupNameInput.value.trim(),
+      items
+    });
+  });
+
+  const education = [];
+  editor.querySelectorAll('#editor > div:nth-child(4) .space-y-2.bg-stone-100, #editor > div:nth-child(4) .space-y-2.bg-zinc-700').forEach(group => {
+    const groupTitle = group.querySelector('input').value.trim();
+    const items = [];
+    group.querySelectorAll('.grid').forEach(entry => {
+      const inputs = entry.querySelectorAll('input');
+      items.push({
+        institution: inputs[0].value.trim(),
+        credential: inputs[1].value.trim(),
+        year: inputs[2].value.trim()
+      });
+    });
+    education.push({
+      group: groupTitle,
+      items
+    });
+  });
+
+  const contactInputs = editor.querySelectorAll('#editor > div:last-child input');
+  const contact = {
+    email: contactInputs[0].value.trim(),
+    phone: contactInputs[1].value.trim(),
+    telegram: contactInputs[2].value.trim(),
+    web: contactInputs[3].value.trim()
+  };
+
+  try {
+    await docRef.set({
+      summary,
+      experience: experiences,
+      skills,
+      education,
+      contact,
+      updated: new Date().toISOString()
+    });
+    alert("Resume saved!");
+  } catch (err) {
+    console.error("Failed to save:", err);
+    alert("Failed to save resume.");
+  }
+});
+</script>
+
 </body>
 </html>
