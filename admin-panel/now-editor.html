@@ -28,13 +28,10 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 0.5rem;
-      background-color: white;
+      background-color: #f9fafb;
       border: 1px solid #d1d5db;
       border-radius: 0.5rem;
-      padding: 0.5rem;
-      max-width: 100%;
-      overflow: hidden;
+      padding: 0.5rem 1rem;
       user-select: none;
     }
     .dark li.sortable-item {
@@ -48,19 +45,13 @@
       user-select: none;
       -webkit-user-drag: none;
       -webkit-tap-highlight-color: transparent;
+      font-size: 1.5rem;
     }
-    .editable-text {
+    .text-item {
       flex: 1;
-      padding: 0.5rem;
-      background: transparent;
-      border-radius: 0.5rem;
+      padding: 0 0.5rem;
       cursor: pointer;
-      min-width: 0;
-      overflow-wrap: anywhere;
-    }
-    .editing {
-      background-color: #f3f4f6;
-      outline: 2px solid #60a5fa;
+      overflow-wrap: break-word;
     }
   </style>
 </head>
@@ -131,7 +122,6 @@
     container.appendChild(addBtn);
     editSections.appendChild(container);
 
-    // True Sortable per section
     new Sortable(itemList, {
       animation: 150,
       handle: ".drag-handle",
@@ -146,31 +136,21 @@
     const li = document.createElement('li');
     li.className = "sortable-item";
 
-    const deleteBtn = document.createElement('button');
-    deleteBtn.textContent = "✕";
-    deleteBtn.className = "text-sm text-red-500 hover:text-red-700 font-bold flex-shrink-0";
-    deleteBtn.onclick = () => li.remove();
-
     const textDiv = document.createElement('div');
-    textDiv.className = "editable-text";
-    textDiv.textContent = text;
+    textDiv.className = "text-item";
+    textDiv.textContent = text || "New Item";
 
     textDiv.addEventListener('click', () => {
-      textDiv.contentEditable = true;
-      textDiv.classList.add('editing');
-      textDiv.focus();
-    });
-
-    textDiv.addEventListener('blur', () => {
-      textDiv.contentEditable = false;
-      textDiv.classList.remove('editing');
+      const newText = prompt("Edit item:", textDiv.textContent);
+      if (newText !== null) {
+        textDiv.textContent = newText.trim();
+      }
     });
 
     const dragHandle = document.createElement('div');
     dragHandle.textContent = "⋮⋮";
-    dragHandle.className = "drag-handle text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 text-xl flex-shrink-0";
+    dragHandle.className = "drag-handle text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300";
 
-    li.appendChild(deleteBtn);
     li.appendChild(textDiv);
     li.appendChild(dragHandle);
 
@@ -185,7 +165,7 @@
         const titleInput = inputs[0];
         const id = titleInput.dataset.id;
         const title = titleInput.value.trim();
-        const listItems = container.querySelector('ul').querySelectorAll('.editable-text');
+        const listItems = container.querySelector('ul').querySelectorAll('.text-item');
         const items = Array.from(listItems).map(div => div.textContent.trim()).filter(t => t.length > 0);
         await db.collection('now').doc(id).set({ title, items });
       }
