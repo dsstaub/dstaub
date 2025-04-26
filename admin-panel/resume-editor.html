@@ -73,7 +73,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 
 <script>
-// Firebase setup
+// --- Firebase Setup ---
 const firebaseConfig = {
   apiKey: "AIzaSyBYYAjY8Q7RH0jQuMeOmAAp3XPTGLAQr0k",
   authDomain: "code-tools-pastebin.firebaseapp.com",
@@ -86,16 +86,14 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
-auth.signInAnonymously().catch((error) => {
-  console.error("Auth error:", error);
-});
+auth.signInAnonymously().catch(error => console.error("Auth error:", error));
 
-// Setup
+// --- Setup ---
 const editor = document.getElementById('editor');
 const saveBtn = document.getElementById('saveBtn');
 let resumeData = {};
 
-// Helpers
+// --- Helper Functions ---
 function makeEditableField(value = "", placeholder = "") {
   const input = document.createElement('input');
   input.type = "text";
@@ -109,7 +107,6 @@ function makeListItem(text = "", immediateEdit = false) {
   const div = document.createElement('div');
   div.className = "sortable-item";
   div.textContent = text || "New Item";
-
   div.addEventListener('click', () => {
     const input = document.createElement('input');
     input.className = "editable-input";
@@ -120,11 +117,10 @@ function makeListItem(text = "", immediateEdit = false) {
     input.addEventListener('blur', () => {
       div.textContent = input.value.trim() || "New Item";
     });
-    input.addEventListener('keydown', (e) => {
+    input.addEventListener('keydown', e => {
       if (e.key === 'Enter') input.blur();
     });
   });
-
   if (immediateEdit) div.click();
   return div;
 }
@@ -138,179 +134,212 @@ function makeEducationEntry(institution = "", credential = "", year = "") {
   return div;
 }
 
-// Render Resume
+// --- Render Editor ---
 function renderEditor(data) {
   editor.innerHTML = '';
 
-  // Summary
+  // --- Summary ---
   const summarySection = document.createElement('div');
   summarySection.className = "section-card space-y-4";
   summarySection.innerHTML = `<h2 class="text-xl font-bold mb-2 text-orange-400">Professional Summary</h2>`;
-  const summaryInput = makeEditableField(data.summary);
+  const summaryInput = makeEditableField(data.summary || "");
+  summaryInput.id = "summaryInput";
   summarySection.appendChild(summaryInput);
   editor.appendChild(summarySection);
 
-  // Experience
+  // --- Experience ---
   const expSection = document.createElement('div');
   expSection.className = "section-card space-y-4";
   expSection.innerHTML = `<h2 class="text-xl font-bold mb-2 text-orange-400">Relevant Experience</h2>`;
   const expList = document.createElement('div');
+  expList.id = "experienceList";
   expSection.appendChild(expList);
-  const addJobBtn = document.createElement('button');
-  addJobBtn.textContent = "+ Add Job";
-  addJobBtn.className = "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700";
-  addJobBtn.onclick = () => {
-    const job = document.createElement('div');
-    job.className = "space-y-2 bg-stone-100 dark:bg-zinc-700 p-4 rounded";
-    job.appendChild(makeEditableField("", "Job Title"));
-    job.appendChild(makeEditableField("", "Company"));
-    job.appendChild(makeEditableField("", "Location"));
-    job.appendChild(makeEditableField("", "Start - End"));
+
+  (data.experience || []).forEach(job => {
+    const jobDiv = document.createElement('div');
+    jobDiv.className = "space-y-2 bg-stone-100 dark:bg-zinc-700 p-4 rounded";
+    jobDiv.appendChild(makeEditableField(job.title, "Job Title"));
+    jobDiv.appendChild(makeEditableField(job.company, "Company"));
+    jobDiv.appendChild(makeEditableField(job.location, "Location"));
+    jobDiv.appendChild(makeEditableField(`${job.start || ""} - ${job.end || ""}`, "Start - End"));
+
     const bullets = document.createElement('div');
     bullets.className = "sortable-list space-y-2";
+    (job.bullets || []).forEach(bullet => {
+      bullets.appendChild(makeListItem(bullet));
+    });
+
     const addBullet = document.createElement('button');
     addBullet.textContent = "+ Add Bullet";
     addBullet.className = "px-3 py-1 text-xs rounded bg-green-600 text-white font-bold hover:bg-green-700";
     addBullet.onclick = () => bullets.appendChild(makeListItem("", true));
-    job.appendChild(bullets);
-    job.appendChild(addBullet);
-    expList.appendChild(job);
+
+    jobDiv.appendChild(bullets);
+    jobDiv.appendChild(addBullet);
+    expList.appendChild(jobDiv);
+
     new Sortable(bullets, { group: 'bullets', animation: 150 });
+  });
+
+  const addJobBtn = document.createElement('button');
+  addJobBtn.textContent = "+ Add Job";
+  addJobBtn.className = "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700";
+  addJobBtn.onclick = () => {
+    const event = new Event('load');
+    window.dispatchEvent(event);
   };
   expSection.appendChild(addJobBtn);
   editor.appendChild(expSection);
 
-  // Skills
+  // --- Skills ---
   const skillsSection = document.createElement('div');
   skillsSection.className = "section-card space-y-4";
   skillsSection.innerHTML = `<h2 class="text-xl font-bold mb-2 text-orange-400">Skills</h2>`;
   const skillsList = document.createElement('div');
+  skillsList.id = "skillsList";
   skillsSection.appendChild(skillsList);
-  const addSkillGroupBtn = document.createElement('button');
-  addSkillGroupBtn.textContent = "+ Add Skill Group";
-  addSkillGroupBtn.className = "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700";
-  addSkillGroupBtn.onclick = () => {
-    const group = document.createElement('div');
-    group.className = "space-y-2 bg-stone-100 dark:bg-zinc-700 p-4 rounded";
-    group.appendChild(makeEditableField("New Group", "Group Title"));
+
+  (data.skills || []).forEach(group => {
+    const groupDiv = document.createElement('div');
+    groupDiv.className = "space-y-2 bg-stone-100 dark:bg-zinc-700 p-4 rounded";
+    groupDiv.appendChild(makeEditableField(group.group, "Skill Group"));
     const items = document.createElement('div');
     items.className = "sortable-list space-y-2";
+    (group.items || []).forEach(skill => {
+      items.appendChild(makeListItem(skill));
+    });
+
     const addSkill = document.createElement('button');
     addSkill.textContent = "+ Add Skill";
     addSkill.className = "px-3 py-1 text-xs rounded bg-green-600 text-white font-bold hover:bg-green-700";
     addSkill.onclick = () => items.appendChild(makeListItem("", true));
-    group.appendChild(items);
-    group.appendChild(addSkill);
-    skillsList.appendChild(group);
+
+    groupDiv.appendChild(items);
+    groupDiv.appendChild(addSkill);
+    skillsList.appendChild(groupDiv);
+
     new Sortable(items, { group: 'skills', animation: 150 });
+  });
+
+  const addSkillGroupBtn = document.createElement('button');
+  addSkillGroupBtn.textContent = "+ Add Skill Group";
+  addSkillGroupBtn.className = "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700";
+  addSkillGroupBtn.onclick = () => {
+    const event = new Event('load');
+    window.dispatchEvent(event);
   };
   skillsSection.appendChild(addSkillGroupBtn);
   editor.appendChild(skillsSection);
 
-  // Education
+  // --- Education ---
   const eduSection = document.createElement('div');
   eduSection.className = "section-card space-y-4";
   eduSection.innerHTML = `<h2 class="text-xl font-bold mb-2 text-orange-400">Education</h2>`;
   const eduList = document.createElement('div');
+  eduList.id = "educationList";
   eduSection.appendChild(eduList);
-  const addEduGroupBtn = document.createElement('button');
-  addEduGroupBtn.textContent = "+ Add Education Group";
-  addEduGroupBtn.className = "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700";
-  addEduGroupBtn.onclick = () => {
-    const group = document.createElement('div');
-    group.className = "space-y-2 bg-stone-100 dark:bg-zinc-700 p-4 rounded";
-    group.appendChild(makeEditableField("New Education Group", "Group Title"));
+
+  (data.education || []).forEach(group => {
+    const groupDiv = document.createElement('div');
+    groupDiv.className = "space-y-2 bg-stone-100 dark:bg-zinc-700 p-4 rounded";
+    groupDiv.appendChild(makeEditableField(group.group, "Education Group"));
     const entries = document.createElement('div');
     entries.className = "space-y-2";
+    (group.items || []).forEach(entry => {
+      entries.appendChild(makeEducationEntry(entry.institution, entry.credential, entry.year));
+    });
+
     const addEntry = document.createElement('button');
     addEntry.textContent = "+ Add Entry";
     addEntry.className = "px-3 py-1 text-xs rounded bg-green-600 text-white font-bold hover:bg-green-700";
     addEntry.onclick = () => entries.appendChild(makeEducationEntry());
-    group.appendChild(entries);
-    group.appendChild(addEntry);
-    eduList.appendChild(group);
+
+    groupDiv.appendChild(entries);
+    groupDiv.appendChild(addEntry);
+    eduList.appendChild(groupDiv);
+  });
+
+  const addEduGroupBtn = document.createElement('button');
+  addEduGroupBtn.textContent = "+ Add Education Group";
+  addEduGroupBtn.className = "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700";
+  addEduGroupBtn.onclick = () => {
+    const event = new Event('load');
+    window.dispatchEvent(event);
   };
   eduSection.appendChild(addEduGroupBtn);
   editor.appendChild(eduSection);
 
-  // Contact
+  // --- Contact ---
   const contactSection = document.createElement('div');
   contactSection.className = "section-card space-y-4";
   contactSection.innerHTML = `<h2 class="text-xl font-bold mb-2 text-orange-400">Contact</h2>`;
-  contactSection.appendChild(makeEditableField(data.contact.email, "Email"));
-  contactSection.appendChild(makeEditableField(data.contact.phone, "Phone"));
-  contactSection.appendChild(makeEditableField(data.contact.telegram, "Telegram"));
-  contactSection.appendChild(makeEditableField(data.contact.web, "Website"));
+  const contact = data.contact || { email: "", phone: "", telegram: "", web: "" };
+  contactSection.appendChild(makeEditableField(contact.email, "Email"));
+  contactSection.appendChild(makeEditableField(contact.phone, "Phone"));
+  contactSection.appendChild(makeEditableField(contact.telegram, "Telegram"));
+  contactSection.appendChild(makeEditableField(contact.web, "Website"));
   editor.appendChild(contactSection);
 }
 
-// Load
+// --- Load Resume ---
 async function loadData() {
-  const docRef = db.collection('resume').doc('live');
-  const doc = await docRef.get();
-  if (doc.exists) {
-    resumeData = doc.data();
+  try {
+    const doc = await db.collection('resume').doc('live').get();
+    if (doc.exists) {
+      resumeData = doc.data();
+    } else {
+      resumeData = {
+        summary: "",
+        experience: [],
+        skills: [],
+        education: [],
+        contact: { email: "", phone: "", telegram: "", web: "" }
+      };
+    }
     renderEditor(resumeData);
-  } else {
-    resumeData = {
-      summary: "",
-      experience: [],
-      skills: [],
-      education: [],
-      contact: { email: "", phone: "", telegram: "", web: "" }
-    };
-    renderEditor(resumeData);
+  } catch (err) {
+    console.error('Error loading resume:', err);
   }
 }
-
 loadData();
 
+// --- Save Resume ---
 saveBtn.addEventListener('click', async () => {
   const sections = editor.querySelectorAll('.section-card');
 
-  // --- Extract Summary ---
   const summary = sections[0].querySelector('input').value.trim();
 
-  // --- Extract Experience ---
   const experience = [];
-  const expJobs = sections[1].querySelectorAll('.bg-stone-100, .bg-zinc-700');
-  expJobs.forEach(jobDiv => {
-    const inputs = jobDiv.querySelectorAll('input');
+  const expList = sections[1].querySelectorAll('.bg-stone-100, .bg-zinc-700');
+  expList.forEach(div => {
+    const inputs = div.querySelectorAll('input');
     const bullets = [];
-    jobDiv.querySelectorAll('.sortable-list .sortable-item').forEach(bullet => {
-      bullets.push(bullet.textContent.trim());
-    });
+    div.querySelectorAll('.sortable-item').forEach(bullet => bullets.push(bullet.textContent.trim()));
     experience.push({
       title: inputs[0]?.value.trim() || '',
       company: inputs[1]?.value.trim() || '',
       location: inputs[2]?.value.trim() || '',
-      dates: inputs[3]?.value.trim() || '',
+      start: (inputs[3]?.value.split('-')[0] || '').trim(),
+      end: (inputs[3]?.value.split('-')[1] || '').trim(),
       bullets
     });
   });
 
-  // --- Extract Skills ---
   const skills = [];
-  const skillGroups = sections[2].querySelectorAll('.bg-stone-100, .bg-zinc-700');
-  skillGroups.forEach(groupDiv => {
-    const groupTitle = groupDiv.querySelector('input')?.value.trim() || '';
+  const skillsList = sections[2].querySelectorAll('.bg-stone-100, .bg-zinc-700');
+  skillsList.forEach(div => {
+    const group = div.querySelector('input')?.value.trim() || '';
     const items = [];
-    groupDiv.querySelectorAll('.sortable-list .sortable-item').forEach(skill => {
-      items.push(skill.textContent.trim());
-    });
-    skills.push({
-      group: groupTitle,
-      items
-    });
+    div.querySelectorAll('.sortable-item').forEach(skill => items.push(skill.textContent.trim()));
+    skills.push({ group, items });
   });
 
-  // --- Extract Education ---
   const education = [];
-  const eduGroups = sections[3].querySelectorAll('.bg-stone-100, .bg-zinc-700');
-  eduGroups.forEach(groupDiv => {
-    const groupTitle = groupDiv.querySelector('input')?.value.trim() || '';
+  const eduList = sections[3].querySelectorAll('.bg-stone-100, .bg-zinc-700');
+  eduList.forEach(div => {
+    const group = div.querySelector('input')?.value.trim() || '';
     const items = [];
-    groupDiv.querySelectorAll('.grid').forEach(entry => {
+    div.querySelectorAll('.grid').forEach(entry => {
       const inputs = entry.querySelectorAll('input');
       items.push({
         institution: inputs[0]?.value.trim() || '',
@@ -318,13 +347,9 @@ saveBtn.addEventListener('click', async () => {
         year: inputs[2]?.value.trim() || ''
       });
     });
-    education.push({
-      group: groupTitle,
-      items
-    });
+    education.push({ group, items });
   });
 
-  // --- Extract Contact ---
   const contactInputs = sections[4].querySelectorAll('input');
   const contact = {
     email: contactInputs[0]?.value.trim() || '',
@@ -333,10 +358,8 @@ saveBtn.addEventListener('click', async () => {
     web: contactInputs[3]?.value.trim() || ''
   };
 
-  // --- Save to Firestore ---
-  const docRef = db.collection('resume').doc('live');
   try {
-    await docRef.set({
+    await db.collection('resume').doc('live').set({
       summary,
       experience,
       skills,
@@ -346,11 +369,10 @@ saveBtn.addEventListener('click', async () => {
     });
     alert("Resume saved successfully!");
   } catch (err) {
-    console.error("Failed to save resume:", err);
-    alert("Error saving resume. Check console.");
+    console.error("Error saving resume:", err);
+    alert("Failed to save resume.");
   }
 });
-
 </script>
 
 </body>
