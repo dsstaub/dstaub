@@ -1,417 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Resume Admin Panel</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Admin Panel • D Staub</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Meta + Tailwind -->
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="/icons/favicon-32x32.png" />
+  <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#ea580c" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+  
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBYYAjY8Q7RH0jQuMeOmAAp3XPTGLAQr0k",
-      authDomain: "code-tools-pastebin.firebaseapp.com",
-      projectId: "code-tools-pastebin",
-      storageBucket: "code-tools-pastebin.appspot.com",
-      messagingSenderId: "1000713658548",
-      appId: "1:1000713658548:web:4996a3a58b1f3fd013b7e1"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
-  </script>
-
-  <style>
-    body { font-family: sans-serif; background: #e7e5e4; }
-    @media (prefers-color-scheme: dark) { body { background: #181818; color: white; } }
-    input, textarea, select {
-      background-color: #ffffff;
-      color: #000000;
-    }
-    @media (prefers-color-scheme: dark) {
-      input, textarea, select {
-        background-color: #27272a;
-        color: white;
-        border-color: #52525b;
-      }
-    }
-  </style>
 </head>
 
-<body class="p-6">
+<body class="bg-stone-200 dark:bg-zinc-900 text-zinc-800 dark:text-white font-sans leading-relaxed px-6 py-12 max-w-3xl mx-auto">
 
-  <h1 class="text-3xl font-bold text-center mb-8">Resume Admin Panel</h1>
-
-  <div id="authSection" class="text-center mb-8">
-    <button id="googleLogin" class="px-6 py-3 rounded bg-white border border-gray-300 text-black font-bold hover:bg-gray-100 transition flex items-center justify-center gap-2 mx-auto">
+  <!-- LOGIN SCREEN -->
+  <div id="loginScreen" class="flex flex-col items-center justify-center space-y-6">
+    <h1 class="text-3xl font-bold">Admin Login</h1>
+    <button id="loginBtn" class="px-6 py-3 rounded-lg bg-orange-600 hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-400 text-white font-bold transition-colors duration-500">
       Sign in with Google
     </button>
-    <button id="logoutBtn" class="hidden px-4 py-2 bg-red-600 text-white rounded mt-4">Logout</button>
   </div>
 
-  <div id="editor" class="max-w-3xl mx-auto flex flex-col gap-8 hidden">
-      <!-- Summary -->
-    <section class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow">
-      <h2 class="text-xl font-bold mb-4">Summary</h2>
-      <textarea id="summaryInput" rows="5" class="w-full p-3 rounded border"></textarea>
-      <button onclick="saveSummary()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save Summary</button>
-    </section>
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="hidden space-y-8">
+    <h1 class="text-3xl font-bold text-center mb-6">Admin Panel</h1>
 
-    <!-- Contact Info -->
-    <section class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow">
-      <h2 class="text-xl font-bold mb-4">Contact Info</h2>
-      <input id="emailInput" type="text" placeholder="Email" class="w-full p-2 mb-2 rounded border">
-      <input id="phoneInput" type="text" placeholder="Phone" class="w-full p-2 mb-2 rounded border">
-      <input id="telegramInput" type="text" placeholder="Telegram" class="w-full p-2 mb-2 rounded border">
-      <input id="webappInput" type="text" placeholder="Web App URL" class="w-full p-2 mb-2 rounded border">
-      <button onclick="saveContact()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save Contact</button>
-    </section>
+    <div class="space-y-4">
+      <a href="#" class="block p-6 bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg shadow hover:scale-105 transition">
+        ✏️ Edit Now Page
+      </a>
+      <a href="#" class="block p-6 bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg shadow hover:scale-105 transition">
+        📄 Edit Resume
+      </a>
+      <a href="#" class="block p-6 bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg shadow hover:scale-105 transition">
+        ⚙️ Settings (coming soon)
+      </a>
+    </div>
 
-    <!-- Skills -->
-    <section class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow">
-      <h2 class="text-xl font-bold mb-4">Skills</h2>
-      <div id="skillsList" class="flex flex-wrap gap-2 mb-4"></div>
-
-      <div class="flex gap-2">
-        <input id="newSkill" type="text" placeholder="New skill" class="flex-1 p-2 rounded border">
-        <button onclick="addSkill()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Add</button>
-      </div>
-
-      <button onclick="saveSkills()" class="mt-4 px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700">Save Skills</button>
-    </section>
-
-    <!-- Education -->
-    <section class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow">
-      <h2 class="text-xl font-bold mb-4">Education</h2>
-      <textarea id="educationInput" rows="6" placeholder="One school per line: Name | Degree | Year" class="w-full p-3 rounded border"></textarea>
-      <button onclick="saveEducation()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save Education</button>
-    </section>
-        <!-- Experience -->
-    <section class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow">
-      <h2 class="text-xl font-bold mb-4">Experience</h2>
-
-      <div id="experienceList" class="flex flex-col gap-2 mb-6"></div>
-
-      <h3 class="text-lg font-semibold mt-8 mb-2" id="experienceFormTitle">Add New Experience</h3>
-
-      <input id="companyInput" type="text" placeholder="Company Name" class="w-full p-2 mb-2 rounded border">
-      <input id="titleInput" type="text" placeholder="Job Title" class="w-full p-2 mb-2 rounded border">
-      <input id="startInput" type="text" placeholder="Start Date (e.g. Jan 2021)" class="w-full p-2 mb-2 rounded border">
-      <input id="endInput" type="text" placeholder="End Date (e.g. Present)" class="w-full p-2 mb-2 rounded border">
-
-      <!-- Modular Bullets for Job Description -->
-      <div class="flex flex-col gap-2 mb-4">
-        <h4 class="text-lg font-semibold">Job Description Bullets</h4>
-        <ul id="descriptionList" class="flex flex-col gap-2"></ul>
-
-        <div class="flex gap-2 mt-4">
-          <input id="newBulletInput" type="text" placeholder="New bullet point..." class="flex-1 p-2 rounded border">
-          <button onclick="addBullet()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Add</button>
-        </div>
-      </div>
-
-      <div class="flex gap-2">
-        <button id="saveExperienceBtn" onclick="saveExperience()" class="flex-1 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save Experience</button>
-        <button id="cancelEditBtn" onclick="cancelEdit()" class="hidden flex-1 px-6 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Cancel Edit</button>
-      </div>
-    </section>
+    <div class="text-center mt-12">
+      <button id="logoutBtn" class="px-6 py-3 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold transition-colors duration-500">
+        Logout
+      </button>
+    </div>
   </div>
-    <script>
-    const googleLogin = document.getElementById('googleLogin');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const authSection = document.getElementById('authSection');
-    const editor = document.getElementById('editor');
 
-    let skillsArray = [];
-    let editingExperienceId = null;
-    let bulletArray = [];
+<script>
+  // Firebase setup
+  const firebaseConfig = {
+    apiKey: "AIzaSyBYYAjY8Q7RH0jQuMeOmAAp3XPTGLAQr0k",
+    authDomain: "code-tools-pastebin.firebaseapp.com",
+    projectId: "code-tools-pastebin",
+    storageBucket: "code-tools-pastebin.appspot.com",
+    messagingSenderId: "1000713658548",
+    appId: "1:1000713658548:web:4996a3a58b1f3fd013b7e1"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
 
-    googleLogin.addEventListener('click', async () => {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      try {
-        await auth.signInWithPopup(provider);
-      } catch (err) {
-        alert('Google sign-in error: ' + err.message);
-      }
+  const loginScreen = document.getElementById('loginScreen');
+  const dashboard = document.getElementById('dashboard');
+  const loginBtn = document.getElementById('loginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  loginBtn.addEventListener('click', () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).catch(err => {
+      alert('Login error: ' + err.message);
     });
+  });
 
-    logoutBtn.addEventListener('click', async () => {
-      await auth.signOut();
-    });
+  logoutBtn.addEventListener('click', () => {
+    auth.signOut();
+  });
 
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        authSection.classList.add('hidden');
-        editor.classList.remove('hidden');
-        logoutBtn.classList.remove('hidden');
-        loadResumeData();
-      } else {
-        authSection.classList.remove('hidden');
-        editor.classList.add('hidden');
-        logoutBtn.classList.add('hidden');
-      }
-    });
-
-    async function loadResumeData() {
-      try {
-        const summaryDoc = await db.collection('resume').doc('summary').get();
-        if (summaryDoc.exists) {
-          document.getElementById('summaryInput').value = summaryDoc.data().text || '';
-        }
-
-        const contactDoc = await db.collection('resume').doc('contact').get();
-        if (contactDoc.exists) {
-          const data = contactDoc.data();
-          document.getElementById('emailInput').value = data.email || '';
-          document.getElementById('phoneInput').value = data.phone || '';
-          document.getElementById('telegramInput').value = data.telegram || '';
-          document.getElementById('webappInput').value = data.webapp || '';
-        }
-
-        const skillsDoc = await db.collection('resume').doc('skills').get();
-        if (skillsDoc.exists) {
-          skillsArray = skillsDoc.data().skills || [];
-          renderSkills();
-        }
-
-        const educationDoc = await db.collection('resume').doc('education').get();
-        if (educationDoc.exists) {
-          const lines = (educationDoc.data().schools || []).map(s => `${s.name} | ${s.degree} | ${s.year}`);
-          document.getElementById('educationInput').value = lines.join('\n');
-        }
-
-        await loadExperience();
-      } catch (err) {
-        console.error('Failed to load resume:', err.message);
-      }
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      loginScreen.classList.add('hidden');
+      dashboard.classList.remove('hidden');
+    } else {
+      loginScreen.classList.remove('hidden');
+      dashboard.classList.add('hidden');
     }
-
-    async function saveSummary() {
-      const text = document.getElementById('summaryInput').value.trim();
-      await db.collection('resume').doc('summary').set({ text });
-      alert('Summary saved!');
-    }
-
-    async function saveContact() {
-      const email = document.getElementById('emailInput').value.trim();
-      const phone = document.getElementById('phoneInput').value.trim();
-      const telegram = document.getElementById('telegramInput').value.trim();
-      const webapp = document.getElementById('webappInput').value.trim();
-      await db.collection('resume').doc('contact').set({ email, phone, telegram, webapp });
-      alert('Contact info saved!');
-    }
-
-    function renderSkills() {
-      const skillsList = document.getElementById('skillsList');
-      skillsList.innerHTML = '';
-
-      skillsArray.forEach((skill, index) => {
-        const tag = document.createElement('div');
-        tag.className = 'px-3 py-1 bg-gray-300 dark:bg-zinc-700 rounded-full text-sm flex items-center gap-2';
-        tag.innerHTML = `${skill} <button onclick="removeSkill(${index})" class="text-red-600 font-bold ml-2">×</button>`;
-        skillsList.appendChild(tag);
-      });
-    }
-
-    function addSkill() {
-      const skillInput = document.getElementById('newSkill');
-      const skill = skillInput.value.trim();
-      if (skill) {
-        skillsArray.push(skill);
-        skillInput.value = '';
-        renderSkills();
-      }
-    }
-
-    function removeSkill(index) {
-      skillsArray.splice(index, 1);
-      renderSkills();
-    }
-
-    async function saveSkills() {
-      await db.collection('resume').doc('skills').set({ skills: skillsArray });
-      alert('Skills saved!');
-    }
-
-    async function saveEducation() {
-      const raw = document.getElementById('educationInput').value.trim();
-      const lines = raw.split('\n').map(line => {
-        const [name, degree, year] = line.split('|').map(x => x.trim());
-        return { name, degree, year };
-      }).filter(e => e.name && e.degree && e.year);
-      await db.collection('resume').doc('education').set({ schools: lines });
-      alert('Education saved!');
-    }
-
-    async function loadExperience() {
-      const experienceList = document.getElementById('experienceList');
-      experienceList.innerHTML = '';
-
-      const snapshot = await db.collection('resume').doc('experience').collection('jobs').orderBy('start', 'desc').get();
-      snapshot.forEach(doc => {
-        const job = doc.data();
-        const card = document.createElement('div');
-        card.className = 'p-4 bg-gray-100 dark:bg-zinc-700 rounded flex flex-col gap-1 relative cursor-pointer hover:bg-gray-200 dark:hover:bg-zinc-600 transition';
-        card.onclick = () => loadExperienceForEdit(doc.id, job);
-
-        const title = document.createElement('div');
-        title.className = 'font-bold';
-        title.textContent = `${job.title} at ${job.company}`;
-
-        const dates = document.createElement('div');
-        dates.className = 'text-xs opacity-70';
-        dates.textContent = `${job.start} - ${job.end}`;
-
-        const desc = document.createElement('div');
-        desc.className = 'text-sm mt-2';
-        if (Array.isArray(job.description)) {
-          desc.innerHTML = '<ul class="list-disc list-inside">' + job.description.map(d => `<li>${d}</li>`).join('') + '</ul>';
-        } else {
-          desc.textContent = job.description || '';
-        }
-
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'absolute top-2 right-2 text-red-600 text-xs hover:underline';
-        deleteBtn.textContent = 'Delete';
-        deleteBtn.onclick = (e) => {
-          e.stopPropagation();
-          deleteExperience(doc.id);
-        };
-
-        card.appendChild(title);
-        card.appendChild(dates);
-        card.appendChild(desc);
-        card.appendChild(deleteBtn);
-
-        experienceList.appendChild(card);
-      });
-    }
-
-    function loadExperienceForEdit(id, job) {
-      editingExperienceId = id;
-      document.getElementById('experienceFormTitle').textContent = "Edit Experience";
-      document.getElementById('companyInput').value = job.company || '';
-      document.getElementById('titleInput').value = job.title || '';
-      document.getElementById('startInput').value = job.start || '';
-      document.getElementById('endInput').value = job.end || '';
-
-      bulletArray = Array.isArray(job.description) ? job.description : [job.description];
-      renderBullets();
-
-      document.getElementById('saveExperienceBtn').textContent = "Save Changes";
-      document.getElementById('cancelEditBtn').classList.remove('hidden');
-    }
-
-    function cancelEdit() {
-      editingExperienceId = null;
-      document.getElementById('experienceFormTitle').textContent = "Add New Experience";
-      document.getElementById('saveExperienceBtn').textContent = "Save Experience";
-      document.getElementById('cancelEditBtn').classList.add('hidden');
-      document.getElementById('companyInput').value = '';
-      document.getElementById('titleInput').value = '';
-      document.getElementById('startInput').value = '';
-      document.getElementById('endInput').value = '';
-      bulletArray = [];
-      renderBullets();
-    }
-
-    function renderBullets() {
-      const list = document.getElementById('descriptionList');
-      list.innerHTML = '';
-
-      bulletArray.forEach((bullet, index) => {
-        const li = document.createElement('li');
-        li.className = 'flex items-center justify-between p-2 bg-gray-200 dark:bg-zinc-700 rounded cursor-move';
-        li.draggable = true;
-        li.dataset.index = index;
-
-        li.ondragstart = (e) => {
-          e.dataTransfer.setData('text/plain', index);
-          e.dropEffect = 'move';
-        };
-
-        li.ondragover = (e) => {
-          e.preventDefault();
-          e.dataTransfer.dropEffect = 'move';
-          li.classList.add('bg-gray-300', 'dark:bg-zinc-600');
-        };
-
-        li.ondragleave = (e) => {
-          li.classList.remove('bg-gray-300', 'dark:bg-zinc-600');
-        };
-
-        li.ondrop = (e) => {
-          e.preventDefault();
-          const draggedIndex = e.dataTransfer.getData('text/plain');
-          const targetIndex = li.dataset.index;
-          moveBullet(draggedIndex, targetIndex);
-        };
-
-        li.innerHTML = `
-          <span>${bullet}</span>
-          <button onclick="removeBullet(${index})" class="text-red-600 font-bold text-lg ml-2">×</button>
-        `;
-        list.appendChild(li);
-      });
-    }
-
-    function addBullet() {
-      const bulletInput = document.getElementById('newBulletInput');
-      const bullet = bulletInput.value.trim();
-      if (bullet) {
-        bulletArray.push(bullet);
-        bulletInput.value = '';
-        renderBullets();
-      }
-    }
-
-    function removeBullet(index) {
-      bulletArray.splice(index, 1);
-      renderBullets();
-    }
-
-    function moveBullet(fromIndex, toIndex) {
-      if (fromIndex === toIndex) return;
-      const moved = bulletArray.splice(fromIndex, 1)[0];
-      bulletArray.splice(toIndex, 0, moved);
-      renderBullets();
-    }
-
-    async function saveExperience() {
-      const company = document.getElementById('companyInput').value.trim();
-      const title = document.getElementById('titleInput').value.trim();
-      const start = document.getElementById('startInput').value.trim();
-      const end = document.getElementById('endInput').value.trim();
-
-      if (!company || !title || !start || !end || bulletArray.length === 0) {
-        alert('Please fill in all fields and add at least one bullet.');
-        return;
-      }
-
-      const jobData = { company, title, start, end, description: bulletArray };
-
-      if (editingExperienceId) {
-        await db.collection('resume').doc('experience').collection('jobs').doc(editingExperienceId).update(jobData);
-        alert('Experience updated!');
-      } else {
-        await db.collection('resume').doc('experience').collection('jobs').add(jobData);
-        alert('Experience added!');
-      }
-
-      cancelEdit();
-      loadExperience();
-    }
-
-    async function deleteExperience(id) {
-      if (!confirm('Delete this experience?')) return;
-      await db.collection('resume').doc('experience').collection('jobs').doc(id).delete();
-      alert('Experience deleted!');
-      loadExperience();
-    }
-  </script>
+  });
+</script>
 
 </body>
 </html>
