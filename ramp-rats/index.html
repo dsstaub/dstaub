@@ -269,12 +269,22 @@ Shiddy Doo … out.
   </ul>
 </section>
 
-  <footer>
-    <p>Page by D Staub</p>
-    <p></p>    <p></p>
-    <p>Wherever I land,</p> 
-    <p>I carry y’all with me.</p>
-  </footer>
+<footer class="text-center mt-12">
+  <p class="text-sm opacity-70">Page by D Staub</p>
+  <p class="text-sm opacity-70 mt-1">Wherever I land,<br>I carry y’all with me.</p>
+
+  <div class="flex justify-center mt-6">
+    <div id="footer-version" class="px-3 py-1 rounded-full bg-gray-300 dark:bg-zinc-700 text-xs font-bold opacity-70">
+      Version: Loading...
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+  import { SW_VERSION } from '/sw-version.js';
+  const versionEl = document.getElementById('footer-version');
+  versionEl.textContent = `Version: ${SW_VERSION}`;
+</script>
 
 <script>
   if ('serviceWorker' in navigator) {
@@ -298,6 +308,27 @@ Shiddy Doo … out.
       location.reload();
     });
   }
+</script>
+<script type="module">
+  import { SW_VERSION } from '/sw-version.js';
+
+  const versionBadge = document.createElement('div');
+  versionBadge.textContent = SW_VERSION;
+  versionBadge.style.position = 'fixed';
+  versionBadge.style.bottom = '12px';
+  versionBadge.style.left = '50%';
+  versionBadge.style.transform = 'translateX(-50%)';
+  versionBadge.style.background = 'rgba(0,0,0,0.7)';
+  versionBadge.style.color = 'white';
+  versionBadge.style.padding = '6px 12px';
+  versionBadge.style.borderRadius = '9999px';
+  versionBadge.style.fontSize = '0.75rem';
+  versionBadge.style.fontWeight = '600';
+  versionBadge.style.zIndex = '9999';
+  versionBadge.style.boxShadow = '0 0 6px rgba(0,0,0,0.5)';
+  versionBadge.style.pointerEvents = 'none';
+
+  document.body.appendChild(versionBadge);
 </script>
 </body>
 </html>
