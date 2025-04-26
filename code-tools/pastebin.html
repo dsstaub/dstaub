@@ -3,22 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pastebin - Code Tools</title>
+  <title>Pastebin 2.0 - Code Tools</title>
 
-  <!-- Tailwind -->
   <script>
-    tailwind.config = {
-      darkMode: 'media'
-    }
+    tailwind.config = { darkMode: 'media' }
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
 
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
   <script>
-    // Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyBYYAjY8Q7RH0jQuMeOmAAp3XPTGLAQr0k",
       authDomain: "code-tools-pastebin.firebaseapp.com",
@@ -27,8 +23,6 @@
       messagingSenderId: "1000713658548",
       appId: "1:1000713658548:web:4996a3a58b1f3fd013b7e1"
     };
-
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
   </script>
@@ -48,11 +42,16 @@
 
 <body class="text-black dark:text-white p-6">
 
-  <h1 class="text-3xl font-bold text-center mb-6">Pastebin</h1>
+  <h1 class="text-3xl font-bold text-center mb-6">Pastebin 2.0</h1>
 
   <div class="max-w-xl mx-auto flex flex-col gap-4">
+    <!-- Search Bar -->
+    <input id="searchInput" type="text" placeholder="Search pastes..." class="p-3 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700">
+
+    <!-- New Paste Form -->
     <input id="title" type="text" placeholder="Paste Title" class="p-3 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700">
-    <textarea id="content" placeholder="Paste your code or text here..." rows="8" class="p-3 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700"></textarea>
+    <textarea id="content" placeholder="Paste your code or text here..." rows="6" class="p-3 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700"></textarea>
+    <input id="tags" type="text" placeholder="Tags (comma separated)" class="p-3 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700">
 
     <div class="flex flex-col gap-2">
       <label class="text-sm opacity-70">Delete After:</label>
@@ -79,15 +78,18 @@
   <script>
     const titleInput = document.getElementById('title');
     const contentInput = document.getElementById('content');
+    const tagsInput = document.getElementById('tags');
     const expirySelect = document.getElementById('expiry');
     const saveBtn = document.getElementById('saveBtn');
+    const searchInput = document.getElementById('searchInput');
     const pastesDiv = document.getElementById('pastes');
 
-    async function savePaste() {
-      console.log('Save tapped!');
+    let allPastes = []; // Cache for live search filtering
 
+    async function savePaste() {
       const title = titleInput.value.trim();
       const content = contentInput.value.trim();
+      const tags = tagsInput.value.trim().split(',').map(tag => tag.trim().toLowerCase()).filter(tag => tag);
       const expiry = expirySelect.value;
 
       if (!title || !content) {
@@ -98,15 +100,16 @@
       const paste = {
         title,
         content,
+        tags,
         created: new Date().toISOString(),
         expiry
       };
 
       try {
         await db.collection('pastes').add(paste);
-        console.log('Paste saved to Firestore!');
         titleInput.value = '';
         contentInput.value = '';
+        tagsInput.value = '';
         expirySelect.value = '7';
       } catch (err) {
         console.error('Error saving paste:', err);
@@ -115,16 +118,13 @@
     }
 
     function copyContent(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        showToast();
-      });
+      navigator.clipboard.writeText(text).then(showToast);
     }
 
     function showToast() {
       const toast = document.getElementById('toast');
       toast.classList.remove('opacity-0');
       toast.classList.add('opacity-100');
-
       setTimeout(() => {
         toast.classList.remove('opacity-100');
         toast.classList.add('opacity-0');
@@ -132,10 +132,14 @@
     }
 
     async function deletePaste(id) {
+      const confirmed = confirm('Are you sure you want to delete this paste?');
+      if (!confirmed) return;
+
       try {
         await db.collection('pastes').doc(id).delete();
       } catch (err) {
         console.error('Error deleting paste:', err);
+        alert('Failed to delete paste: ' + err.message);
       }
     }
 
@@ -163,6 +167,7 @@
         title.onclick = () => {
           titleInput.value = paste.title;
           contentInput.value = paste.content;
+          tagsInput.value = paste.tags ? paste.tags.join(', ') : '';
         };
 
         const copyBtn = document.createElement('button');
@@ -172,6 +177,17 @@
 
         titleRow.appendChild(title);
         titleRow.appendChild(copyBtn);
+
+        const tagsRow = document.createElement('div');
+        tagsRow.className = 'flex flex-wrap gap-1';
+        if (paste.tags && paste.tags.length) {
+          paste.tags.forEach(tag => {
+            const tagEl = document.createElement('span');
+            tagEl.className = 'inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full';
+            tagEl.textContent = tag;
+            tagsRow.appendChild(tagEl);
+          });
+        }
 
         const meta = document.createElement('div');
         meta.className = 'text-xs opacity-60';
@@ -183,6 +199,7 @@
         deleteBtn.onclick = () => deletePaste(pasteId);
 
         card.appendChild(titleRow);
+        if (tagsRow.children.length > 0) card.appendChild(tagsRow);
         card.appendChild(meta);
         card.appendChild(deleteBtn);
 
@@ -190,11 +207,27 @@
       });
     }
 
+    function filterPastes(query) {
+      const lower = query.toLowerCase();
+      const filtered = allPastes.filter(doc => {
+        const paste = doc.data();
+        return (
+          (paste.title && paste.title.toLowerCase().includes(lower)) ||
+          (paste.content && paste.content.toLowerCase().includes(lower)) ||
+          (paste.tags && paste.tags.some(tag => tag.includes(lower)))
+        );
+      });
+      renderPastes(filtered);
+    }
+
     saveBtn.addEventListener('click', savePaste);
+    searchInput.addEventListener('input', e => {
+      filterPastes(e.target.value);
+    });
 
     db.collection('pastes').onSnapshot(snapshot => {
-      const pastes = snapshot.docs;
-      renderPastes(pastes);
+      allPastes = snapshot.docs;
+      renderPastes(allPastes);
     });
   </script>
 
