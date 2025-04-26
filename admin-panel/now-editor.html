@@ -49,15 +49,15 @@
       background-color: rgba(239, 68, 68, 0.1);
       border-radius: 0.5rem;
       height: 3rem;
-      min-height: 48px;
-      min-width: 120px;
+      width: 3rem;
+      min-width: 3rem;
+      min-height: 3rem;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.5rem;
       color: #ef4444;
       transition: background-color 0.3s;
-      cursor: pointer;
     }
     .delete-zone.dragging-over {
       background-color: rgba(239, 68, 68, 0.4);
@@ -127,7 +127,7 @@
     });
 
     const controls = document.createElement('div');
-    controls.className = "flex gap-2";
+    controls.className = "flex gap-2 items-center";
 
     const addBtn = document.createElement('button');
     addBtn.textContent = "+ Add Item";
@@ -140,7 +140,7 @@
     };
 
     const deleteZone = document.createElement('div');
-    deleteZone.className = "flex-1 delete-zone";
+    deleteZone.className = "delete-zone";
     deleteZone.innerHTML = "🗑️";
 
     controls.appendChild(addBtn);
@@ -155,20 +155,22 @@
       group: {
         name: id,
         pull: true,
-        put: true
+        put: false,
       },
       animation: 150,
       forceFallback: true,
       fallbackOnBody: true,
-      swapThreshold: 0.65
+      swapThreshold: 0.65,
     });
 
     new Sortable(deleteZone, {
       group: {
         name: id,
         pull: false,
-        put: true
+        put: true,
       },
+      animation: 0,
+      sort: false,
       onAdd: (evt) => {
         const item = evt.item;
         const confirmDelete = confirm("Delete this item?");
