@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Edit Resume • Admin Panel</title>
+
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="/icons/favicon-32x32.png" />
+  <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+  <meta name="theme-color" content="#ea580c" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+
+  <!-- SortableJS -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+  <style>
+    .section-card {
+      background-color: #ffffff;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+    }
+    .dark .section-card {
+      background-color: #3f3f46;
+      border-color: #52525b;
+    }
+    .sortable-item {
+      background-color: #f9fafb;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      user-select: none;
+      cursor: grab;
+      font-size: 1rem;
+      text-align: center;
+    }
+    .dark .sortable-item {
+      background-color: #52525b;
+      border-color: #737373;
+      color: white;
+    }
+    .editable-input {
+      background: transparent;
+      border: none;
+      text-align: center;
+      width: 100%;
+      font-size: 1rem;
+      color: inherit;
+      outline: none;
+    }
+    .delete-zone {
+      border: 2px dashed #ef4444;
+      background-color: rgba(239, 68, 68, 0.1);
+      border-radius: 0.5rem;
+      width: 3rem;
+      height: 3rem;
+      min-width: 3rem;
+      min-height: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #ef4444;
+      transition: background-color 0.3s;
+    }
+    .dark .delete-zone {
+      border-color: rgba(239, 68, 68, 0.6);
+      background-color: rgba(239, 68, 68, 0.05);
+    }
+  </style>
+</head>
+
+<body class="bg-stone-200 dark:bg-zinc-900 text-zinc-800 dark:text-white font-sans leading-relaxed px-6 pb-20 max-w-4xl mx-auto">
+
+  <h1 class="text-3xl font-bold text-center mt-12 mb-8">Edit Resume</h1>
+
+  <div id="editor" class="space-y-12"></div>
+
+  <div class="text-center mt-12">
+    <button id="saveBtn" class="px-6 py-3 rounded-lg bg-orange-600 hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-400 text-white font-bold transition-colors duration-500">
+      Save Changes
+    </button>
+  </div>
+
+<script>
+const editor = document.getElementById('editor');
+const saveBtn = document.getElementById('saveBtn');
+
+// Dummy Resume Data
+const resumeData = {
+  summary: "Dynamic and results-driven professional seeking impactful opportunities.",
+  experience: [
+    {
+      title: "Ramp Agent",
+      company: "JetStream Ground Services",
+      location: "Pittsburgh, PA",
+      start: "2022",
+      end: "2024",
+      bullets: [
+        "Safely marshaled commercial aircraft",
+        "Coordinated baggage loading and unloading"
+      ]
+    }
+  ],
+  skills: [
+    {
+      group: "Operations",
+      items: ["Baggage Handling", "Safety Compliance"]
+    }
+  ],
+  education: [
+    {
+      institution: "University of Pittsburgh",
+      credential: "B.S. Aviation Management",
+      year: "2023"
+    }
+  ],
+  contact: {
+    email: "you@example.com",
+    phone: "(123) 456-7890",
+    telegram: "@yourhandle",
+    web: "https://yourdomain.com"
+  }
+};
+
+// Render Functions
+function makeEditableField(value, placeholder = '') {
+  const input = document.createElement('input');
+  input.type = "text";
+  input.className = "w-full p-2 rounded bg-white dark:bg-zinc-700 border border-gray-300 dark:border-zinc-600 font-semibold";
+  input.value = value || '';
+  input.placeholder = placeholder;
+  return input;
+}
+
+function makeListItem(text, immediateEdit = false) {
+  const div = document.createElement('div');
+  div.className = "sortable-item";
+
+  const applyEditMode = () => {
+    const input = document.createElement('input');
+    input.className = "editable-input";
+    input.value = text || '';
+    div.innerHTML = '';
+    div.appendChild(input);
+    input.focus();
+    input.addEventListener('blur', () => {
+      div.textContent = input.value.trim() || "New Item";
+    });
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        input.blur();
+      }
+    });
+  };
+
+  if (immediateEdit || !text) {
+    applyEditMode();
+  } else {
+    div.textContent = text;
+  }
+
+  div.addEventListener('click', () => {
+    applyEditMode();
+  });
+
+  return div;
+}
+
+function renderEditor() {
+  editor.innerHTML = '';
+
+  // --- Summary ---
+  const summarySection = document.createElement('div');
+  summarySection.className = "section-card space-y-4";
+  summarySection.innerHTML = `<h2 class="text-xl font-bold mb-2 text-orange-400">Professional Summary</h2>`;
+  const summaryInput = makeEditableField(resumeData.summary);
+  summarySection.appendChild(summaryInput);
+  editor.appendChild(summarySection);
+
+  // --- Experience ---
+  const expSection = document.createElement('div');
+  expSection.className = "section-card space-y-4";
+  expSection.innerHTML = `<h2 class="text-xl font-bold mb-2 text-orange-400">Relevant Experience</h2>`;
+  resumeData.experience.forEach(job => {
+    const jobDiv = createJobDiv(job.title, job.company, job.location, `${job.start} - ${job.end}`, job.bullets);
+    expSection.appendChild(jobDiv);
+  });
+
+  // ADD Job Button
+  const addJob = document.createElement('button');
+  addJob.textContent = "+ Add Job";
+  addJob.className = "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700";
+  addJob.onclick = () => {
+    const jobDiv = createJobDiv("", "", "", "", []);
+    expSection.appendChild(jobDiv);
+  };
+  expSection.appendChild(addJob);
+
+  editor.appendChild(expSection);
+
+  // --- Skills ---
+  const skillsSection = document.createElement('div');
+  skillsSection.className = "section-card space-y-4";
+  skillsSection.innerHTML = `<h2 class="text-xl font-bold mb-2 text-orange-400">Skills</h2>`;
+  resumeData.skills.forEach(skillGroup => {
+    const groupDiv = createSkillGroupDiv(skillGroup.group, skillGroup.items);
+    skillsSection.appendChild(groupDiv);
+  });
+
+  // ADD Skill Group Button
+  const addSkillGroup = document.createElement('button');
+  addSkillGroup.textContent = "+ Add Skill Group";
+  addSkillGroup.className = "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700";
+  addSkillGroup.onclick = () => {
+    const groupDiv = createSkillGroupDiv("", []);
+    skillsSection.appendChild(groupDiv);
+  };
+  skillsSection.appendChild(addSkillGroup);
+
+  editor.appendChild(skillsSection);
+
+  // --- Education ---
+  const eduSection = document.createElement('div');
+  eduSection.className = "section-card space-y-4";
+  eduSection.innerHTML = `<h2 class="text-xl font-bold mb-2 text-orange-400">Education</h2>`;
+  resumeData.education.forEach(edu => {
+    const eduDiv = document.createElement('div');
+    eduDiv.className = "space-y-2 bg-stone-100 dark:bg-zinc-700 p-4 rounded";
+
+    const institution = makeEditableField(edu.institution, "Institution Name");
+    const credential = makeEditableField(edu.credential, "Degree or Certificate");
+    const year = makeEditableField(edu.year, "Year");
+
+    eduDiv.appendChild(institution);
+    eduDiv.appendChild(credential);
+    eduDiv.appendChild(year);
+    eduSection.appendChild(eduDiv);
+  });
+  editor.appendChild(eduSection);
+
+  // --- Contact ---
+  const contactSection = document.createElement('div');
+  contactSection.className = "section-card space-y-4";
+  contactSection.innerHTML = `<h2 class="text-xl font-bold mb-2 text-orange-400">Contact</h2>`;
+
+  const email = makeEditableField(resumeData.contact.email, "Email");
+  const phone = makeEditableField(resumeData.contact.phone, "Phone Number");
+  const telegram = makeEditableField(resumeData.contact.telegram, "Telegram Handle");
+  const web = makeEditableField(resumeData.contact.web, "Website URL");
+
+  contactSection.appendChild(email);
+  contactSection.appendChild(phone);
+  contactSection.appendChild(telegram);
+  contactSection.appendChild(web);
+
+  editor.appendChild(contactSection);
+}
+
+function createJobDiv(title, company, location, dates, bullets) {
+  const jobDiv = document.createElement('div');
+  jobDiv.className = "space-y-2 bg-stone-100 dark:bg-zinc-700 p-4 rounded";
+
+  const titleInput = makeEditableField(title, "Job Title");
+  const companyInput = makeEditableField(company, "Company");
+  const locationInput = makeEditableField(location, "Location");
+  const datesInput = makeEditableField(dates, "Start - End");
+
+  const bulletsList = document.createElement('div');
+  bulletsList.className = "sortable-list space-y-2";
+  bullets.forEach(bullet => {
+    bulletsList.appendChild(makeListItem(bullet));
+  });
+
+  const addBullet = document.createElement('button');
+  addBullet.textContent = "+ Add Bullet";
+  addBullet.className = "px-3 py-1 text-xs rounded bg-green-600 text-white font-bold hover:bg-green-700";
+  addBullet.onclick = () => {
+    bulletsList.appendChild(makeListItem("", true));
+  };
+
+  jobDiv.appendChild(titleInput);
+  jobDiv.appendChild(companyInput);
+  jobDiv.appendChild(locationInput);
+  jobDiv.appendChild(datesInput);
+  jobDiv.appendChild(bulletsList);
+  jobDiv.appendChild(addBullet);
+
+  new Sortable(bulletsList, {
+    group: 'bullets',
+    animation: 150
+  });
+
+  return jobDiv;
+}
+
+function createSkillGroupDiv(groupTitle, items) {
+  const groupDiv = document.createElement('div');
+  groupDiv.className = "space-y-2 bg-stone-100 dark:bg-zinc-700 p-4 rounded";
+
+  const groupTitleInput = makeEditableField(groupTitle, "Skill Group Title");
+
+  const skillsList = document.createElement('div');
+  skillsList.className = "sortable-list space-y-2";
+  items.forEach(skill => {
+    skillsList.appendChild(makeListItem(skill));
+  });
+
+  const addSkill = document.createElement('button');
+  addSkill.textContent = "+ Add Skill";
+  addSkill.className = "px-3 py-1 text-xs rounded bg-green-600 text-white font-bold hover:bg-green-700";
+  addSkill.onclick = () => {
+    skillsList.appendChild(makeListItem("", true));
+  };
+
+  groupDiv.appendChild(groupTitleInput);
+  groupDiv.appendChild(skillsList);
+  groupDiv.appendChild(addSkill);
+
+  new Sortable(skillsList, {
+    group: 'skills',
+    animation: 150
+  });
+
+  return groupDiv;
+}
+
+// Initial render
+renderEditor();
+</script>
+
+</body>
+</html>
