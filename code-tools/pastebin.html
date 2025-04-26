@@ -12,6 +12,25 @@
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
 
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+<script>
+  // Your firebaseConfig from console goes here:
+  const firebaseConfig = {
+    apiKey: "AIzaSyBYYAjY8Q7RH0jQuMeOmAAp3XPTGLAQr0k",
+    authDomain: "code-tools-pastebin.firebaseapp.com",
+    projectId: "code-tools-pastebin",
+    storageBucket: "code-tools-pastebin.firebasestorage.app",
+    messagingSenderId: "1000713658548",
+    appId: "1:1000713658548:web:4996a3a58b1f3fd013b7e1"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
+
   <style>
     body {
       font-family: sans-serif;
@@ -52,6 +71,10 @@
 
   </div>
 
+    <div id="toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-full bg-green-600 text-white text-sm font-bold opacity-0 pointer-events-none transition-all duration-300">
+      Copied!
+    </div>
+
   <script>
     const titleInput = document.getElementById('title');
     const contentInput = document.getElementById('content');
@@ -59,9 +82,7 @@
     const saveBtn = document.getElementById('saveBtn');
     const pastesDiv = document.getElementById('pastes');
 
-    let pastes = JSON.parse(localStorage.getItem('pastes') || '[]');
-
-    function savePaste() {
+    async function savePaste() {
       const title = titleInput.value.trim();
       const content = contentInput.value.trim();
       const expiry = expirySelect.value;
@@ -72,43 +93,59 @@
       }
 
       const paste = {
-        id: Date.now(),
         title,
         content,
         created: new Date().toISOString(),
         expiry
       };
 
-      pastes.push(paste);
-      localStorage.setItem('pastes', JSON.stringify(pastes));
-      titleInput.value = '';
-      contentInput.value = '';
-      expirySelect.value = '7';
-      renderPastes();
+      try {
+        await db.collection('pastes').add(paste);
+        titleInput.value = '';
+        contentInput.value = '';
+        expirySelect.value = '7';
+      } catch (err) {
+        console.error('Error saving paste:', err);
+      }
     }
 
-    function copyContent(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        alert('Copied to clipboard!');
-      });
+      function copyContent(text) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast();
+        });
+      }
+
+      function showToast() {
+        const toast = document.getElementById('toast');
+        toast.classList.remove('opacity-0');
+        toast.classList.add('opacity-100');
+
+        setTimeout(() => {
+          toast.classList.remove('opacity-100');
+          toast.classList.add('opacity-0');
+        }, 1200); // Toast disappears after 1.2 seconds
+      }
+
+    async function deletePaste(id) {
+      try {
+        await db.collection('pastes').doc(id).delete();
+      } catch (err) {
+        console.error('Error deleting paste:', err);
+      }
     }
 
-    function deletePaste(id) {
-      pastes = pastes.filter(p => p.id !== id);
-      localStorage.setItem('pastes', JSON.stringify(pastes));
-      renderPastes();
-    }
-
-    function renderPastes() {
-      cleanupExpired();
+    function renderPastes(pastesArray) {
       pastesDiv.innerHTML = '';
 
-      if (pastes.length === 0) {
+      if (pastesArray.length === 0) {
         pastesDiv.innerHTML = '<div class="text-sm opacity-50">No pastes saved yet.</div>';
         return;
       }
 
-      pastes.slice().reverse().forEach(paste => {
+      pastesArray.slice().reverse().forEach(doc => {
+        const paste = doc.data();
+        const pasteId = doc.id;
+
         const card = document.createElement('div');
         card.className = 'p-4 rounded-lg bg-white dark:bg-zinc-800 shadow flex flex-col gap-2';
 
@@ -116,7 +153,7 @@
         titleRow.className = 'flex justify-between items-center';
 
         const title = document.createElement('div');
-        title.className = 'font-bold';
+        title.className = 'font-bold cursor-pointer';
         title.textContent = paste.title;
         title.onclick = () => {
           titleInput.value = paste.title;
@@ -138,7 +175,7 @@
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'text-xs text-red-600 hover:underline self-end';
         deleteBtn.textContent = 'Delete';
-        deleteBtn.onclick = () => deletePaste(paste.id);
+        deleteBtn.onclick = () => deletePaste(pasteId);
 
         card.appendChild(titleRow);
         card.appendChild(meta);
@@ -148,21 +185,14 @@
       });
     }
 
-    function cleanupExpired() {
-      const now = new Date();
-      pastes = pastes.filter(paste => {
-        if (paste.expiry === 'never') return true;
-        const created = new Date(paste.created);
-        const diffDays = (now - created) / (1000 * 60 * 60 * 24);
-        return diffDays <= parseInt(paste.expiry);
-      });
-      localStorage.setItem('pastes', JSON.stringify(pastes));
-    }
-
     saveBtn.addEventListener('click', savePaste);
 
-    renderPastes();
-  </script>
+    // Real-time listener
+    db.collection('pastes').onSnapshot(snapshot => {
+      const pastes = snapshot.docs;
+      renderPastes(pastes);
+    });
+</script>
 
 </body>
 </html>
