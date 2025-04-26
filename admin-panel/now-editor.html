@@ -24,7 +24,6 @@
 <body class="bg-stone-200 dark:bg-zinc-900 text-zinc-800 dark:text-white font-sans leading-relaxed px-6 py-12 max-w-3xl mx-auto space-y-8">
 
   <h1 class="text-3xl font-bold text-center mb-8">Edit Now Page</h1>
-
   <div id="editSections" class="space-y-12"></div>
 
   <div class="text-center">
@@ -54,7 +53,7 @@
 
   const editSections = document.getElementById('editSections');
   const saveBtn = document.getElementById('saveBtn');
-  let sectionData = {};
+  let dragSource = null;
 
   function createEditor(id, label, data) {
     const container = document.createElement('div');
@@ -62,56 +61,61 @@
 
     const title = document.createElement('input');
     title.type = "text";
-    title.className = "w-full p-2 rounded bg-white dark:bg-zinc-700 border border-gray-300 dark:border-zinc-600";
+    title.className = "w-full p-2 rounded bg-white dark:bg-zinc-700 border border-gray-300 dark:border-zinc-600 font-semibold";
     title.value = data?.title || label;
     title.dataset.id = id;
     title.dataset.field = "title";
 
-    const itemList = document.createElement('div');
+    const itemList = document.createElement('ul');
     itemList.className = "space-y-2";
     itemList.dataset.id = id;
     itemList.dataset.field = "items";
 
     (data?.items || []).forEach(item => {
-      const input = document.createElement('input');
-      input.type = "text";
-      input.className = "w-full p-2 rounded bg-white dark:bg-zinc-700 border border-gray-300 dark:border-zinc-600";
-      input.value = item;
-      itemList.appendChild(input);
+      itemList.appendChild(makeListItem(item));
     });
 
     const addBtn = document.createElement('button');
     addBtn.textContent = "+ Add Item";
     addBtn.className = "px-4 py-2 rounded bg-green-600 text-white font-bold text-sm hover:bg-green-700";
     addBtn.onclick = () => {
-      const input = document.createElement('input');
-      input.type = "text";
-      input.className = "w-full p-2 rounded bg-white dark:bg-zinc-700 border border-gray-300 dark:border-zinc-600";
-      itemList.appendChild(input);
+      itemList.appendChild(makeListItem(""));
     };
 
     container.appendChild(title);
     container.appendChild(itemList);
     container.appendChild(addBtn);
-
     editSections.appendChild(container);
   }
 
-  auth.onAuthStateChanged(user => {
-    if (!user) {
-      window.location.href = "/admin-panel/index.html";
-      return;
-    }
+  function makeListItem(value) {
+    const li = document.createElement('li');
+    li.className = "flex items-center gap-2 group";
+    li.draggable = true;
 
-    sections.forEach(sec => {
-      db.collection('now').doc(sec.id).get().then(doc => {
-        sectionData[sec.id] = doc.exists ? doc.data() : { title: sec.label, items: [] };
-        createEditor(sec.id, sec.label, sectionData[sec.id]);
-      }).catch(err => {
-        console.error("Failed to load section:", sec.id, err);
-      });
+    const input = document.createElement('input');
+    input.type = "text";
+    input.className = "flex-1 p-2 rounded bg-white dark:bg-zinc-700 border border-gray-300 dark:border-zinc-600";
+    input.value = value;
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = "✕";
+    deleteBtn.className = "text-sm text-red-500 hover:text-red-700 font-bold";
+    deleteBtn.onclick = () => li.remove();
+
+    li.appendChild(input);
+    li.appendChild(deleteBtn);
+
+    li.addEventListener("dragstart", () => dragSource = li);
+    li.addEventListener("dragover", (e) => e.preventDefault());
+    li.addEventListener("drop", () => {
+      if (dragSource !== li) {
+        li.parentNode.insertBefore(dragSource, li.nextSibling);
+      }
     });
-  });
+
+    return li;
+  }
 
   saveBtn.addEventListener('click', async () => {
     try {
@@ -119,19 +123,27 @@
       for (let container of containers) {
         const inputs = container.querySelectorAll('input');
         const titleInput = inputs[0];
-        const itemInputs = Array.from(inputs).slice(1);
-
         const id = titleInput.dataset.id;
         const title = titleInput.value.trim();
-        const items = itemInputs.map(input => input.value.trim()).filter(t => t.length > 0);
-
+        const listItems = container.querySelectorAll('ul')[0].querySelectorAll('input');
+        const items = Array.from(listItems).map(input => input.value.trim()).filter(t => t.length > 0);
         await db.collection('now').doc(id).set({ title, items });
       }
       alert('Saved successfully!');
     } catch (err) {
-      console.error('Failed to save:', err);
+      console.error('Save error:', err);
       alert('Failed to save changes.');
     }
+  });
+
+  auth.onAuthStateChanged(user => {
+    if (!user) return (window.location.href = "/admin-panel/index.html");
+    sections.forEach(sec => {
+      db.collection('now').doc(sec.id).get().then(doc => {
+        const data = doc.exists ? doc.data() : { title: sec.label, items: [] };
+        createEditor(sec.id, sec.label, data);
+      });
+    });
   });
 </script>
 
