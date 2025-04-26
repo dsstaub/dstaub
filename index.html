@@ -20,55 +20,58 @@
   <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
   <script src="/layout.js" defer></script>
   <script src="/app.js" defer></script>
-
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 </head>
 <body class="bg-slate-200 dark:bg-zinc-900 text-slate-800 dark:text-white font-sans leading-relaxed px-6 pb-[7rem] max-w-4xl mx-auto">
   <main class="max-w-xl mx-auto mt-12 fade-in">
     <article class="prose dark:prose-invert">
       <h1 class="text-center">Me.now</h1>
       <h3 class="text-center">v50.4.23</h3> 
-      <h2 class="text-center">
-        Not final.<br>
-        nEver perfect.<br>
-        Always honest.
-      </h2>
+      <h2 class="text-center">Not final.
+      <br>nEver perfect.
+      <br>Always honest.</h2>
       <p class="text-center text-sm italic">Last updated: April 2025</p>
       <br />
 
       <!-- RANDOM FUN FACT -->
       <section class="glass bg-teal-100 dark:bg-teal-950 p-6 mb-6">
-        <h2 class="text-xl font-semibold mb-3 text-teal-400">One Random Fact About Me</h2>
-        <div id="randomFact" class="my-4 text-sm italic text-center">
-          Loading a random fact about me…
-        </div>
-      </section>
+        <h2 class="text-xl font-semibold mb-3 text-teal-400">
+        One Random Fact About Me</h2>
+<div id="randomFact" class="my-4 text-sm italic text-center">
+  Loading a random fact about me…
+</div>
+    </section>
+    
 
       <!-- RESUME -->
       <section class="glass bg-orange-100 dark:bg-orange-950 p-6 mb-6">
         <h2 class="text-xl font-semibold mb-3 text-red-400">What's It Like To Interview Me?</h2>
         <ul class="list-disc pl-5 space-y-2">
           <li>
-            There's a retro-style Interview Simulator <a href="/interview-simulator/index.html" target="_blank" class="text-cyan-600 dark:text-cyan-400 hover:underline">HERE</a> if you want to see what kind of answers I'd have for some standard, but random, interview questions.
+            There's a retro-style text Inverview Simulator <a href="/interview-simulator/index.html" target="_blank" class="text-cyan-600 dark:text-cyan-400 hover:underline">HERE</a> if you would like to see what kind of answers I'd have for some standard, but random, interview questions.
           </li>
         </ul>
       </section>
 
       <!-- INTERVIEW 101 INTRO CARD -->
-      <section class="glass bg-indigo-100 dark:bg-indigo-950 p-6 mb-6">
-        <h2 class="text-xl font-semibold mb-3 text-indigo-400">Interview 101</h2>
-        <p class="text-center text-zinc-600 dark:text-zinc-400 italic">
-          Nail your next interview. Find out how, <a href="/how-to/101" class="text-cyan-600 dark:text-cyan-400 hover:underline">HERE</a>.
-        </p>
-      </section>
+          <section class="glass bg-indigo-100 dark:bg-indigo-950 p-6 mb-6">
+      <h2 class="text-xl font-semibold mb-3 text-indigo-400">Interview 101</h1>
+      <p class="text-center text-zinc-600 dark:text-zinc-400 italic">
+        Nail your next interview. Find out how, <a href="/how-to/101" class="text-cyan-600 dark:text-cyan-400 hover:underline">HERE</a>.
+      </p>
+    </section>
 
-      <!-- DYNAMIC RESUME SECTIONS -->
+      <!-- CURRENTLY BUILDING CARD -->
       <section id="currentlyBuildingSection" class="glass bg-green-100 dark:bg-green-950 p-6 mb-6"></section>
-      <section id="learningExploringSection" class="glass bg-sky-100 dark:bg-sky-950 p-6 mb-6"></section>
-      <section id="currentVibesSection" class="glass bg-yellow-100 dark:bg-yellow-950 p-6 mb-6"></section>
-      <section id="onTheHorizonSection" class="glass bg-red-100 dark:bg-red-950 p-6 mb-6"></section>
 
+      <!-- LEARNING & EXPLORING CARD -->
+      <section id="learningExploringSection" class="glass bg-sky-100 dark:bg-sky-950 p-6 mb-6"></section>
+
+      <!-- CURRENT VIBES CARD -->
+      <section id="currentVibesSection" class="glass bg-yellow-100 dark:bg-yellow-950 p-6 mb-6"></section>
+
+      <!-- ON THE HORIZON CARD -->
+      <section id="onTheHorizonSection" class="glass bg-red-100 dark:bg-red-950 p-6 mb-6"></section>
+      
       <div class="text-center">
         <a href="/contact/index.html" class="btn">Contact Me!</a>
       </div>
@@ -82,106 +85,140 @@
       <img src="https://www.oldbug.com/jmzvw073.jpg" alt="VW Easter Egg" class="rounded shadow-xl max-h-[80vh] w-auto mx-auto" />
     </div>
   </div>
+  <script>
+    // *** EASTER EGG POPUP LOGIC *** //
+      function openModal() {
+        document.getElementById("imageModal").classList.remove("hidden");
+        document.getElementById("imageModal").classList.add("flex");
+      }
+      function closeModal() {
+        document.getElementById("imageModal").classList.remove("flex");
+        document.getElementById("imageModal").classList.add("hidden");
+      }
+      document.getElementById("imageModal").addEventListener("click", (e) => {
+        if (e.target.id === "imageModal") closeModal();
+      });
+ 
+    // *** RANDOM FACT LOGIC *** //
+      fetch('/data/facts.json')
+        .then(response => response.json())
+        .then(facts => {
+          const randomFact = facts[Math.floor(Math.random() * facts.length)];
+          
+          document.getElementById("randomFact").innerHTML = `
+            ${randomFact}
+            <br>
+            <div class="text-xs opacity-60 mt-2">
+              <hr class="my-1">
+              <em>Disclaimer:</em><br>
+              These facts are just for fun!
+            </div>
+          `;
+        })
+        .catch(error => {
+          console.error("Couldn't load facts.json", error);
+          document.getElementById("randomFact").textContent = "Couldn't load my brain today.";
+        });
 
-  <footer class="text-center mt-12">
-    <p class="text-sm opacity-70">Page by D Staub</p>
-    <p class="text-sm opacity-70 mt-1">Wherever I land,<br>I carry y’all with me.</p>
-    <div class="flex justify-center mt-6">
-      <div id="footer-version" class="px-3 py-1 rounded-full bg-gray-300 dark:bg-zinc-700 text-xs font-bold opacity-70">
-        Version: Loading...
-      </div>
-    </div>
-  </footer>
-  <script type="module">
-  import { SW_VERSION } from '/sw-version.js';
-  document.getElementById('footer-version').textContent = `Version: ${SW_VERSION}`;
-</script>
+    // *** CURRENTLY BUILDING CARD LOGIC *** //
+      fetch('/data/now/current.json')
+        .then(response => response.json())
+        .then(data => {
+          const section = document.getElementById("currentlyBuildingSection");
 
+          // Build the section header
+          const header = `<h2 class="text-xl font-semibold mb-3 text-green-400">${data.title}</h2>`;
+
+          // Build the list of items
+          const listItems = data.items.map(item => `<li>${item}</li>`).join("");
+          const list = `<ul class="list-disc pl-5 space-y-2">${listItems}</ul>`;
+
+          section.innerHTML = `${header}${list}`;
+        })
+        .catch(error => {
+          console.error("Couldn't load currently-building.json", error);
+          document.getElementById("currentlyBuildingSection").innerHTML = `<p class="text-red-500">Couldn’t load build data.</p>`;
+        });
+
+    // *** LEARNING & EXPLORING CARD LOGIC *** //
+      fetch('/data/now/exploring.json')
+        .then(response => response.json())
+        .then(data => {
+          const section = document.getElementById("learningExploringSection");
+
+          // Build the section header
+          const header = `<h2 class="text-xl font-semibold mb-3 text-sky-400">${data.title}</h2>`;
+
+          // Build the list of items
+          const listItems = data.items.map(item => `<li>${item}</li>`).join("");
+          const list = `<ul class="list-disc pl-5 space-y-2">${listItems}</ul>`;
+
+          section.innerHTML = `${header}${list}`;
+        })
+        .catch(error => {
+          console.error("Couldn't load learning-exploring.json", error);
+          document.getElementById("learningExploringSection").innerHTML = `<p class="text-red-500">Couldn’t load learning data.</p>`;
+        });
+
+    // *** CURRENT VIBES CARD LOGIC *** // 
+      fetch('/data/now/into.json')
+        .then(response => response.json())
+        .then(data => {
+          const section = document.getElementById("currentVibesSection");
+
+          // Title
+          const header = `<h2 class="text-xl font-semibold mb-3 text-yellow-400">${data.title}</h2>`;
+
+          // List items with conditional logic
+          const listItems = data.items.map(item => {
+            let content = item.text;
+
+            // Link included
+            if (item.link) {
+              content += ` <a href="${item.link.href}" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400 transition-colors duration-200">${item.link.text}</a>`;
+            }
+
+            // Action included
+            if (item.action) {
+              content = content.replace(
+                item.text,
+                `<span onclick="${item.action}()" class="cursor-pointer hover:opacity-70 select-none">${item.text}</span>`
+              );
+            }
+
+            return `<li>${content}</li>`;
+          }).join("");
+
+          section.innerHTML = `${header}<ul class="list-disc pl-5 space-y-2">${listItems}</ul>`;
+        })
+        .catch(error => {
+          console.error("Couldn't load current-vibes.json", error);
+          document.getElementById("currentVibesSection").innerHTML = `<p class="text-red-500">Couldn’t load vibes data.</p>`;
+        });
+        
+     // *** ON THE HORIZON CARD LOGIC *** //
+       fetch('/data/now/whats_next.json')
+        .then(response => response.json())
+        .then(data => {
+          const section = document.getElementById("onTheHorizonSection");
+
+          // Header
+          const header = `<h2 class="text-xl font-semibold mb-3 text-red-400">${data.title}</h2>`;
+
+          // List Items
+          const listItems = data.items.map(item => `<li>${item}</li>`).join("");
+          const list = `<ul class="list-disc pl-5 space-y-2">${listItems}</ul>`;
+
+          section.innerHTML = `${header}${list}`;
+        })
+        .catch(error => {
+          console.error("Couldn't load on-the-horizon.json", error);
+          document.getElementById("onTheHorizonSection").innerHTML = `<p class="text-red-500">Couldn’t load future plans.</p>`;
+        });
+
+
+  </script>
 <script>
-  // EASTER EGG MODAL LOGIC
-  function openModal() {
-    document.getElementById("imageModal").classList.remove("hidden");
-    document.getElementById("imageModal").classList.add("flex");
-  }
-  function closeModal() {
-    document.getElementById("imageModal").classList.remove("flex");
-    document.getElementById("imageModal").classList.add("hidden");
-  }
-  document.getElementById("imageModal").addEventListener("click", (e) => {
-    if (e.target.id === "imageModal") closeModal();
-  });
-
-  // FIREBASE SETUP
-  const firebaseConfig = {
-    apiKey: "AIzaSyBYYAjY8Q7RH0jQuMeOmAAp3XPTGLAQr0k",
-    authDomain: "code-tools-pastebin.firebaseapp.com",
-    projectId: "code-tools-pastebin",
-    storageBucket: "code-tools-pastebin.appspot.com",
-    messagingSenderId: "1000713658548",
-    appId: "1:1000713658548:web:4996a3a58b1f3fd013b7e1"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-
-  async function loadRandomFact() {
-    try {
-      const doc = await db.collection('resume').doc('facts').get();
-      const facts = doc.data().facts || [];
-      const randomFact = facts[Math.floor(Math.random() * facts.length)];
-
-      document.getElementById("randomFact").innerHTML = `
-        ${randomFact}
-        <br>
-        <div class="text-xs opacity-60 mt-2">
-          <hr class="my-1">
-          <em>Disclaimer:</em><br>
-          These facts are just for fun!
-        </div>
-      `;
-    } catch (err) {
-      console.error("Couldn't load facts from Firebase:", err);
-      document.getElementById("randomFact").textContent = "Couldn't load random fact.";
-    }
-  }
-
-  async function loadSection(docName, sectionId, colorClass) {
-    try {
-      const doc = await db.collection('resume').doc(docName).get();
-      const data = doc.data();
-
-      if (!data) throw new Error("No data found");
-
-      const section = document.getElementById(sectionId);
-      const header = `<h2 class="text-xl font-semibold mb-3 ${colorClass}">${data.title}</h2>`;
-      const listItems = (data.items || []).map(item => {
-        if (typeof item === 'string') {
-          return `<li>${item}</li>`;
-        } else if (item.text && item.link) {
-          return `<li>${item.text} <a href="${item.link.href}" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400">${item.link.text}</a></li>`;
-        } else if (item.text && item.action) {
-          return `<li><span onclick="${item.action}()" class="cursor-pointer hover:opacity-70">${item.text}</span></li>`;
-        } else {
-          return `<li>${JSON.stringify(item)}</li>`;
-        }
-      }).join("");
-
-      section.innerHTML = `${header}<ul class="list-disc pl-5 space-y-2">${listItems}</ul>`;
-    } catch (err) {
-      console.error(`Couldn't load ${docName}:`, err);
-      const section = document.getElementById(sectionId);
-      section.innerHTML = `<p class="text-red-500">Couldn’t load data for this section.</p>`;
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    loadRandomFact();
-    loadSection('current', 'currentlyBuildingSection', 'text-green-400');
-    loadSection('exploring', 'learningExploringSection', 'text-sky-400');
-    loadSection('into', 'currentVibesSection', 'text-yellow-400');
-    loadSection('whats_next', 'onTheHorizonSection', 'text-red-400');
-  });
-
-  // SERVICE WORKER VERSION CONTROL
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/service-worker.js')
       .then(reg => {
@@ -204,6 +241,5 @@
     });
   }
 </script>
-
 </body>
 </html>
