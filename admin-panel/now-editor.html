@@ -24,11 +24,9 @@
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
   <style>
-    /* Hard clamp overflow */
     li.sortable-item {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       gap: 0.5rem;
       background-color: white;
       border: 1px solid #d1d5db;
@@ -121,14 +119,20 @@
     container.appendChild(addBtn);
     editSections.appendChild(container);
 
-    // Proper SortableJS
-    Sortable.create(itemList, {
+    // DragLock mode - disable input while dragging
+    const sortable = Sortable.create(itemList, {
       animation: 150,
       handle: ".drag-handle",
       forceFallback: true,
       fallbackOnBody: true,
       swapThreshold: 0.65,
-      ghostClass: "bg-orange-100 dark:bg-zinc-700"
+      ghostClass: "bg-orange-100 dark:bg-zinc-700",
+      onStart: function () {
+        itemList.querySelectorAll('input').forEach(input => input.setAttribute('readonly', true));
+      },
+      onEnd: function () {
+        itemList.querySelectorAll('input').forEach(input => input.removeAttribute('readonly'));
+      }
     });
   }
 
