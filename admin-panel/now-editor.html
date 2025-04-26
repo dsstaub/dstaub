@@ -22,6 +22,37 @@
 
   <!-- SortableJS -->
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+  <style>
+    /* Hard clamp overflow */
+    li.sortable-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      background-color: white;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+      max-width: 100%;
+      overflow: hidden;
+    }
+    .dark li.sortable-item {
+      background-color: #3f3f46;
+      border-color: #52525b;
+    }
+    .drag-handle {
+      touch-action: none;
+      cursor: grab;
+      user-select: none;
+      -webkit-user-drag: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    input.sortable-input {
+      flex: 1;
+      min-width: 0;
+    }
+  </style>
 </head>
 
 <body class="bg-stone-200 dark:bg-zinc-900 text-zinc-800 dark:text-white font-sans leading-relaxed px-6 py-12 max-w-3xl mx-auto space-y-8">
@@ -90,20 +121,20 @@
     container.appendChild(addBtn);
     editSections.appendChild(container);
 
-    // SortableJS setup with force fallback
+    // Proper SortableJS
     Sortable.create(itemList, {
       animation: 150,
       handle: ".drag-handle",
+      forceFallback: true,
       fallbackOnBody: true,
       swapThreshold: 0.65,
-      forceFallback: true,
       ghostClass: "bg-orange-100 dark:bg-zinc-700"
     });
   }
 
   function makeListItem(value) {
     const li = document.createElement('li');
-    li.className = "flex items-center gap-2 bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 rounded p-2 w-full max-w-full";
+    li.className = "sortable-item";
 
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = "✕";
@@ -112,12 +143,12 @@
 
     const input = document.createElement('input');
     input.type = "text";
-    input.className = "flex-1 p-2 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-600";
+    input.className = "sortable-input p-2 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-600";
     input.value = value;
 
     const dragHandle = document.createElement('div');
     dragHandle.textContent = "⋮⋮";
-    dragHandle.className = "cursor-grab text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 text-xl select-none drag-handle flex-shrink-0";
+    dragHandle.className = "drag-handle text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 text-xl flex-shrink-0";
 
     li.appendChild(deleteBtn);
     li.appendChild(input);
