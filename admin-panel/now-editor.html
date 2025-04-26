@@ -30,7 +30,7 @@
 
   <div id="editSections" class="space-y-12"></div>
 
-  <div class="text-center">
+  <div class="text-center mt-10">
     <button id="saveBtn" class="px-6 py-3 rounded-lg bg-orange-600 hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-400 text-white font-bold transition-colors duration-500">
       Save Changes
     </button>
@@ -90,22 +90,24 @@
     container.appendChild(addBtn);
     editSections.appendChild(container);
 
-    // Make the list sortable
+    // SortableJS setup with force fallback
     Sortable.create(itemList, {
       animation: 150,
       handle: ".drag-handle",
-      ghostClass: "bg-orange-100 dark:bg-zinc-700",
-      forceFallback: true
+      fallbackOnBody: true,
+      swapThreshold: 0.65,
+      forceFallback: true,
+      ghostClass: "bg-orange-100 dark:bg-zinc-700"
     });
   }
 
   function makeListItem(value) {
     const li = document.createElement('li');
-    li.className = "flex items-center gap-2 bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 rounded p-2 w-full";
+    li.className = "flex items-center gap-2 bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 rounded p-2 w-full max-w-full";
 
     const deleteBtn = document.createElement('button');
     deleteBtn.textContent = "✕";
-    deleteBtn.className = "text-sm text-red-500 hover:text-red-700 font-bold";
+    deleteBtn.className = "text-sm text-red-500 hover:text-red-700 font-bold flex-shrink-0";
     deleteBtn.onclick = () => li.remove();
 
     const input = document.createElement('input');
@@ -115,7 +117,7 @@
 
     const dragHandle = document.createElement('div');
     dragHandle.textContent = "⋮⋮";
-    dragHandle.className = "cursor-grab text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 text-xl select-none drag-handle";
+    dragHandle.className = "cursor-grab text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 text-xl select-none drag-handle flex-shrink-0";
 
     li.appendChild(deleteBtn);
     li.appendChild(input);
@@ -132,7 +134,7 @@
         const titleInput = inputs[0];
         const id = titleInput.dataset.id;
         const title = titleInput.value.trim();
-        const listItems = container.querySelectorAll('ul')[0].querySelectorAll('input');
+        const listItems = container.querySelector('ul').querySelectorAll('input');
         const items = Array.from(listItems).map(input => input.value.trim()).filter(t => t.length > 0);
         await db.collection('now').doc(id).set({ title, items });
       }
