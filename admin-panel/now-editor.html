@@ -27,6 +27,7 @@
     li.sortable-item {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 0.5rem;
       background-color: white;
       border: 1px solid #d1d5db;
@@ -39,6 +40,7 @@
     .dark li.sortable-item {
       background-color: #3f3f46;
       border-color: #52525b;
+      color: white;
     }
     .drag-handle {
       touch-action: none;
@@ -47,17 +49,16 @@
       -webkit-user-drag: none;
       -webkit-tap-highlight-color: transparent;
     }
-    .fake-input {
+    .editable-text {
       flex: 1;
-      min-width: 0;
-      background: none;
-      border: none;
-      font: inherit;
       padding: 0.5rem;
+      background: transparent;
       border-radius: 0.5rem;
-      cursor: text;
+      cursor: pointer;
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
-    .editable {
+    .editing {
       background-color: #f3f4f6;
       outline: 2px solid #60a5fa;
     }
@@ -130,7 +131,7 @@
     container.appendChild(addBtn);
     editSections.appendChild(container);
 
-    // TRUE SortableJS without inputs
+    // True Sortable per section
     new Sortable(itemList, {
       animation: 150,
       handle: ".drag-handle",
@@ -141,7 +142,7 @@
     });
   }
 
-  function makeListItem(value) {
+  function makeListItem(text) {
     const li = document.createElement('li');
     li.className = "sortable-item";
 
@@ -150,17 +151,19 @@
     deleteBtn.className = "text-sm text-red-500 hover:text-red-700 font-bold flex-shrink-0";
     deleteBtn.onclick = () => li.remove();
 
-    const content = document.createElement('div');
-    content.className = "fake-input";
-    content.textContent = value;
-    content.addEventListener('click', () => {
-      content.contentEditable = true;
-      content.classList.add('editable');
-      content.focus();
+    const textDiv = document.createElement('div');
+    textDiv.className = "editable-text";
+    textDiv.textContent = text;
+
+    textDiv.addEventListener('click', () => {
+      textDiv.contentEditable = true;
+      textDiv.classList.add('editing');
+      textDiv.focus();
     });
-    content.addEventListener('blur', () => {
-      content.contentEditable = false;
-      content.classList.remove('editable');
+
+    textDiv.addEventListener('blur', () => {
+      textDiv.contentEditable = false;
+      textDiv.classList.remove('editing');
     });
 
     const dragHandle = document.createElement('div');
@@ -168,7 +171,7 @@
     dragHandle.className = "drag-handle text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 text-xl flex-shrink-0";
 
     li.appendChild(deleteBtn);
-    li.appendChild(content);
+    li.appendChild(textDiv);
     li.appendChild(dragHandle);
 
     return li;
@@ -182,7 +185,7 @@
         const titleInput = inputs[0];
         const id = titleInput.dataset.id;
         const title = titleInput.value.trim();
-        const listItems = container.querySelector('ul').querySelectorAll('.fake-input');
+        const listItems = container.querySelector('ul').querySelectorAll('.editable-text');
         const items = Array.from(listItems).map(div => div.textContent.trim()).filter(t => t.length > 0);
         await db.collection('now').doc(id).set({ title, items });
       }
