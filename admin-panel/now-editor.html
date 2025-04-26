@@ -69,6 +69,15 @@
     .dark .delete-zone.dragging-over {
       background-color: rgba(239, 68, 68, 0.3);
     }
+    .editable-input {
+      background-color: transparent;
+      border: none;
+      width: 100%;
+      text-align: center;
+      font-size: 1rem;
+      color: inherit;
+      outline: none;
+    }
   </style>
 </head>
 
@@ -133,10 +142,9 @@
     addBtn.textContent = "+ Add Item";
     addBtn.className = "flex-1 px-4 py-2 rounded bg-green-600 text-white font-bold text-sm hover:bg-green-700";
     addBtn.onclick = () => {
-      const newItem = prompt("Enter item text:");
-      if (newItem) {
-        itemList.appendChild(makeListItem(newItem.trim()));
-      }
+      itemList.appendChild(makeListItem(""));
+      const lastInput = itemList.querySelector('.editable-input:last-child');
+      if (lastInput) lastInput.focus();
     };
 
     const deleteZone = document.createElement('div');
@@ -187,6 +195,24 @@
     const div = document.createElement('div');
     div.className = "sortable-item";
     div.textContent = text || "New Item";
+
+    div.addEventListener('click', () => {
+      const input = document.createElement('input');
+      input.className = "editable-input";
+      input.value = div.textContent;
+      div.innerHTML = '';
+      div.appendChild(input);
+      input.focus();
+      input.addEventListener('blur', () => {
+        div.textContent = input.value.trim() || "New Item";
+      });
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          input.blur();
+        }
+      });
+    });
+
     return div;
   }
 
@@ -213,7 +239,7 @@
     if (!user) return (window.location.href = "/admin-panel/index.html");
     sections.forEach(sec => {
       db.collection('now').doc(sec.id).get().then(doc => {
-        const data = doc.exists ? doc.data() : { title: sec.label, items: [] };
+        const data = doc.exists ? doc.data() : { title: sec.label, items: [];
         createEditor(sec.id, sec.label, data);
       });
     });
