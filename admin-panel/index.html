@@ -1,188 +1,266 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Command Center</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Admin Panel</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBYYAjY8Q7RH0jQuMeOmAAp3XPTGLAQr0k",
+      authDomain: "code-tools-pastebin.firebaseapp.com",
+      projectId: "code-tools-pastebin",
+      storageBucket: "code-tools-pastebin.appspot.com",
+      messagingSenderId: "1000713658548",
+      appId: "1:1000713658548:web:4996a3a58b1f3fd013b7e1"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
+  </script>
+
+  <style>
+    body { font-family: sans-serif; background: #e7e5e4; }
+    @media (prefers-color-scheme: dark) { body { background: #181818; color: white; } }
+  </style>
 </head>
-<body class="bg-zinc-900 text-white font-mono p-6">
+<body class="p-6">
 
-  <!-- PIN LOCK -->
-  <div id="pinLock" class="fixed inset-0 bg-zinc-950 flex flex-col items-center justify-center z-50">
-    <h2 class="text-2xl mb-4">Enter PIN</h2>
-    <input id="pinInput" type="password" maxlength="4" class="text-center p-2 rounded bg-zinc-800 border border-zinc-600 w-24 text-xl tracking-widest" autofocus />
-    <p id="pinStatus" class="mt-3 text-red-500 text-sm"></p>
+  <h1 class="text-3xl font-bold text-center mb-8">Resume Admin Panel</h1>
+
+  <div id="authSection" class="text-center mb-8">
+    <button id="googleLogin" class="px-6 py-3 rounded bg-white border border-gray-300 text-black font-bold hover:bg-gray-100 transition flex items-center justify-center gap-2 mx-auto">
+      Sign in with Google
+    </button>
+    <button id="logoutBtn" class="hidden px-4 py-2 bg-red-600 text-white rounded mt-4">Logout</button>
   </div>
 
-  <!-- ADMIN UI -->
-  <h1 class="text-3xl font-bold mb-4">/admin-panel/</h1>
+  <div id="editor" class="max-w-3xl mx-auto flex flex-col gap-8 hidden">
 
-  <label for="fileSelect" class="block mb-2 text-lg">Choose a JSON file to edit:</label>
-  <select id="fileSelect" class="mb-4 p-2 bg-zinc-800 rounded text-white w-full">
-    <optgroup label="Now">
-      <option value="/data/now/current.json">current.json</option>
-      <option value="/data/now/exploring.json">exploring.json</option>
-      <option value="/data/now/into.json">into.json</option>
-      <option value="/data/now/whats_next.json">whats_next.json</option>
-    </optgroup>
-    <optgroup label="Résumé">
-      <option value="/data/resume_cards/contact.json">contact.json</option>
-      <option value="/data/resume_cards/education.json">education.json</option>
-      <option value="/data/resume_cards/experience.json">experience.json</option>
-      <option value="/data/resume_cards/skills.json">skills.json</option>
-      <option value="/data/resume_cards/summary.json">summary.json</option>
-    </optgroup>
-    <optgroup label="Misc">
-      <option value="/data/facts.json">facts.json</option>
-      <option value="/data/error_messages.json">error_messages.json</option>
-    </optgroup>
-  </select>
+    <!-- Summary -->
+    <section class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow">
+      <h2 class="text-xl font-bold mb-4">Summary</h2>
+      <textarea id="summaryInput" rows="5" class="w-full p-3 rounded border"></textarea>
+      <button onclick="saveSummary()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save Summary</button>
+    </section>
 
-  <textarea id="editor" class="w-full h-[60vh] p-4 text-sm bg-zinc-800 text-green-300 rounded resize-none mb-4"></textarea>
+    <!-- Contact -->
+    <section class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow">
+      <h2 class="text-xl font-bold mb-4">Contact Info</h2>
+      <input id="emailInput" type="text" placeholder="Email" class="w-full p-2 mb-2 rounded border">
+      <input id="phoneInput" type="text" placeholder="Phone" class="w-full p-2 mb-2 rounded border">
+      <input id="linkedinInput" type="text" placeholder="LinkedIn URL" class="w-full p-2 mb-2 rounded border">
+      <input id="githubInput" type="text" placeholder="GitHub URL" class="w-full p-2 mb-2 rounded border">
+      <button onclick="saveContact()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save Contact</button>
+    </section>
 
-  <div class="flex gap-3">
-    <button onclick="saveJSON()" class="bg-green-600 hover:bg-green-500 px-4 py-2 rounded">Save</button>
-    <button onclick="loadJSON()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded">Reload</button>
-    <button onclick="validateJSON()" class="bg-yellow-600 hover:bg-yellow-500 px-4 py-2 rounded">Validate</button>
+    <!-- Skills -->
+    <section class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow">
+      <h2 class="text-xl font-bold mb-4">Skills</h2>
+      <textarea id="skillsInput" rows="4" placeholder="Comma separated skills" class="w-full p-3 rounded border"></textarea>
+      <button onclick="saveSkills()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save Skills</button>
+    </section>
+
+    <!-- Education -->
+    <section class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow">
+      <h2 class="text-xl font-bold mb-4">Education</h2>
+      <textarea id="educationInput" rows="6" placeholder="One school per line: Name | Degree | Year" class="w-full p-3 rounded border"></textarea>
+      <button onclick="saveEducation()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save Education</button>
+    </section>
+
+    <!-- Experience -->
+    <section class="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow">
+      <h2 class="text-xl font-bold mb-4">Experience</h2>
+
+      <div class="flex flex-col gap-2 mb-6" id="experienceList">
+        <!-- Jobs will load here -->
+      </div>
+
+      <h3 class="text-lg font-semibold mt-8 mb-2">Add New Experience</h3>
+
+      <input id="newCompany" type="text" placeholder="Company Name" class="w-full p-2 mb-2 rounded border">
+      <input id="newTitle" type="text" placeholder="Job Title" class="w-full p-2 mb-2 rounded border">
+      <input id="newStart" type="text" placeholder="Start Date (e.g. Jan 2021)" class="w-full p-2 mb-2 rounded border">
+      <input id="newEnd" type="text" placeholder="End Date (e.g. Present)" class="w-full p-2 mb-2 rounded border">
+      <textarea id="newDescription" placeholder="Job Description" rows="4" class="w-full p-3 mb-2 rounded border"></textarea>
+
+      <button onclick="addExperience()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Add Experience</button>
+    </section>
+
   </div>
 
-  <p id="status" class="mt-4 text-sm text-zinc-400"></p>
+  <script>
+    const googleLogin = document.getElementById('googleLogin');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const authSection = document.getElementById('authSection');
+    const editor = document.getElementById('editor');
 
-<script>
-  const PIN = "6446";
-  const pinLock = document.getElementById("pinLock");
-  const pinInput = document.getElementById("pinInput");
-  const pinStatus = document.getElementById("pinStatus");
-
-  pinInput.addEventListener("keyup", (e) => {
-    if (e.key === "Enter" || pinInput.value.length === 4) {
-      if (pinInput.value === PIN) {
-        pinLock.classList.add("hidden");
-        loadJSON(); // Load default
-      } else {
-        pinStatus.textContent = "Wrong PIN.";
-        pinInput.value = "";
-      }
-    }
-  });
-
-  const editor = document.getElementById("editor");
-      function normalizeQuotes(text) {
-      return text
-        .replace(/[“”]/g, '"')
-        .replace(/[‘’]/g, "'")
-        .replace(/\u2013|\u2014/g, "-")
-        .replace(/\u00A0/g, " ");
-    }
-
-    // Clean input in real time
-    editor.addEventListener("input", () => {
-      const clean = normalizeQuotes(editor.value);
-      if (editor.value !== clean) {
-        const cursor = editor.selectionStart;
-        editor.value = clean;
-        editor.setSelectionRange(cursor, cursor); // preserve cursor position
+    googleLogin.addEventListener('click', async () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      try {
+        await auth.signInWithPopup(provider);
+      } catch (err) {
+        alert('Google sign-in error: ' + err.message);
       }
     });
 
-    // Clean on paste too, just in case
-    editor.addEventListener("paste", (e) => {
-      e.preventDefault();
-      const paste = (e.clipboardData || window.clipboardData).getData("text");
-      const cleaned = normalizeQuotes(paste);
-      const start = editor.selectionStart;
-      const end = editor.selectionEnd;
-      const before = editor.value.slice(0, start);
-      const after = editor.value.slice(end);
-      editor.value = before + cleaned + after;
-      const cursor = start + cleaned.length;
-      editor.setSelectionRange(cursor, cursor);
+    logoutBtn.addEventListener('click', async () => {
+      await auth.signOut();
     });
-  const fileSelect = document.getElementById("fileSelect");
-  const status = document.getElementById("status");
 
-  fileSelect.addEventListener("change", loadJSON);
-
-  // GitHub Save Logic
-  const githubUser = "dsstaub";
-  const githubRepo = "dstaub";
-  const githubBranch = "main";
-
-  let githubToken = localStorage.getItem("gh_token") || "";
-
-  if (!githubToken) {
-    githubToken = prompt("Enter your GitHub token:");
-    if (githubToken) localStorage.setItem("gh_token", githubToken);
-  }
-
-  function loadJSON() {
-    const path = fileSelect.value;
-    fetch(path)
-      .then(res => res.json())
-      .then(data => {
-        editor.value = JSON.stringify(data, null, 2);
-        status.textContent = `Loaded ${path}`;
-      })
-      .catch(err => {
-        console.error(err);
-        status.textContent = `Error loading ${path}`;
-      });
-  }
-
-  async function saveJSON() {
-    const path = fileSelect.value.replace("/data/", "data/");
-    const apiUrl = `https://api.github.com/repos/${githubUser}/${githubRepo}/contents/${path}`;
-
-    try {
-      const newContent = editor.value;
-      const parsed = JSON.parse(newContent);
-
-      const getRes = await fetch(apiUrl, {
-        headers: { Authorization: `token ${githubToken}` }
-      });
-
-      const fileData = await getRes.json();
-      const sha = fileData.sha;
-
-      const commitMessage = `Admin Panel Update: ${path}`;
-      const payload = {
-        message: commitMessage,
-        content: btoa(unescape(encodeURIComponent(JSON.stringify(parsed, null, 2)))),
-        sha,
-        branch: githubBranch
-      };
-
-      const putRes = await fetch(apiUrl, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `token ${githubToken}`
-        },
-        body: JSON.stringify(payload)
-      });
-
-      if (putRes.ok) {
-        status.textContent = `✅ Saved ${path} to GitHub!`;
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        authSection.classList.add('hidden');
+        editor.classList.remove('hidden');
+        logoutBtn.classList.remove('hidden');
+        loadResumeData();
       } else {
-        const err = await putRes.json();
-        console.error(err);
-        status.textContent = `❌ GitHub error: ${err.message}`;
+        authSection.classList.remove('hidden');
+        editor.classList.add('hidden');
+        logoutBtn.classList.add('hidden');
       }
-    } catch (err) {
-      console.error("Save failed:", err);
-      status.textContent = "❌ Could not save. Check console for details.";
-    }
-  }
+    });
 
-  function validateJSON() {
-    try {
-      JSON.parse(editor.value);
-      status.textContent = "✅ JSON is valid.";
-    } catch {
-      status.textContent = "❌ Invalid JSON.";
+    async function loadResumeData() {
+      try {
+        const summaryDoc = await db.collection('resume').doc('summary').get();
+        if (summaryDoc.exists) {
+          document.getElementById('summaryInput').value = summaryDoc.data().text || '';
+        }
+
+        const contactDoc = await db.collection('resume').doc('contact').get();
+        if (contactDoc.exists) {
+          const data = contactDoc.data();
+          document.getElementById('emailInput').value = data.email || '';
+          document.getElementById('phoneInput').value = data.phone || '';
+          document.getElementById('linkedinInput').value = data.linkedin || '';
+          document.getElementById('githubInput').value = data.github || '';
+        }
+
+        const skillsDoc = await db.collection('resume').doc('skills').get();
+        if (skillsDoc.exists) {
+          document.getElementById('skillsInput').value = (skillsDoc.data().skills || []).join(', ');
+        }
+
+        const educationDoc = await db.collection('resume').doc('education').get();
+        if (educationDoc.exists) {
+          const lines = (educationDoc.data().schools || []).map(s => `${s.name} | ${s.degree} | ${s.year}`);
+          document.getElementById('educationInput').value = lines.join('\n');
+        }
+
+        await loadExperience();
+      } catch (err) {
+        console.error('Failed to load resume:', err.message);
+      }
     }
-  }
-</script>
+
+    async function saveSummary() {
+      const text = document.getElementById('summaryInput').value.trim();
+      await db.collection('resume').doc('summary').set({ text });
+      alert('Summary saved!');
+    }
+
+    async function saveContact() {
+      const email = document.getElementById('emailInput').value.trim();
+      const phone = document.getElementById('phoneInput').value.trim();
+      const linkedin = document.getElementById('linkedinInput').value.trim();
+      const github = document.getElementById('githubInput').value.trim();
+      await db.collection('resume').doc('contact').set({ email, phone, linkedin, github });
+      alert('Contact info saved!');
+    }
+
+    async function saveSkills() {
+      const skillsRaw = document.getElementById('skillsInput').value.trim();
+      const skills = skillsRaw.split(',').map(s => s.trim()).filter(Boolean);
+      await db.collection('resume').doc('skills').set({ skills });
+      alert('Skills saved!');
+    }
+
+    async function saveEducation() {
+      const raw = document.getElementById('educationInput').value.trim();
+      const lines = raw.split('\n').map(line => {
+        const [name, degree, year] = line.split('|').map(x => x.trim());
+        return { name, degree, year };
+      }).filter(e => e.name && e.degree && e.year);
+      await db.collection('resume').doc('education').set({ schools: lines });
+      alert('Education saved!');
+    }
+
+    async function loadExperience() {
+      const experienceList = document.getElementById('experienceList');
+      experienceList.innerHTML = '';
+
+      const snapshot = await db.collection('resume').doc('experience').collection('jobs').orderBy('start', 'desc').get();
+      snapshot.forEach(doc => {
+        const job = doc.data();
+        const card = document.createElement('div');
+        card.className = 'p-4 bg-gray-100 dark:bg-zinc-700 rounded flex flex-col gap-1 relative';
+
+        const title = document.createElement('div');
+        title.className = 'font-bold';
+        title.textContent = `${job.title} at ${job.company}`;
+
+        const dates = document.createElement('div');
+        dates.className = 'text-xs opacity-70';
+        dates.textContent = `${job.start} - ${job.end}`;
+
+        const desc = document.createElement('div');
+        desc.className = 'text-sm mt-2';
+        desc.textContent = job.description;
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'absolute top-2 right-2 text-red-600 text-xs hover:underline';
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.onclick = () => deleteExperience(doc.id);
+
+        card.appendChild(title);
+        card.appendChild(dates);
+        card.appendChild(desc);
+        card.appendChild(deleteBtn);
+
+        experienceList.appendChild(card);
+      });
+    }
+
+    async function addExperience() {
+      const company = document.getElementById('newCompany').value.trim();
+      const title = document.getElementById('newTitle').value.trim();
+      const start = document.getElementById('newStart').value.trim();
+      const end = document.getElementById('newEnd').value.trim();
+      const description = document.getElementById('newDescription').value.trim();
+
+      if (!company || !title || !start || !end || !description) {
+        alert('Please fill in all experience fields.');
+        return;
+      }
+
+      await db.collection('resume').doc('experience').collection('jobs').add({
+        company, title, start, end, description
+      });
+
+      document.getElementById('newCompany').value = '';
+      document.getElementById('newTitle').value = '';
+      document.getElementById('newStart').value = '';
+      document.getElementById('newEnd').value = '';
+      document.getElementById('newDescription').value = '';
+
+      alert('Experience added!');
+      loadExperience();
+    }
+
+    async function deleteExperience(id) {
+      if (!confirm('Delete this experience?')) return;
+
+      await db.collection('resume').doc('experience').collection('jobs').doc(id).delete();
+      alert('Experience deleted!');
+      loadExperience();
+    }
+  </script>
+
 </body>
-</html>
+</html> 
