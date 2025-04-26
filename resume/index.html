@@ -12,164 +12,191 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-  <!-- Fonts + CSS -->
+  <!-- Fonts + Tailwind + Custom CSS -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/style.css" />
   <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
   <script src="/layout.js" defer></script>
   <script src="/app.js" defer></script>
-</head>
 
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+</head>
 <body class="bg-slate-200 dark:bg-zinc-900 text-zinc-800 dark:text-white font-sans leading-relaxed px-6 pb-[7rem] max-w-4xl mx-auto">
   <main class="mt-12 space-y-6">
 
     <!-- Professional Summary Card -->
-      <section class="glass bg-red-100 dark:bg-red-950 p-6">
-        <h2 id="summaryTitle" class="text-xl font-semibold text-red-400 mb-3"></h2>
-        <p id="summaryText" class="text-gray-900 dark:text-gray-200"></p>
-      </section>
-      
-    <!-- Relevent Experience Card -->
-      <section id="experienceSection" class="glass bg-green-100 dark:bg-green-950 p-6">
-        <h2 class="text-xl font-semibold text-green-400 mb-3">Relevant Experience</h2>
-          <!-- Experience cards will be injected here -->
-      </section>
+    <section class="glass bg-red-100 dark:bg-red-950 p-6">
+      <h2 id="summaryTitle" class="text-xl font-semibold text-red-400 mb-3"></h2>
+      <p id="summaryText" class="text-gray-900 dark:text-gray-200"></p>
+    </section>
+
+    <!-- Relevant Experience Card -->
+    <section id="experienceSection" class="glass bg-green-100 dark:bg-green-950 p-6">
+      <h2 class="text-xl font-semibold text-green-400 mb-3">Relevant Experience</h2>
+      <div id="experienceList" class="space-y-4"></div>
+    </section>
 
     <!-- Education Card -->
-      <section id="educationSection" class="glass bg-blue-100 dark:bg-blue-950 p-6">
-        <h2 id="educationTitle" class="text-xl font-semibold text-sky-400 mb-3"></h2>
-        <ul id="educationList" class="list-disc pl-6 mt-2"></ul>
-      </section>
+    <section id="educationSection" class="glass bg-blue-100 dark:bg-blue-950 p-6">
+      <h2 id="educationTitle" class="text-xl font-semibold text-sky-400 mb-3"></h2>
+      <ul id="educationList" class="list-disc pl-6 mt-2 space-y-2"></ul>
+    </section>
 
     <!-- Skills Card -->
-      <section id="skillsSection" class="glass bg-yellow-100 dark:bg-yellow-950 p-6">
-        <h2 id="skillsTitle" class="text-xl font-semibold text-yellow-400 mb-3"></h2>
-        <ul id="skillsList" class="list-disc pl-6 grid grid-cols-1 sm:grid-cols-2 gap-x-6"></ul>
-      </section>
-     
-    <!-- Pre-Interview Q&A Button --> 
-      <div class="text-center">
-        <a href="/pre-interview/index.html" class="btn">Pre-Interview Q&A</a>
-      </div>
-      
-    <!-- Contact Card -->
+    <section id="skillsSection" class="glass bg-yellow-100 dark:bg-yellow-950 p-6">
+      <h2 id="skillsTitle" class="text-xl font-semibold text-yellow-400 mb-3"></h2>
+      <ul id="skillsList" class="list-disc pl-6 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2"></ul>
+    </section>
+
+    <!-- Pre-Interview Q&A Button -->
+    <div class="text-center">
+      <a href="/pre-interview/index.html" class="btn">Pre-Interview Q&A</a>
+    </div>
+
+    <!-- Contact Info Card -->
     <section id="contactSection" class="glass bg-red-100 dark:bg-red-950 p-6 mb-12">
       <h2 id="contactTitle" class="text-xl font-semibold text-red-400 mb-3"></h2>
       <ul id="contactList" class="space-y-1 text-sm text-zinc-600 dark:text-zinc-400"></ul>
     </section>
 
   </main>
-  
-<script>
-  // Fetch Summary
-  fetch('/data/resume_cards/summary.json')
-    .then(response => response.json())
-    .then(data => {
+  <script>
+  // Initialize Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyBYYAjY8Q7RH0jQuMeOmAAp3XPTGLAQr0k",
+    authDomain: "code-tools-pastebin.firebaseapp.com",
+    projectId: "code-tools-pastebin",
+    storageBucket: "code-tools-pastebin.appspot.com",
+    messagingSenderId: "1000713658548",
+    appId: "1:1000713658548:web:4996a3a58b1f3fd013b7e1"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // Load Summary
+  async function loadSummary() {
+    try {
+      const doc = await db.collection('resume').doc('summary').get();
+      const data = doc.data();
       document.getElementById('summaryTitle').textContent = data.title;
       document.getElementById('summaryText').textContent = data.text;
-    })
-    .catch(error => {
-      console.error('Failed to load summary.json:', error);
+    } catch (err) {
+      console.error('Failed to load summary:', err);
       document.getElementById('summaryTitle').textContent = 'Error loading summary';
-      document.getElementById('summaryText').textContent = 'The summary information could not be retrieved.';
-    });
+      document.getElementById('summaryText').textContent = 'Could not retrieve summary.';
+    }
+  }
 
-      // Fetch Experience
-      fetch('/data/resume_cards/experience.json')
-        .then(response => response.json())
-        .then(jobs => {
-          const container = document.getElementById('experienceSection');
+  // Load Experience
+  async function loadExperience() {
+    try {
+      const snapshot = await db.collection('resume').doc('experience').collection('jobs').orderBy('start', 'desc').get();
+      const list = document.getElementById('experienceList');
+      list.innerHTML = '';
 
-          jobs.forEach(job => {
-            const div = document.createElement('div');
-            div.className = 'mb-4';
+      snapshot.forEach(doc => {
+        const job = doc.data();
 
-            const title = document.createElement('h3');
-            title.className = 'text-lg font-bold text-green-600 dark:text-green-300';
-            title.textContent = job.title;
+        const div = document.createElement('div');
 
-            const meta = document.createElement('p');
-            meta.className = 'text-sm italic text-zinc-600 dark:text-zinc-400';
-            meta.textContent = `${job.company}${job.location ? ' – ' + job.location : ''} | ${job.start} – ${job.end}`;
+        const title = document.createElement('h3');
+        title.className = 'text-lg font-bold text-green-600 dark:text-green-300';
+        title.textContent = job.title;
 
-            const ul = document.createElement('ul');
-            ul.className = 'list-disc pl-6 mt-2';
-            job.details.forEach(detail => {
-              const li = document.createElement('li');
-              li.textContent = detail;
-              ul.appendChild(li);
-            });
+        const meta = document.createElement('p');
+        meta.className = 'text-sm italic text-zinc-600 dark:text-zinc-400';
+        meta.textContent = `${job.company}${job.location ? ' – ' + job.location : ''} | ${job.start} – ${job.end}`;
 
-            div.appendChild(title);
-            div.appendChild(meta);
-            div.appendChild(ul);
-            container.appendChild(div);
-          });
-        })
-        .catch(error => {
-          console.error('Failed to load experience.json:', error);
-          const container = document.getElementById('experienceSection');
-          container.innerHTML += '<p class="text-red-600 dark:text-red-400">Could not load experience data.</p>';
-        });
-
-    // Fetch Education
-    fetch('/data/resume_cards/education.json')
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('educationTitle').textContent = data.title;
-
-        const ul = document.getElementById('educationList');
-        data.items.forEach(item => {
+        const ul = document.createElement('ul');
+        ul.className = 'list-disc pl-6 mt-2 space-y-1';
+        (job.description || []).forEach(detail => {
           const li = document.createElement('li');
-          li.textContent = `${item.institution} -- ${item.credential}${item.year ? ', ' + item.year : ''}`;
+          li.textContent = detail;
           ul.appendChild(li);
         });
-      })
-      .catch(error => {
-        console.error('Failed to load education.json:', error);
-        const section = document.getElementById('educationSection');
-        section.innerHTML += '<p class="text-red-600 dark:text-red-400">Could not load education info.</p>';
-      }); 
-      
-      // Fetch Skills
-      fetch('/data/resume_cards/skills.json')
-        .then(response => response.json())
-        .then(data => {
-          document.getElementById('skillsTitle').textContent = data.title;
 
-          const ul = document.getElementById('skillsList');
-          data.items.forEach(skill => {
-            const li = document.createElement('li');
-            li.textContent = skill;
-            ul.appendChild(li);
-          });
-        })
-        .catch(error => {
-          console.error('Failed to load skills.json:', error);
-          const section = document.getElementById('skillsSection');
-          section.innerHTML += '<p class="text-red-600 dark:text-red-400">Could not load skills list.</p>';
-        });
-  
-      // Fetch Contact
-      fetch('/data/resume_cards/contact.json')
-        .then(response => response.json())
-        .then(data => {
-          document.getElementById('contactTitle').textContent = data.title;
+        div.appendChild(title);
+        div.appendChild(meta);
+        div.appendChild(ul);
+        list.appendChild(div);
+      });
+    } catch (err) {
+      console.error('Failed to load experience:', err);
+      document.getElementById('experienceList').innerHTML = '<p class="text-red-600 dark:text-red-400">Could not load experience.</p>';
+    }
+  }
 
-          const ul = document.getElementById('contactList');
-          data.items.forEach(item => {
-            const li = document.createElement('li');
-            li.innerHTML = `${item.type}: <a href="${item.href}" class="text-cyan-600 dark:text-cyan-400 hover:underline"${item.href.startsWith('http') ? ' target="_blank"' : ''}>${item.text}</a>`;
-            ul.appendChild(li);
-          });
-        })
-        .catch(error => {
-          console.error('Failed to load contact.json:', error);
-          const section = document.getElementById('contactSection');
-          section.innerHTML += '<p class="text-red-600 dark:text-red-400">Could not load contact info.</p>';
-        });
+  // Load Education
+  async function loadEducation() {
+    try {
+      const doc = await db.collection('resume').doc('education').get();
+      const data = doc.data();
+      document.getElementById('educationTitle').textContent = data.title;
 
+      const ul = document.getElementById('educationList');
+      ul.innerHTML = '';
+      (data.schools || []).forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.institution} -- ${item.credential}${item.year ? ', ' + item.year : ''}`;
+        ul.appendChild(li);
+      });
+    } catch (err) {
+      console.error('Failed to load education:', err);
+      document.getElementById('educationSection').innerHTML += '<p class="text-red-600 dark:text-red-400">Could not load education info.</p>';
+    }
+  }
+
+  // Load Skills
+  async function loadSkills() {
+    try {
+      const doc = await db.collection('resume').doc('skills').get();
+      const data = doc.data();
+      document.getElementById('skillsTitle').textContent = data.title;
+
+      const ul = document.getElementById('skillsList');
+      ul.innerHTML = '';
+      (data.skills || []).forEach(skill => {
+        const li = document.createElement('li');
+        li.textContent = skill;
+        ul.appendChild(li);
+      });
+    } catch (err) {
+      console.error('Failed to load skills:', err);
+      document.getElementById('skillsSection').innerHTML += '<p class="text-red-600 dark:text-red-400">Could not load skills list.</p>';
+    }
+  }
+
+  // Load Contact
+  async function loadContact() {
+    try {
+      const doc = await db.collection('resume').doc('contact').get();
+      const data = doc.data();
+      document.getElementById('contactTitle').textContent = data.title;
+
+      const ul = document.getElementById('contactList');
+      ul.innerHTML = '';
+      (data.items || []).forEach(item => {
+        const li = document.createElement('li');
+        li.innerHTML = `${item.type}: <a href="${item.href}" class="text-cyan-600 dark:text-cyan-400 hover:underline"${item.href.startsWith('http') ? ' target="_blank"' : ''}>${item.text}</a>`;
+        ul.appendChild(li);
+      });
+    } catch (err) {
+      console.error('Failed to load contact:', err);
+      document.getElementById('contactSection').innerHTML += '<p class="text-red-600 dark:text-red-400">Could not load contact info.</p>';
+    }
+  }
+
+  // Load Everything on Page Ready
+  document.addEventListener('DOMContentLoaded', () => {
+    loadSummary();
+    loadExperience();
+    loadEducation();
+    loadSkills();
+    loadContact();
+  });
 </script>
 
 </body>
-</html>
+</html> 
