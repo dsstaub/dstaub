@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pastebin - Code Tools</title>
 
+  <!-- Tailwind -->
   <script>
     tailwind.config = {
       darkMode: 'media'
@@ -12,24 +13,24 @@
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
 
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
-<script>
-  // Your firebaseConfig from console goes here:
-  const firebaseConfig = {
-    apiKey: "AIzaSyBYYAjY8Q7RH0jQuMeOmAAp3XPTGLAQr0k",
-    authDomain: "code-tools-pastebin.firebaseapp.com",
-    projectId: "code-tools-pastebin",
-    storageBucket: "code-tools-pastebin.firebasestorage.app",
-    messagingSenderId: "1000713658548",
-    appId: "1:1000713658548:web:4996a3a58b1f3fd013b7e1"
-  };
+  <script>
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBYYAjY8Q7RH0jQuMeOmAAp3XPTGLAQr0k",
+      authDomain: "code-tools-pastebin.firebaseapp.com",
+      projectId: "code-tools-pastebin",
+      storageBucket: "code-tools-pastebin.firebasestorage.app",
+      messagingSenderId: "1000713658548",
+      appId: "1:1000713658548:web:4996a3a58b1f3fd013b7e1"
+    };
 
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-</script>
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
 
   <style>
     body {
@@ -45,10 +46,10 @@
 </head>
 
 <body class="text-black dark:text-white p-6">
+
   <h1 class="text-3xl font-bold text-center mb-6">Pastebin</h1>
 
   <div class="max-w-xl mx-auto flex flex-col gap-4">
-
     <input id="title" type="text" placeholder="Paste Title" class="p-3 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700">
     <textarea id="content" placeholder="Paste your code or text here..." rows="8" class="p-3 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700"></textarea>
 
@@ -68,12 +69,11 @@
 
     <h2 class="text-2xl font-semibold mt-8">Saved Pastes</h2>
     <div id="pastes" class="flex flex-col gap-3 mt-2"></div>
-
   </div>
 
-    <div id="toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-full bg-green-600 text-white text-sm font-bold opacity-0 pointer-events-none transition-all duration-300">
-      Copied!
-    </div>
+  <div id="toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-full bg-green-600 text-white text-sm font-bold opacity-0 pointer-events-none transition-all duration-300">
+    Copied!
+  </div>
 
   <script>
     const titleInput = document.getElementById('title');
@@ -83,8 +83,8 @@
     const pastesDiv = document.getElementById('pastes');
 
     async function savePaste() {
-document.body.insertAdjacentHTML('beforeend', '<div class="fixed bottom-4 left-4 bg-black text-white p-2 text-xs">Save tapped</div>');
-      
+      console.log('Save tapped!');
+
       const title = titleInput.value.trim();
       const content = contentInput.value.trim();
       const expiry = expirySelect.value;
@@ -113,22 +113,22 @@ document.body.insertAdjacentHTML('beforeend', '<div class="fixed bottom-4 left-4
       }
     }
 
-      function copyContent(text) {
-        navigator.clipboard.writeText(text).then(() => {
-          showToast();
-        });
-      }
+    function copyContent(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast();
+      });
+    }
 
-      function showToast() {
-        const toast = document.getElementById('toast');
-        toast.classList.remove('opacity-0');
-        toast.classList.add('opacity-100');
+    function showToast() {
+      const toast = document.getElementById('toast');
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
 
-        setTimeout(() => {
-          toast.classList.remove('opacity-100');
-          toast.classList.add('opacity-0');
-        }, 1200); // Toast disappears after 1.2 seconds
-      }
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 1200);
+    }
 
     async function deletePaste(id) {
       try {
@@ -191,12 +191,11 @@ document.body.insertAdjacentHTML('beforeend', '<div class="fixed bottom-4 left-4
 
     saveBtn.addEventListener('click', savePaste);
 
-    // Real-time listener
     db.collection('pastes').onSnapshot(snapshot => {
       const pastes = snapshot.docs;
       renderPastes(pastes);
     });
-</script>
+  </script>
 
 </body>
 </html>
