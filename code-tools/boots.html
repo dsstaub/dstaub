@@ -32,15 +32,31 @@
 <body>
 
   <h1 class="text-2xl font-bold">Resume CMS Bootstrap</h1>
-  <p class="mt-4 text-gray-600">Tap the button to create your resume Firestore structure.</p>
+  <p class="mt-4 text-gray-600">1. Sign in with Google.<br>2. Tap "Create Resume Structure."</p>
 
-  <button onclick="bootstrapResume()">Create Resume Structure</button>
+  <button onclick="login()">Sign in with Google</button>
+  <button onclick="bootstrapResume()" style="background-color:#10b981; margin-top:1rem;">Create Resume Structure</button>
 
   <script>
-    async function bootstrapResume() {
-      try {
-        await auth.signInAnonymously(); // Just to initialize access (you're owner anyway)
+    function login() {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then((result) => {
+          alert("Signed in as: " + (result.user.displayName || result.user.email));
+        })
+        .catch((error) => {
+          alert('Login error: ' + error.message);
+        });
+    }
 
+    async function bootstrapResume() {
+      const user = auth.currentUser;
+      if (!user) {
+        alert('You must sign in first.');
+        return;
+      }
+
+      try {
         await db.collection('resume').doc('summary').set({
           text: "Write your professional summary here..."
         });
