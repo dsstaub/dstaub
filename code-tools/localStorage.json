@@ -1,4 +1,0 @@
-{
-  "pastes" : "[]",
-  "favorites" : "[{\"name\":\"Test One\",\"state\":\"{\\\"Background\\\":{\\\"family\\\":\\\"indigo\\\",\\\"shade\\\":50},\\\"Text\\\":{\\\"family\\\":\\\"gray\\\",\\\"shade\\\":700},\\\"Border\\\":{\\\"family\\\":\\\"\\\",\\\"shade\\\":\\\"\\\"},\\\"Ring\\\":{\\\"family\\\":\\\"\\\",\\\"shade\\\":\\\"\\\"},\\\"Utilities\\\":[]}\"},{\"name\":\"Test Two\",\"state\":\"{\\\"Background\\\":{\\\"family\\\":\\\"red\\\",\\\"shade\\\":100},\\\"Text\\\":{\\\"family\\\":\\\"yellow\\\",\\\"shade\\\":700},\\\"Border\\\":{\\\"family\\\":\\\"\\\",\\\"shade\\\":\\\"\\\"},\\\"Ring\\\":{\\\"family\\\":\\\"slate\\\",\\\"shade\\\":\\\"\\\"},\\\"Utilities\\\":[\\\"rounded-full\\\"]}\"}]"
-}

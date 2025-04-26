@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pastebin 4.1 Ultra God Mode</title>
+  <title>Pastebin 4.2 Ultra God Mode</title>
 
   <!-- Tailwind -->
   <script>
@@ -14,18 +14,20 @@
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBYYAjY8Q7RH0jQuMeOmAAp3XPTGLAQr0k",
       authDomain: "code-tools-pastebin.firebaseapp.com",
       projectId: "code-tools-pastebin",
-      storageBucket: "code-tools-pastebin.firebasestorage.app",
+      storageBucket: "code-tools-pastebin.appspot.com",
       messagingSenderId: "1000713658548",
       appId: "1:1000713658548:web:4996a3a58b1f3fd013b7e1"
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    const auth = firebase.auth();
   </script>
 
   <style>
@@ -36,9 +38,23 @@
 
 <body class="text-black dark:text-white p-6">
 
-  <h1 class="text-3xl font-bold text-center mb-6">Pastebin 4.1 Ultra</h1>
+  <h1 class="text-3xl font-bold text-center mb-6">Pastebin 4.2 Ultra</h1>
 
-  <div class="max-w-xl mx-auto flex flex-col gap-4">
+  <!-- Auth Section -->
+  <div id="authSection" class="max-w-xl mx-auto flex flex-col gap-4 mb-8 text-center">
+    <h2 class="text-2xl font-bold mb-4">Login to Access Your Pastes</h2>
+
+    <button id="googleLogin" class="p-3 rounded bg-white border border-gray-300 text-black font-bold hover:bg-gray-100 transition flex items-center justify-center gap-2">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" class="w-5 h-5"> Sign in with Google
+    </button>
+
+    <div id="userInfo" class="mt-4 text-sm opacity-70 hidden"></div>
+
+    <button id="logoutBtn" class="mt-2 p-3 rounded bg-red-600 text-white font-bold hover:bg-red-700 transition hidden">Logout</button>
+  </div>
+
+  <!-- Paste Section -->
+  <div class="max-w-xl mx-auto flex flex-col gap-4 hidden">
 
     <input id="title" type="text" placeholder="Paste Title" class="p-3 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700">
     <textarea id="content" placeholder="Paste your code or text here..." rows="8" class="p-3 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-700"></textarea>
@@ -78,15 +94,10 @@
 
   </div>
 
+  <!-- Toast -->
   <div id="toast" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-full bg-green-600 text-white text-sm font-bold opacity-0 pointer-events-none transition-all duration-300">
     Copied!
   </div>
-
-  <footer class="flex justify-center mt-12">
-    <div id="footer-version" class="px-3 py-1 rounded-full bg-gray-300 dark:bg-zinc-700 text-xs font-bold opacity-70">
-      Version: Loading...
-    </div>
-  </footer>
 
   <!-- Main functionality -->
   <script>
@@ -99,13 +110,59 @@
     const sortSelect = document.getElementById('sortSelect');
     const activeFiltersDiv = document.getElementById('activeFilters');
 
+    const googleLogin = document.getElementById('googleLogin');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const userInfo = document.getElementById('userInfo');
+    const pasteSection = document.querySelector('.max-w-xl.mx-auto.flex.flex-col.gap-4');
+
     let activeFilters = [];
+
+    googleLogin.addEventListener('click', async () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      try {
+        await auth.signInWithPopup(provider);
+      } catch (err) {
+        alert('Google sign-in error: ' + err.message);
+      }
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+      await auth.signOut();
+    });
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        document.getElementById('authSection').classList.add('hidden');
+        pasteSection.classList.remove('hidden');
+        logoutBtn.classList.remove('hidden');
+        if (userInfo) {
+          userInfo.textContent = `Signed in as: ${user.displayName || user.email}`;
+          userInfo.classList.remove('hidden');
+        }
+        db.collection('pastes').where('uid', '==', user.uid).onSnapshot(snapshot => renderPastes(snapshot.docs));
+      } else {
+        document.getElementById('authSection').classList.remove('hidden');
+        pasteSection.classList.add('hidden');
+        logoutBtn.classList.add('hidden');
+        if (userInfo) {
+          userInfo.textContent = '';
+          userInfo.classList.add('hidden');
+        }
+        pastesDiv.innerHTML = '';
+      }
+    });
 
     async function savePaste() {
       const title = titleInput.value.trim();
       const content = contentInput.value.trim();
       let tags = tagsInput.value.trim().split(',').map(t => t.trim()).filter(t => t.length > 0);
       const expiry = expirySelect.value;
+
+      const user = auth.currentUser;
+      if (!user) {
+        alert('You must be logged in.');
+        return;
+      }
 
       if (!title && content) {
         const firstLine = content.split('\n')[0];
@@ -122,6 +179,7 @@
       }
 
       const paste = {
+        uid: user.uid,
         title: titleInput.value.trim(),
         content,
         tags,
@@ -305,23 +363,6 @@
     sortSelect.addEventListener('change', () => {
       db.collection('pastes').onSnapshot(snapshot => renderPastes(snapshot.docs));
     });
-
-    db.collection('pastes').onSnapshot(snapshot => {
-      const pastes = snapshot.docs;
-      renderPastes(pastes);
-    });
   </script>
-
-  <script type="module">
-    import { SW_VERSION } from '/sw-version.js';
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const footer = document.getElementById('footer-version');
-      if (footer) {
-        footer.textContent = `v${SW_VERSION.replace(/^v/, '')}`;
-      }
-    });
-  </script>
-
 </body>
 </html>
