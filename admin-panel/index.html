@@ -1,61 +1,44 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Admin Panel • D Staub</title>
+  <title>D Staub • Résumé</title>
 
-  <!-- Meta + Tailwind -->
+  <!-- Meta + Icons -->
   <link rel="manifest" href="/manifest.json" />
   <link rel="icon" href="/icons/favicon-32x32.png" />
   <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+  <meta name="theme-color" content="#ea580c" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="theme-color" content="#ea580c" />
 
+  <!-- Fonts + Tailwind -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
-  
+
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+
 </head>
 
-<body class="bg-stone-200 dark:bg-zinc-900 text-zinc-800 dark:text-white font-sans leading-relaxed px-6 py-12 max-w-3xl mx-auto">
+<body class="bg-stone-200 dark:bg-zinc-900 text-zinc-800 dark:text-white font-sans leading-relaxed px-6 pb-20 max-w-3xl mx-auto">
 
-  <!-- LOGIN SCREEN -->
-  <div id="loginScreen" class="flex flex-col items-center justify-center space-y-6">
-    <h1 class="text-3xl font-bold">Admin Login</h1>
-    <button id="loginBtn" class="px-6 py-3 rounded-lg bg-orange-600 hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-400 text-white font-bold transition-colors duration-500">
-      Sign in with Google
-    </button>
-  </div>
+<main class="mt-12 space-y-8">
 
-  <!-- DASHBOARD -->
-  <div id="dashboard" class="hidden space-y-8">
-    <h1 class="text-3xl font-bold text-center mb-6">Admin Panel</h1>
+  <section class="text-center">
+    <h1 class="text-3xl font-bold mb-2">D Staub</h1>
+    <p class="text-sm text-zinc-500 dark:text-zinc-400">Résumé</p>
+  </section>
 
-    <div class="space-y-4">
-      <a href="/admin-panel/now-editor.html" class="block p-6 bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg shadow hover:scale-105 transition">
-        ✏️ Edit Now Page
-      </a>
-      <a href="/admin-panel/resume-editor.html" class="block p-6 bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg shadow hover:scale-105 transition">
-        📄 Edit Resume
-      </a>
-      <a href="#" class="block p-6 bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 rounded-lg shadow hover:scale-105 transition">
-        ⚙️ Settings (coming soon)
-      </a>
-    </div>
+  <div id="resumeContent" class="space-y-8"></div>
 
-    <div class="text-center mt-12">
-      <button id="logoutBtn" class="px-6 py-3 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold transition-colors duration-500">
-        Logout
-      </button>
-    </div>
-  </div>
+</main>
 
 <script>
-  // Firebase setup
+  // Firebase Setup
   const firebaseConfig = {
     apiKey: "AIzaSyBYYAjY8Q7RH0jQuMeOmAAp3XPTGLAQr0k",
     authDomain: "code-tools-pastebin.firebaseapp.com",
@@ -65,33 +48,117 @@
     appId: "1:1000713658548:web:4996a3a58b1f3fd013b7e1"
   };
   firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
+  const db = firebase.firestore();
 
-  const loginScreen = document.getElementById('loginScreen');
-  const dashboard = document.getElementById('dashboard');
-  const loginBtn = document.getElementById('loginBtn');
-  const logoutBtn = document.getElementById('logoutBtn');
+  const resumeContent = document.getElementById('resumeContent');
 
-  loginBtn.addEventListener('click', () => {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).catch(err => {
-      alert('Login error: ' + err.message);
-    });
-  });
+  async function loadResume() {
+    try {
+      const doc = await db.collection('resume').doc('live').get();
+      if (!doc.exists) {
+        resumeContent.innerHTML = '<p class="text-center text-red-500">Resume not found.</p>';
+        return;
+      }
 
-  logoutBtn.addEventListener('click', () => {
-    auth.signOut();
-  });
+      const data = doc.data();
 
-  auth.onAuthStateChanged(user => {
-    if (user) {
-      loginScreen.classList.add('hidden');
-      dashboard.classList.remove('hidden');
-    } else {
-      loginScreen.classList.remove('hidden');
-      dashboard.classList.add('hidden');
+      // --- Summary
+      if (data.summary) {
+        resumeContent.innerHTML += `
+<section class="bg-white dark:bg-zinc-800 border border-gray-300 dark:border-gray-600 rounded-lg p-6 text-zinc-800 dark:text-white">
+            <h2 class="text-xl font-bold mb-2 text-orange-400">Professional Summary</h2>
+            <p>${data.summary}</p>
+          </section>
+        `;
+      }
+
+      // --- Experience
+      if (data.experience?.length) {
+        let expHTML = `<section class="bg-white dark:bg-zinc-800 border border-gray-300 dark:border-gray-600 rounded-lg p-6 text-zinc-800 dark:text-white">
+          <h2 class="text-xl font-bold mb-2 text-orange-400">Relevant Experience</h2>
+          <div class="space-y-6">`;
+
+        data.experience.forEach(job => {
+          expHTML += `
+            <div>
+              <h3 class="text-lg font-semibold">${job.title || ''}</h3>
+              <p class="text-sm italic text-zinc-500 dark:text-zinc-400">
+                ${job.company || ''}${job.location ? ' – ' + job.location : ''}${job.dates ? ' | ' + job.dates : ''}
+              </p>
+              <ul class="list-disc pl-6 mt-2 space-y-1">
+                ${(job.bullets || []).map(bullet => `<li>${bullet}</li>`).join('')}
+              </ul>
+            </div>`;
+        });
+
+        expHTML += `</div></section>`;
+        resumeContent.innerHTML += expHTML;
+      }
+
+      // --- Skills
+      if (data.skills?.length) {
+        let skillsHTML = `<section class="bg-white dark:bg-zinc-800 border border-gray-300 dark:border-gray-600 rounded-lg p-6 text-zinc-800 dark:text-white">
+          <h2 class="text-xl font-bold mb-2 text-orange-400">Skills</h2>
+          <div class="space-y-4">`;
+
+        data.skills.forEach(group => {
+          skillsHTML += `
+            <div>
+              <h3 class="text-md font-semibold mb-1">${group.group || ''}</h3>
+              <ul class="list-disc pl-6 space-y-1">
+                ${(group.items || []).map(item => `<li>${item}</li>`).join('')}
+              </ul>
+            </div>`;
+        });
+
+        skillsHTML += `</div></section>`;
+        resumeContent.innerHTML += skillsHTML;
+      }
+
+      // --- Education
+      if (data.education?.length) {
+        let eduHTML = `<section class="bg-white dark:bg-zinc-800 border border-gray-300 dark:border-gray-600 rounded-lg p-6 text-zinc-800 dark:text-white">
+          <h2 class="text-xl font-bold mb-2 text-orange-400">Education</h2>
+          <div class="space-y-4">`;
+
+        data.education.forEach(group => {
+          eduHTML += `
+            <div>
+              <h3 class="text-md font-semibold mb-1">${group.group || ''}</h3>
+              <ul class="list-disc pl-6 space-y-1">
+                ${(group.items || []).map(entry => `
+                  <li>${entry.institution || ''} -- ${entry.credential || ''}${entry.year ? ', ' + entry.year : ''}</li>
+                `).join('')}
+              </ul>
+            </div>`;
+        });
+
+        eduHTML += `</div></section>`;
+        resumeContent.innerHTML += eduHTML;
+      }
+
+      // --- Contact
+      if (data.contact) {
+        resumeContent.innerHTML += `
+          <section class="bg-white dark:bg-zinc-800 border border-gray-300 dark:border-gray-600 rounded-lg p-6 text-zinc-800 dark:text-white">
+            <h2 class="text-xl font-bold mb-2 text-orange-400">Contact</h2>
+            <ul class="space-y-1 text-sm">
+              <li>Email: <a href="mailto:${data.contact.email}" class="text-cyan-600 dark:text-cyan-400 hover:underline">${data.contact.email}</a></li>
+              <li>Phone: <a href="tel:${data.contact.phone}" class="text-cyan-600 dark:text-cyan-400 hover:underline">${data.contact.phone}</a></li>
+              <li>Telegram: <a href="https://t.me/${data.contact.telegram.replace('@', '')}" target="_blank" class="text-cyan-600 dark:text-cyan-400 hover:underline">${data.contact.telegram}</a></li>
+              <li>Website: <a href="${data.contact.web}" target="_blank" class="text-cyan-600 dark:text-cyan-400 hover:underline">${data.contact.web}</a></li>
+            </ul>
+          </section>
+        `;
+      }
+
+    } catch (error) {
+      console.error('Error loading resume:', error);
+      resumeContent.innerHTML = '<p class="text-center text-red-500">Error loading resume.</p>';
     }
-  });
+  }
+
+  loadResume();
 </script>
 
 </body>
