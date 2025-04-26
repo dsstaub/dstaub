@@ -92,8 +92,12 @@
     messagingSenderId: "1000713658548",
     appId: "1:1000713658548:web:4996a3a58b1f3fd013b7e1"
   };
-  firebase.initializeApp(firebaseConfig);
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
   const db = firebase.firestore();
+
 
   const resumeContent = document.getElementById('resumeContent');
 
