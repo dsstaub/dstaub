@@ -142,10 +142,7 @@
     addBtn.textContent = "+ Add Item";
     addBtn.className = "flex-1 px-4 py-2 rounded bg-green-600 text-white font-bold text-sm hover:bg-green-700";
     addBtn.onclick = () => {
-      const newItem = makeListItem("");
-      itemList.appendChild(newItem);
-      const input = newItem.querySelector('input');
-      input.focus();
+      itemList.appendChild(makeListItem("", true));
     };
 
     const deleteZone = document.createElement('div');
@@ -192,15 +189,14 @@
     });
   }
 
-  function makeListItem(text) {
+  function makeListItem(text, immediateEdit = false) {
     const div = document.createElement('div');
     div.className = "sortable-item";
-    div.textContent = text || "New Item";
 
-    div.addEventListener('click', () => {
+    const applyEditMode = () => {
       const input = document.createElement('input');
       input.className = "editable-input";
-      input.value = div.textContent;
+      input.value = text || '';
       div.innerHTML = '';
       div.appendChild(input);
       input.focus();
@@ -212,6 +208,16 @@
           input.blur();
         }
       });
+    };
+
+    if (immediateEdit || !text) {
+      applyEditMode();
+    } else {
+      div.textContent = text;
+    }
+
+    div.addEventListener('click', () => {
+      applyEditMode();
     });
 
     return div;
