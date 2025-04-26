@@ -34,6 +34,7 @@
       padding: 0.5rem;
       max-width: 100%;
       overflow: hidden;
+      user-select: none;
     }
     .dark li.sortable-item {
       background-color: #3f3f46;
@@ -46,9 +47,19 @@
       -webkit-user-drag: none;
       -webkit-tap-highlight-color: transparent;
     }
-    input.sortable-input {
+    .fake-input {
       flex: 1;
       min-width: 0;
+      background: none;
+      border: none;
+      font: inherit;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      cursor: text;
+    }
+    .editable {
+      background-color: #f3f4f6;
+      outline: 2px solid #60a5fa;
     }
   </style>
 </head>
@@ -119,20 +130,14 @@
     container.appendChild(addBtn);
     editSections.appendChild(container);
 
-    // TRUE independent SortableJS per section
+    // TRUE SortableJS without inputs
     new Sortable(itemList, {
       animation: 150,
       handle: ".drag-handle",
       forceFallback: true,
       fallbackOnBody: true,
       swapThreshold: 0.65,
-      ghostClass: "bg-orange-100 dark:bg-zinc-700",
-      onStart: function (evt) {
-        evt.from.querySelectorAll('input').forEach(input => input.setAttribute('readonly', true));
-      },
-      onEnd: function (evt) {
-        evt.from.querySelectorAll('input').forEach(input => input.removeAttribute('readonly'));
-      }
+      ghostClass: "bg-orange-100 dark:bg-zinc-700"
     });
   }
 
@@ -145,17 +150,25 @@
     deleteBtn.className = "text-sm text-red-500 hover:text-red-700 font-bold flex-shrink-0";
     deleteBtn.onclick = () => li.remove();
 
-    const input = document.createElement('input');
-    input.type = "text";
-    input.className = "sortable-input p-2 rounded bg-white dark:bg-zinc-800 border border-gray-300 dark:border-zinc-600";
-    input.value = value;
+    const content = document.createElement('div');
+    content.className = "fake-input";
+    content.textContent = value;
+    content.addEventListener('click', () => {
+      content.contentEditable = true;
+      content.classList.add('editable');
+      content.focus();
+    });
+    content.addEventListener('blur', () => {
+      content.contentEditable = false;
+      content.classList.remove('editable');
+    });
 
     const dragHandle = document.createElement('div');
     dragHandle.textContent = "⋮⋮";
     dragHandle.className = "drag-handle text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 text-xl flex-shrink-0";
 
     li.appendChild(deleteBtn);
-    li.appendChild(input);
+    li.appendChild(content);
     li.appendChild(dragHandle);
 
     return li;
@@ -169,8 +182,8 @@
         const titleInput = inputs[0];
         const id = titleInput.dataset.id;
         const title = titleInput.value.trim();
-        const listItems = container.querySelector('ul').querySelectorAll('input');
-        const items = Array.from(listItems).map(input => input.value.trim()).filter(t => t.length > 0);
+        const listItems = container.querySelector('ul').querySelectorAll('.fake-input');
+        const items = Array.from(listItems).map(div => div.textContent.trim()).filter(t => t.length > 0);
         await db.collection('now').doc(id).set({ title, items });
       }
       alert('Saved successfully!');
