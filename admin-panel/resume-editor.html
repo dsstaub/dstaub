@@ -297,21 +297,82 @@ function renderEditor() {
 // Save
 saveBtn.addEventListener('click', async () => {
   try {
-    const inputs = editor.querySelectorAll('input');
-    const contactInputs = Array.from(inputs).slice(-4);
+    const sections = editor.querySelectorAll('.section-card');
 
+    // --- Extract Summary ---
+    const summary = sections[0].querySelector('input').value.trim();
+
+    // --- Extract Experience ---
+    const experience = [];
+    const expGroups = sections[1].querySelectorAll('.group-item');
+    expGroups.forEach(group => {
+      const inputs = group.querySelectorAll('input');
+      const bullets = [];
+      group.querySelectorAll('.sortable-item').forEach(bullet => bullets.push(bullet.textContent.trim()));
+      const [start, end] = (inputs[3]?.value.split('-') || ['', '']).map(x => x.trim());
+      experience.push({
+        title: inputs[0]?.value.trim() || '',
+        company: inputs[1]?.value.trim() || '',
+        location: inputs[2]?.value.trim() || '',
+        start: start || '',
+        end: end || '',
+        bullets
+      });
+    });
+
+    // --- Extract Skills ---
+    const skills = [];
+    const skillGroups = sections[2].querySelectorAll('.group-item');
+    skillGroups.forEach(group => {
+      const inputs = group.querySelectorAll('input');
+      const items = [];
+      group.querySelectorAll('.sortable-item').forEach(skill => items.push(skill.textContent.trim()));
+      skills.push({
+        group: inputs[0]?.value.trim() || '',
+        items
+      });
+    });
+
+    // --- Extract Education ---
+    const education = [];
+    const eduGroups = sections[3].querySelectorAll('.group-item');
+    eduGroups.forEach(group => {
+      const inputs = group.querySelectorAll('input');
+      const entries = [];
+      group.querySelectorAll('.grid').forEach(entry => {
+        const fields = entry.querySelectorAll('input');
+        entries.push({
+          institution: fields[0]?.value.trim() || '',
+          credential: fields[1]?.value.trim() || '',
+          year: fields[2]?.value.trim() || ''
+        });
+      });
+      education.push({
+        group: inputs[0]?.value.trim() || '',
+        items: entries
+      });
+    });
+
+    // --- Extract Contact ---
+    const contactInputs = sections[4].querySelectorAll('input');
+    const contact = {
+      email: contactInputs[0]?.value.trim() || '',
+      phone: contactInputs[1]?.value.trim() || '',
+      telegram: contactInputs[2]?.value.trim() || '',
+      web: contactInputs[3]?.value.trim() || ''
+    };
+
+    // --- Save to Firestore ---
     await db.collection('resume').doc('live').set({
-      summary: inputs[0].value.trim(),
-      contact: {
-        email: contactInputs[0].value.trim(),
-        phone: contactInputs[1].value.trim(),
-        telegram: contactInputs[2].value.trim(),
-        web: contactInputs[3].value.trim()
-      },
+      summary,
+      experience,
+      skills,
+      education,
+      contact,
       updated: new Date().toISOString()
-    }, { merge: true });
+    });
 
-    alert("Saved successfully!");
+    alert("Resume saved successfully!");
   } catch (err) {
     console.error("Save failed:", err);
     alert("Failed to save resume.");

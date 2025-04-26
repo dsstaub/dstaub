@@ -21,7 +21,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
-
 </head>
 
 <body class="bg-stone-200 dark:bg-zinc-900 text-zinc-800 dark:text-white font-sans leading-relaxed px-6 pb-20 max-w-3xl mx-auto">
@@ -66,29 +65,29 @@
       if (data.summary) {
         resumeContent.innerHTML += `
 <section class="bg-white dark:bg-zinc-800 border border-gray-300 dark:border-gray-600 rounded-lg p-6 text-zinc-800 dark:text-white">
-            <h2 class="text-xl font-bold mb-2 text-orange-400">Professional Summary</h2>
-            <p>${data.summary}</p>
-          </section>
-        `;
+  <h2 class="text-xl font-bold mb-2 text-orange-400">Professional Summary</h2>
+  <p>${data.summary}</p>
+</section>`;
       }
 
       // --- Experience
       if (data.experience?.length) {
         let expHTML = `<section class="bg-white dark:bg-zinc-800 border border-gray-300 dark:border-gray-600 rounded-lg p-6 text-zinc-800 dark:text-white">
-          <h2 class="text-xl font-bold mb-2 text-orange-400">Relevant Experience</h2>
-          <div class="space-y-6">`;
+  <h2 class="text-xl font-bold mb-2 text-orange-400">Relevant Experience</h2>
+  <div class="space-y-6">`;
 
         data.experience.forEach(job => {
+          const dateRange = (job.start || job.end) ? `${job.start || ''} - ${job.end || ''}` : '';
           expHTML += `
-            <div>
-              <h3 class="text-lg font-semibold">${job.title || ''}</h3>
-              <p class="text-sm italic text-zinc-500 dark:text-zinc-400">
-                ${job.company || ''}${job.location ? ' – ' + job.location : ''}${job.dates ? ' | ' + job.dates : ''}
-              </p>
-              <ul class="list-disc pl-6 mt-2 space-y-1">
-                ${(job.bullets || []).map(bullet => `<li>${bullet}</li>`).join('')}
-              </ul>
-            </div>`;
+<div>
+  <h3 class="text-lg font-semibold">${job.title || ''}</h3>
+  <p class="text-sm italic text-zinc-500 dark:text-zinc-400">
+    ${job.company || ''}${job.location ? ' – ' + job.location : ''}${dateRange ? ' | ' + dateRange : ''}
+  </p>
+  <ul class="list-disc pl-6 mt-2 space-y-1">
+    ${(job.bullets || []).map(bullet => `<li>${bullet}</li>`).join('')}
+  </ul>
+</div>`;
         });
 
         expHTML += `</div></section>`;
@@ -98,17 +97,17 @@
       // --- Skills
       if (data.skills?.length) {
         let skillsHTML = `<section class="bg-white dark:bg-zinc-800 border border-gray-300 dark:border-gray-600 rounded-lg p-6 text-zinc-800 dark:text-white">
-          <h2 class="text-xl font-bold mb-2 text-orange-400">Skills</h2>
-          <div class="space-y-4">`;
+  <h2 class="text-xl font-bold mb-2 text-orange-400">Skills</h2>
+  <div class="space-y-4">`;
 
         data.skills.forEach(group => {
           skillsHTML += `
-            <div>
-              <h3 class="text-md font-semibold mb-1">${group.group || ''}</h3>
-              <ul class="list-disc pl-6 space-y-1">
-                ${(group.items || []).map(item => `<li>${item}</li>`).join('')}
-              </ul>
-            </div>`;
+<div>
+  <h3 class="text-md font-semibold mb-1">${group.group || ''}</h3>
+  <ul class="list-disc pl-6 space-y-1">
+    ${(group.items || []).map(item => `<li>${item}</li>`).join('')}
+  </ul>
+</div>`;
         });
 
         skillsHTML += `</div></section>`;
@@ -118,19 +117,19 @@
       // --- Education
       if (data.education?.length) {
         let eduHTML = `<section class="bg-white dark:bg-zinc-800 border border-gray-300 dark:border-gray-600 rounded-lg p-6 text-zinc-800 dark:text-white">
-          <h2 class="text-xl font-bold mb-2 text-orange-400">Education</h2>
-          <div class="space-y-4">`;
+  <h2 class="text-xl font-bold mb-2 text-orange-400">Education</h2>
+  <div class="space-y-4">`;
 
         data.education.forEach(group => {
           eduHTML += `
-            <div>
-              <h3 class="text-md font-semibold mb-1">${group.group || ''}</h3>
-              <ul class="list-disc pl-6 space-y-1">
-                ${(group.items || []).map(entry => `
-                  <li>${entry.institution || ''} -- ${entry.credential || ''}${entry.year ? ', ' + entry.year : ''}</li>
-                `).join('')}
-              </ul>
-            </div>`;
+<div>
+  <h3 class="text-md font-semibold mb-1">${group.group || ''}</h3>
+  <ul class="list-disc pl-6 space-y-1">
+    ${(group.items || []).map(entry => `
+      <li>${entry.institution || ''} -- ${entry.credential || ''}${entry.year ? ', ' + entry.year : ''}</li>
+    `).join('')}
+  </ul>
+</div>`;
         });
 
         eduHTML += `</div></section>`;
@@ -140,16 +139,15 @@
       // --- Contact
       if (data.contact) {
         resumeContent.innerHTML += `
-          <section class="bg-white dark:bg-zinc-800 border border-gray-300 dark:border-gray-600 rounded-lg p-6 text-zinc-800 dark:text-white">
-            <h2 class="text-xl font-bold mb-2 text-orange-400">Contact</h2>
-            <ul class="space-y-1 text-sm">
-              <li>Email: <a href="mailto:${data.contact.email}" class="text-cyan-600 dark:text-cyan-400 hover:underline">${data.contact.email}</a></li>
-              <li>Phone: <a href="tel:${data.contact.phone}" class="text-cyan-600 dark:text-cyan-400 hover:underline">${data.contact.phone}</a></li>
-              <li>Telegram: <a href="https://t.me/${data.contact.telegram.replace('@', '')}" target="_blank" class="text-cyan-600 dark:text-cyan-400 hover:underline">${data.contact.telegram}</a></li>
-              <li>Website: <a href="${data.contact.web}" target="_blank" class="text-cyan-600 dark:text-cyan-400 hover:underline">${data.contact.web}</a></li>
-            </ul>
-          </section>
-        `;
+<section class="bg-white dark:bg-zinc-800 border border-gray-300 dark:border-gray-600 rounded-lg p-6 text-zinc-800 dark:text-white">
+  <h2 class="text-xl font-bold mb-2 text-orange-400">Contact</h2>
+  <ul class="space-y-1 text-sm">
+    <li>Email: <a href="mailto:${data.contact.email}" class="text-cyan-600 dark:text-cyan-400 hover:underline">${data.contact.email}</a></li>
+    <li>Phone: <a href="tel:${data.contact.phone}" class="text-cyan-600 dark:text-cyan-400 hover:underline">${data.contact.phone}</a></li>
+    <li>Telegram: <a href="https://t.me/${(data.contact.telegram || '').replace('@','')}" target="_blank" class="text-cyan-600 dark:text-cyan-400 hover:underline">${data.contact.telegram}</a></li>
+    <li>Website: <a href="${data.contact.web}" target="_blank" class="text-cyan-600 dark:text-cyan-400 hover:underline">${data.contact.web}</a></li>
+  </ul>
+</section>`;
       }
 
     } catch (error) {
