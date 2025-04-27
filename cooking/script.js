@@ -71,23 +71,8 @@ function renderFoods(filter = '') {
         <div class="food-category">${data.category || 'Uncategorized'}</div>
       `;
 
-      card.addEventListener('mousedown', (e) => {
-        longPressTimer = setTimeout(() => {
-          openEditModal(id, data);
-          card.style.transform = 'scale(1.1)';
-          setTimeout(() => card.style.transform = '', 200);
-          card.dataset.longPressTriggered = "true";
-        }, 500);
-      });
-      card.addEventListener('mouseup', (e) => {
-        clearTimeout(longPressTimer);
-        if (card.dataset.longPressTriggered !== "true") {
-          openPreviewModal(data);
-        }
-        card.dataset.longPressTriggered = "false";
-      });
-      card.addEventListener('mouseleave', () => clearTimeout(longPressTimer));
       card.addEventListener('touchstart', (e) => {
+        card.dataset.longPressTriggered = "false";
         longPressTimer = setTimeout(() => {
           openEditModal(id, data);
           card.style.transform = 'scale(1.1)';
@@ -95,13 +80,32 @@ function renderFoods(filter = '') {
           card.dataset.longPressTriggered = "true";
         }, 500);
       });
+
       card.addEventListener('touchend', (e) => {
         clearTimeout(longPressTimer);
         if (card.dataset.longPressTriggered !== "true") {
           openPreviewModal(data);
         }
-        card.dataset.longPressTriggered = "false";
       });
+
+      card.addEventListener('mousedown', (e) => {
+        card.dataset.longPressTriggered = "false";
+        longPressTimer = setTimeout(() => {
+          openEditModal(id, data);
+          card.style.transform = 'scale(1.1)';
+          setTimeout(() => card.style.transform = '', 200);
+          card.dataset.longPressTriggered = "true";
+        }, 500);
+      });
+
+      card.addEventListener('mouseup', (e) => {
+        clearTimeout(longPressTimer);
+        if (card.dataset.longPressTriggered !== "true") {
+          openPreviewModal(data);
+        }
+      });
+
+      card.addEventListener('mouseleave', () => clearTimeout(longPressTimer));
 
       buttonsContainer.appendChild(card);
     });
