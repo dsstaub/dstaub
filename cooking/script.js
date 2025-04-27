@@ -71,42 +71,45 @@ function renderFoods(filter = '') {
         <div class="food-category">${data.category || 'Uncategorized'}</div>
       `;
 
-      card.addEventListener('touchstart', (e) => {
-        card.dataset.longPressTriggered = "false";
-        longPressTimer = setTimeout(() => {
-          openEditModal(id, data);
-          card.style.transform = 'scale(1.1)';
-          setTimeout(() => card.style.transform = '', 200);
-          card.dataset.longPressTriggered = "true";
-        }, 500);
-      });
+card.addEventListener('touchstart', (e) => {
+  card.dataset.longPressTriggered = "false";
+  card.dataset.startX = e.touches[0].clientX;
+  card.dataset.startY = e.touches[0].clientY;
+  longPressTimer = setTimeout(() => {
+    openEditModal(id, data);
+    card.style.transform = 'scale(1.1)';
+    setTimeout(() => card.style.transform = '', 200);
+    card.dataset.longPressTriggered = "true";
+  }, 500);
+});
 
-      card.addEventListener('touchend', (e) => {
-        clearTimeout(longPressTimer);
-        if (card.dataset.longPressTriggered !== "true") {
-          openPreviewModal(data);
-        }
-      });
+card.addEventListener('touchend', (e) => {
+  clearTimeout(longPressTimer);
+  const deltaX = Math.abs(e.changedTouches[0].clientX - card.dataset.startX);
+  const deltaY = Math.abs(e.changedTouches[0].clientY - card.dataset.startY);
+  if (card.dataset.longPressTriggered !== "true" && deltaX < 10 && deltaY < 10) {
+    openPreviewModal(data);
+  }
+});
 
-      card.addEventListener('mousedown', (e) => {
-        card.dataset.longPressTriggered = "false";
-        longPressTimer = setTimeout(() => {
-          openEditModal(id, data);
-          card.style.transform = 'scale(1.1)';
-          setTimeout(() => card.style.transform = '', 200);
-          card.dataset.longPressTriggered = "true";
-        }, 500);
-      });
+card.addEventListener('mousedown', (e) => {
+  card.dataset.longPressTriggered = "false";
+  longPressTimer = setTimeout(() => {
+    openEditModal(id, data);
+    card.style.transform = 'scale(1.1)';
+    setTimeout(() => card.style.transform = '', 200);
+    card.dataset.longPressTriggered = "true";
+  }, 500);
+});
 
-      card.addEventListener('mouseup', (e) => {
-        clearTimeout(longPressTimer);
-        if (card.dataset.longPressTriggered !== "true") {
-          openPreviewModal(data);
-        }
-      });
+card.addEventListener('mouseup', (e) => {
+  clearTimeout(longPressTimer);
+  if (card.dataset.longPressTriggered !== "true") {
+    openPreviewModal(data);
+  }
+});
 
-      card.addEventListener('mouseleave', () => clearTimeout(longPressTimer));
-
+card.addEventListener('mouseleave', () => clearTimeout(longPressTimer));
       buttonsContainer.appendChild(card);
     });
 }
