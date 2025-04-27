@@ -111,7 +111,8 @@ card.addEventListener('mouseup', (e) => {
   }
 });
 
-card.addEventListener('mouseleave', () => clearTimeout(longPressTimer));
+      card.addEventListener('mouseleave', () => clearTimeout(longPressTimer));
+
       buttonsContainer.appendChild(card);
     });
 }
