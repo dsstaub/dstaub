@@ -72,9 +72,8 @@ function renderFoods(filter = '') {
       `;
 
 card.addEventListener('touchstart', (e) => {
+  card.dataset.maybeTap = "true";
   card.dataset.longPressTriggered = "false";
-  card.dataset.startX = e.touches[0].clientX;
-  card.dataset.startY = e.touches[0].clientY;
   longPressTimer = setTimeout(() => {
     openEditModal(id, data);
     card.style.transform = 'scale(1.1)';
@@ -83,11 +82,13 @@ card.addEventListener('touchstart', (e) => {
   }, 500);
 });
 
+card.addEventListener('touchmove', (e) => {
+  card.dataset.maybeTap = "false"; // if finger moves AT ALL, cancel it
+});
+
 card.addEventListener('touchend', (e) => {
   clearTimeout(longPressTimer);
-  const deltaX = Math.abs(e.changedTouches[0].clientX - card.dataset.startX);
-  const deltaY = Math.abs(e.changedTouches[0].clientY - card.dataset.startY);
-  if (card.dataset.longPressTriggered !== "true" && deltaX < 10 && deltaY < 10) {
+  if (card.dataset.longPressTriggered !== "true" && card.dataset.maybeTap === "true") {
     openPreviewModal(data);
   }
 });
@@ -110,7 +111,6 @@ card.addEventListener('mouseup', (e) => {
 });
 
 card.addEventListener('mouseleave', () => clearTimeout(longPressTimer));
-      buttonsContainer.appendChild(card);
     });
 }
 
