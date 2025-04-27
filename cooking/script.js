@@ -61,7 +61,7 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', app
 function renderFoods(filter = '') {
   buttonsContainer.innerHTML = "";
   allFoods
-    .filter(f => f.data.name.toLowerCase().includes(filter.toLowerCase()))
+    .filter(f => f.data.name && f.data.name.toLowerCase().includes(filter.toLowerCase()))
     .filter(f => !showInHouse || f.data.inHouse)
     .forEach(({ id, data }) => {
       const card = document.createElement('div');
@@ -71,45 +71,45 @@ function renderFoods(filter = '') {
         <div class="food-category">${data.category || 'Uncategorized'}</div>
       `;
 
-card.addEventListener('touchstart', (e) => {
-  card.dataset.maybeTap = "true";
-  card.dataset.longPressTriggered = "false";
-  longPressTimer = setTimeout(() => {
-    openEditModal(id, data);
-    card.style.transform = 'scale(1.1)';
-    setTimeout(() => card.style.transform = '', 200);
-    card.dataset.longPressTriggered = "true";
-  }, 500);
-});
+      card.addEventListener('touchstart', (e) => {
+        card.dataset.maybeTap = "true";
+        card.dataset.longPressTriggered = "false";
+        longPressTimer = setTimeout(() => {
+          openEditModal(id, data);
+          card.style.transform = 'scale(1.1)';
+          setTimeout(() => card.style.transform = '', 200);
+          card.dataset.longPressTriggered = "true";
+        }, 500);
+      });
 
-card.addEventListener('touchmove', (e) => {
-  card.dataset.maybeTap = "false"; // No longer a real tap
-  clearTimeout(longPressTimer);    // Cancel long-press too!
-});
+      card.addEventListener('touchmove', (e) => {
+        card.dataset.maybeTap = "false";
+        clearTimeout(longPressTimer);
+      });
 
-card.addEventListener('touchend', (e) => {
-  clearTimeout(longPressTimer);
-  if (card.dataset.longPressTriggered !== "true" && card.dataset.maybeTap === "true") {
-    openPreviewModal(data);
-  }
-});
+      card.addEventListener('touchend', (e) => {
+        clearTimeout(longPressTimer);
+        if (card.dataset.longPressTriggered !== "true" && card.dataset.maybeTap === "true") {
+          openPreviewModal(data);
+        }
+      });
 
-card.addEventListener('mousedown', (e) => {
-  card.dataset.longPressTriggered = "false";
-  longPressTimer = setTimeout(() => {
-    openEditModal(id, data);
-    card.style.transform = 'scale(1.1)';
-    setTimeout(() => card.style.transform = '', 200);
-    card.dataset.longPressTriggered = "true";
-  }, 500);
-});
+      card.addEventListener('mousedown', (e) => {
+        card.dataset.longPressTriggered = "false";
+        longPressTimer = setTimeout(() => {
+          openEditModal(id, data);
+          card.style.transform = 'scale(1.1)';
+          setTimeout(() => card.style.transform = '', 200);
+          card.dataset.longPressTriggered = "true";
+        }, 500);
+      });
 
-card.addEventListener('mouseup', (e) => {
-  clearTimeout(longPressTimer);
-  if (card.dataset.longPressTriggered !== "true") {
-    openPreviewModal(data);
-  }
-});
+      card.addEventListener('mouseup', (e) => {
+        clearTimeout(longPressTimer);
+        if (card.dataset.longPressTriggered !== "true") {
+          openPreviewModal(data);
+        }
+      });
 
       card.addEventListener('mouseleave', () => clearTimeout(longPressTimer));
 
