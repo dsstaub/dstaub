@@ -1,5 +1,12 @@
 // Firebase Init
-const firebaseConfig = { /* Your Firebase config */ };
+const firebaseConfig = { 
+      apiKey: "AIzaSyBYYAjY8Q7RH0jQuMeOmAAp3XPTGLAQr0k",
+      authDomain: "code-tools-pastebin.firebaseapp.com",
+      projectId: "code-tools-pastebin",
+      storageBucket: "code-tools-pastebin.appspot.com",
+      messagingSenderId: "1000713658548",
+      appId: "1:1000713658548:web:4996a3a58b1f3fd013b7e1"
+ };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
