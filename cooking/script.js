@@ -27,7 +27,6 @@ const overlayTimer = document.getElementById('overlayTimer');
 const cancelBtn = document.getElementById('cancelBtn');
 
 const editModal = document.getElementById('editModal');
-const editContent = document.getElementById('editContent');
 const editTitle = document.getElementById('editTitle');
 const editName = document.getElementById('editName');
 const editCategory = document.getElementById('editCategory');
@@ -72,26 +71,36 @@ function renderFoods(filter = '') {
         <div class="food-category">${data.category || 'Uncategorized'}</div>
       `;
 
-      let pressTimer;
       card.addEventListener('mousedown', (e) => {
-        pressTimer = setTimeout(() => {
+        longPressTimer = setTimeout(() => {
           openEditModal(id, data);
           card.style.transform = 'scale(1.1)';
           setTimeout(() => card.style.transform = '', 200);
+          card.dataset.longPressTriggered = "true";
         }, 500);
       });
-      card.addEventListener('mouseup', () => clearTimeout(pressTimer));
-      card.addEventListener('mouseleave', () => clearTimeout(pressTimer));
+      card.addEventListener('mouseup', (e) => {
+        clearTimeout(longPressTimer);
+        if (card.dataset.longPressTriggered !== "true") {
+          openPreviewModal(data);
+        }
+        card.dataset.longPressTriggered = "false";
+      });
+      card.addEventListener('mouseleave', () => clearTimeout(longPressTimer));
       card.addEventListener('touchstart', (e) => {
-        pressTimer = setTimeout(() => {
+        longPressTimer = setTimeout(() => {
           openEditModal(id, data);
           card.style.transform = 'scale(1.1)';
           setTimeout(() => card.style.transform = '', 200);
+          card.dataset.longPressTriggered = "true";
         }, 500);
       });
-      card.addEventListener('touchend', () => clearTimeout(pressTimer));
-      card.addEventListener('click', () => {
-        if (!pressTimer) openPreviewModal(data);
+      card.addEventListener('touchend', (e) => {
+        clearTimeout(longPressTimer);
+        if (card.dataset.longPressTriggered !== "true") {
+          openPreviewModal(data);
+        }
+        card.dataset.longPressTriggered = "false";
       });
 
       buttonsContainer.appendChild(card);
