@@ -83,7 +83,8 @@ card.addEventListener('touchstart', (e) => {
 });
 
 card.addEventListener('touchmove', (e) => {
-  card.dataset.maybeTap = "false"; // if finger moves AT ALL, cancel it
+  card.dataset.maybeTap = "false"; // No longer a real tap
+  clearTimeout(longPressTimer);    // Cancel long-press too!
 });
 
 card.addEventListener('touchend', (e) => {
@@ -111,6 +112,7 @@ card.addEventListener('mouseup', (e) => {
 });
 
 card.addEventListener('mouseleave', () => clearTimeout(longPressTimer));
+      buttonsContainer.appendChild(card);
     });
 }
 
@@ -123,7 +125,7 @@ function loadFoods() {
     });
     renderFoods(searchInput.value);
   });
-}
+
 
 // Open Pre-Cook Info Modal
 function openPreviewModal(food) {
