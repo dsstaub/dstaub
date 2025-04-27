@@ -4,13 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>D’s Timers</title>
+  <link rel="manifest" href="manifest.json">
   <style>
     :root {
       --bg: #f9fafb;
       --text: #111827;
-      --card: #f1f5f9;
+      --card: #ffffff;
       --primary: #4f46e5;
       --primary-hover: #4338ca;
+      --shadow: rgba(0,0,0,0.08);
     }
     .dark {
       --bg: #111827;
@@ -18,149 +20,117 @@
       --card: #1f2937;
       --primary: #6366f1;
       --primary-hover: #818cf8;
+      --shadow: rgba(0,0,0,0.4);
     }
     body {
-      font-family: 'Arial', sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
       background: var(--bg);
       color: var(--text);
       margin: 0;
-      padding: 1.5rem;
+      padding: 1rem;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2rem;
+      gap: 1.5rem;
       min-height: 100vh;
       transition: background 0.3s, color 0.3s;
     }
     h1 {
-      font-size: 2.5rem;
+      font-size: 2.2rem;
       font-weight: bold;
-      margin-bottom: 0.5rem;
+      margin: 1rem 0 0.5rem;
     }
     #top-bar {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
       width: 100%;
       max-width: 600px;
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
     }
-    #searchInput {
+    #searchInput, #inHouseToggle {
       flex: 1;
-      padding: 0.5rem;
+      padding: 0.6rem;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
       font-size: 1rem;
-      border: 1px solid #cbd5e1;
-      border-radius: 0.375rem;
     }
     #buttons {
       width: 100%;
       max-width: 900px;
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-    }
-    .category-group {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
       gap: 1rem;
     }
-    .category-title {
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin-top: 2rem;
-    }
-    .foods {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-    .food-btn {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 1rem;
-      font-size: 1rem;
-      border-radius: 0.5rem;
-      cursor: pointer;
-      position: relative;
-      width: 180px;
-      text-align: center;
-      transition: background 0.2s;
-    }
-    .food-btn:hover {
-      background: var(--primary-hover);
-    }
-    .edit-btn, .delete-btn {
-      position: absolute;
-      top: 4px;
-      font-size: 0.8rem;
-      background: #ef4444;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 1.5rem;
-      height: 1.5rem;
-      line-height: 1.5rem;
-      text-align: center;
-      cursor: pointer;
-    }
-    .edit-btn {
-      background: #10b981;
-      right: 28px;
-    }
-    .delete-btn {
-      right: 4px;
-    }
-    form {
+    .food-card {
       background: var(--card);
+      box-shadow: 0 2px 6px var(--shadow);
+      border-radius: 0.75rem;
       padding: 1rem;
-      border-radius: 0.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      width: 100%;
-      max-width: 400px;
-    }
-    input, textarea, select, button {
-      font-size: 1rem;
-      padding: 0.5rem;
-      border: 1px solid #cbd5e1;
-      border-radius: 0.375rem;
-    }
-    button[type="submit"] {
-      background: var(--primary);
-      color: white;
-      border: none;
+      text-align: center;
       cursor: pointer;
+      transition: transform 0.2s;
     }
-    button[type="submit"]:hover {
-      background: var(--primary-hover);
+    .food-card:hover {
+      transform: scale(1.03);
     }
-    #overlay {
-      display: none;
+    .food-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .food-category {
+      font-size: 0.9rem;
+      opacity: 0.7;
+    }
+    #modal, #overlay {
       position: fixed;
       top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8);
-      color: white;
-      font-size: 3rem;
-      font-weight: bold;
-      align-items: center;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: none;
       justify-content: center;
-      flex-direction: column;
+      align-items: center;
       z-index: 999;
+    }
+    .modal-content {
+      background: var(--card);
+      padding: 2rem;
+      border-radius: 1rem;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+    .modal-content h2 {
+      margin-bottom: 0.5rem;
+    }
+    .modal-content p {
+      margin: 0.5rem 0;
+    }
+    .modal-content button {
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      font-size: 1.1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+    .timer-fullscreen {
+      background: var(--bg);
+      color: var(--text);
+      font-size: 5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       text-align: center;
       padding: 2rem;
     }
     #cancelBtn {
       margin-top: 2rem;
       background: #ef4444;
-      padding: 0.75rem 1.5rem;
-      font-size: 1.2rem;
-      border: none;
-      border-radius: 0.5rem;
-      cursor: pointer;
     }
   </style>
 </head>
@@ -169,27 +139,28 @@
   <h1>D’s Timers</h1>
 
   <div id="top-bar">
-    <input type="text" id="searchInput" placeholder="Search foods...">
+    <input type="text" id="searchInput" placeholder="Search...">
+    <button id="inHouseToggle">Show In-House</button>
   </div>
 
   <div id="buttons"></div>
 
-  <form id="foodForm">
-    <h2 id="formTitle">Add New Food</h2>
-    <input type="text" id="foodName" placeholder="Food Name" required>
-    <input type="number" id="foodMinutes" placeholder="Minutes" required>
-    <input type="text" id="foodCategory" placeholder="Category (Air Fryer, Boil, Microwave...)" required>
-    <textarea id="foodTip" placeholder="Cooking Tip (optional)"></textarea>
-    <input type="hidden" id="foodId">
-    <button type="submit">Save</button>
-  </form>
-
-  <div id="overlay">
-    <div id="overlayTimer">0:00</div>
-    <button id="cancelBtn">Cancel Timer</button>
+  <div id="modal">
+    <div class="modal-content">
+      <h2 id="modalName"></h2>
+      <p><strong>Category:</strong> <span id="modalCategory"></span></p>
+      <p><strong>Time:</strong> <span id="modalMinutes"></span> min</p>
+      <p id="modalTip"></p>
+      <button id="startBtn">Start Timer</button>
+    </div>
   </div>
 
-  <audio id="alarm" src="https://freesound.org/data/previews/316/316847_4939433-lq.mp3" preload="auto"></audio>
+  <div id="overlay">
+    <div class="timer-fullscreen">
+      <div id="overlayTimer">0:00</div>
+      <button id="cancelBtn">Cancel</button>
+    </div>
+  </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
@@ -209,21 +180,21 @@
 
     const buttonsContainer = document.getElementById('buttons');
     const searchInput = document.getElementById('searchInput');
-    const foodForm = document.getElementById('foodForm');
-    const foodName = document.getElementById('foodName');
-    const foodMinutes = document.getElementById('foodMinutes');
-    const foodCategory = document.getElementById('foodCategory');
-    const foodTip = document.getElementById('foodTip');
-    const foodId = document.getElementById('foodId');
-    const formTitle = document.getElementById('formTitle');
+    const inHouseToggle = document.getElementById('inHouseToggle');
+    const modal = document.getElementById('modal');
+    const modalName = document.getElementById('modalName');
+    const modalCategory = document.getElementById('modalCategory');
+    const modalMinutes = document.getElementById('modalMinutes');
+    const modalTip = document.getElementById('modalTip');
+    const startBtn = document.getElementById('startBtn');
     const overlay = document.getElementById('overlay');
     const overlayTimer = document.getElementById('overlayTimer');
     const cancelBtn = document.getElementById('cancelBtn');
-    const alarmSound = document.getElementById('alarm');
 
     let allFoods = [];
-    let countdownInterval = null;
-    let countdownSeconds = 0;
+    let showInHouse = false;
+    let currentTimer = null;
+    let currentFood = null;
 
     function applyTheme() {
       if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -237,162 +208,86 @@
     applyTheme();
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
 
-    function startTimer(minutes) {
-      if (countdownInterval) clearInterval(countdownInterval);
-
-      countdownSeconds = minutes * 60;
-      updateOverlayTimer();
-      overlay.style.display = 'flex';
-
-      if (navigator.vibrate) navigator.vibrate(100);
-
-      countdownInterval = setInterval(() => {
-        countdownSeconds--;
-        updateOverlayTimer();
-        if (countdownSeconds <= 0) {
-          clearInterval(countdownInterval);
-          overlayTimer.textContent = "DONE!";
-          alarmSound.play();
-        }
-      }, 1000);
+    function renderFoods(filterText = '') {
+      buttonsContainer.innerHTML = "";
+      allFoods
+        .filter(f => f.data.name.toLowerCase().includes(filterText.toLowerCase()))
+        .filter(f => !showInHouse || f.data.inHouse)
+        .forEach(({ id, data }) => {
+          const card = document.createElement('div');
+          card.className = 'food-card';
+          card.innerHTML = `<div class="food-name">${data.name}</div><div class="food-category">${data.category || 'Uncategorized'}</div>`;
+          card.addEventListener('click', () => openModal(data));
+          buttonsContainer.appendChild(card);
+        });
     }
-
-    function updateOverlayTimer() {
-      const m = Math.floor(countdownSeconds / 60);
-      const s = countdownSeconds % 60;
-      overlayTimer.textContent = `${m}:${s.toString().padStart(2, '0')}`;
-    }
-
-    function cancelTimer() {
-      if (countdownInterval) clearInterval(countdownInterval);
-      overlay.style.display = 'none';
-    }
-
-    function createButton(food, id) {
-      const btn = document.createElement('div');
-      btn.className = 'food-btn';
-      btn.innerHTML = `
-        <strong>${food.name}</strong><br><small>${food.category}</small>
-        <button class="edit-btn" title="Edit">&#9998;</button>
-        <button class="delete-btn" title="Delete">&times;</button>
-      `;
-
-      btn.querySelector('.edit-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        editFood(id, food);
-      });
-
-      btn.querySelector('.delete-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        deleteFood(id);
-      });
-
-      btn.addEventListener('click', () => {
-        startTimer(food.minutes);
-      });
-
-      return btn;
-    }
-
-      function renderFoods(filterText = '') {
-        buttonsContainer.innerHTML = "";
-        const grouped = {};
-
-        allFoods
-          .filter(f => (f.data.name || "").toLowerCase().includes(filterText.toLowerCase()))
-          .forEach(({ id, data }) => {
-            const cat = data.category && data.category.trim() ? data.category : "Uncategorized";
-            if (!grouped[cat]) grouped[cat] = [];
-            grouped[cat].push({ id, data });
-          });
-
-        if (Object.keys(grouped).length === 0) {
-          buttonsContainer.innerHTML = "<p>No foods found.</p>";
-          return;
-        }
-
-        for (let category in grouped) {
-          const groupDiv = document.createElement('div');
-          groupDiv.className = 'category-group';
-
-          const title = document.createElement('div');
-          title.className = 'category-title';
-          title.textContent = category;
-          groupDiv.appendChild(title);
-
-          const foodList = document.createElement('div');
-          foodList.className = 'foods';
-
-          grouped[category].forEach(({ id, data }) => {
-            foodList.appendChild(createButton(data, id));
-          });
-
-          groupDiv.appendChild(foodList);
-          buttonsContainer.appendChild(groupDiv);
-        }
-      }
 
     function loadFoods() {
-      db.collection('cooking_timers').onSnapshot((snapshot) => {
+      db.collection('cooking_timers').onSnapshot(snapshot => {
         allFoods = [];
-        snapshot.forEach((doc) => {
+        snapshot.forEach(doc => {
           allFoods.push({ id: doc.id, data: doc.data() });
         });
         renderFoods(searchInput.value);
       });
     }
 
-    function addFood(food) {
-      db.collection('cooking_timers').add(food);
+    function openModal(food) {
+      currentFood = food;
+      modalName.textContent = food.name;
+      modalCategory.textContent = food.category || "Uncategorized";
+      modalMinutes.textContent = food.minutes || 0;
+      modalTip.textContent = food.tip || "";
+      modal.style.display = "flex";
     }
 
-    function updateFood(id, food) {
-      db.collection('cooking_timers').doc(id).set(food);
+    function startTimer(minutes) {
+      if (navigator.vibrate) navigator.vibrate(100);
+      overlay.style.display = "flex";
+      let seconds = minutes * 60;
+      updateOverlayTimer(seconds);
+
+      currentTimer = setInterval(() => {
+        seconds--;
+        updateOverlayTimer(seconds);
+        if (seconds <= 0) {
+          clearInterval(currentTimer);
+          overlayTimer.textContent = "DONE!";
+        }
+      }, 1000);
     }
 
-    function deleteFood(id) {
-      if (confirm('Delete this timer?')) {
-        db.collection('cooking_timers').doc(id).delete();
-      }
+    function updateOverlayTimer(seconds) {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      overlayTimer.textContent = `${m}:${s.toString().padStart(2, '0')}`;
     }
 
-    function editFood(id, food) {
-      foodName.value = food.name;
-      foodMinutes.value = food.minutes;
-      foodCategory.value = food.category;
-      foodTip.value = food.tip || '';
-      foodId.value = id;
-      formTitle.textContent = "Edit Food";
+    function cancelTimer() {
+      clearInterval(currentTimer);
+      overlay.style.display = "none";
     }
 
-    foodForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const food = {
-        name: foodName.value.trim(),
-        minutes: parseInt(foodMinutes.value.trim()),
-        category: foodCategory.value.trim(),
-        tip: foodTip.value.trim()
-      };
-
-      if (foodId.value) {
-        updateFood(foodId.value, food);
-      } else {
-        addFood(food);
-      }
-
-      foodForm.reset();
-      foodId.value = '';
-      formTitle.textContent = "Add New Food";
-    });
-
-    searchInput.addEventListener('input', () => {
+    searchInput.addEventListener('input', () => renderFoods(searchInput.value));
+    inHouseToggle.addEventListener('click', () => {
+      showInHouse = !showInHouse;
+      inHouseToggle.textContent = showInHouse ? "Showing In-House" : "Show In-House";
       renderFoods(searchInput.value);
     });
-
+    startBtn.addEventListener('click', () => {
+      modal.style.display = "none";
+      startTimer(currentFood.minutes);
+    });
     cancelBtn.addEventListener('click', cancelTimer);
 
     loadFoods();
   </script>
-
+      <script>
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('/service-worker.js')
+          .then(reg => console.log('Service Worker registered:', reg))
+          .catch(err => console.error('Service Worker failed:', err));
+        }
+      </script>
 </body>
 </html>
