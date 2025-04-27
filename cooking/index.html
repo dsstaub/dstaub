@@ -294,37 +294,43 @@
       return btn;
     }
 
-    function renderFoods(filterText = '') {
-      buttonsContainer.innerHTML = "";
-      const grouped = {};
+      function renderFoods(filterText = '') {
+        buttonsContainer.innerHTML = "";
+        const grouped = {};
 
-      allFoods
-        .filter(f => f.data.name.toLowerCase().includes(filterText.toLowerCase()))
-        .forEach(({ id, data }) => {
-          if (!grouped[data.category]) grouped[data.category] = [];
-          grouped[data.category].push({ id, data });
-        });
+        allFoods
+          .filter(f => (f.data.name || "").toLowerCase().includes(filterText.toLowerCase()))
+          .forEach(({ id, data }) => {
+            const cat = data.category && data.category.trim() ? data.category : "Uncategorized";
+            if (!grouped[cat]) grouped[cat] = [];
+            grouped[cat].push({ id, data });
+          });
 
-      for (let category in grouped) {
-        const groupDiv = document.createElement('div');
-        groupDiv.className = 'category-group';
+        if (Object.keys(grouped).length === 0) {
+          buttonsContainer.innerHTML = "<p>No foods found.</p>";
+          return;
+        }
 
-        const title = document.createElement('div');
-        title.className = 'category-title';
-        title.textContent = category;
-        groupDiv.appendChild(title);
+        for (let category in grouped) {
+          const groupDiv = document.createElement('div');
+          groupDiv.className = 'category-group';
 
-        const foodList = document.createElement('div');
-        foodList.className = 'foods';
+          const title = document.createElement('div');
+          title.className = 'category-title';
+          title.textContent = category;
+          groupDiv.appendChild(title);
 
-        grouped[category].forEach(({ id, data }) => {
-          foodList.appendChild(createButton(data, id));
-        });
+          const foodList = document.createElement('div');
+          foodList.className = 'foods';
 
-        groupDiv.appendChild(foodList);
-        buttonsContainer.appendChild(groupDiv);
+          grouped[category].forEach(({ id, data }) => {
+            foodList.appendChild(createButton(data, id));
+          });
+
+          groupDiv.appendChild(foodList);
+          buttonsContainer.appendChild(groupDiv);
+        }
       }
-    }
 
     function loadFoods() {
       db.collection('cooking_timers').onSnapshot((snapshot) => {
