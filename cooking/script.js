@@ -126,7 +126,7 @@ function loadFoods() {
     });
     renderFoods(searchInput.value);
   });
-
+}
 
 // Open Pre-Cook Info Modal
 function openPreviewModal(food) {
