@@ -5,205 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>D’s Timers</title>
   <link rel="manifest" href="manifest.json">
-  <style>
-    :root {
-      --bg: #f9fafb;
-      --text: #111827;
-      --card: #ffffff;
-      --primary: #4f46e5;
-      --primary-hover: #4338ca;
-      --shadow: rgba(0,0,0,0.08);
-      --gray: #9ca3af;
-    }
-    .dark {
-      --bg: #111827;
-      --text: #f9fafb;
-      --card: #1f2937;
-      --primary: #6366f1;
-      --primary-hover: #818cf8;
-      --shadow: rgba(0,0,0,0.4);
-      --gray: #6b7280;
-    }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      margin: 0;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
-      min-height: 100vh;
-      transition: background 0.3s, color 0.3s;
-    }
-    h1 {
-      font-size: 2.2rem;
-      font-weight: bold;
-      margin: 1rem 0 0.5rem;
-    }
-    #top-bar {
-      width: 100%;
-      max-width: 600px;
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    #searchInput, #inHouseToggle, #addTimer {
-      padding: 0.6rem;
-      border: 1px solid #ccc;
-      border-radius: 0.5rem;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    #inHouseToggle {
-      background: var(--gray);
-      color: white;
-      border: none;
-    }
-    .in-house-active {
-      background: var(--primary);
-    }
-    #buttons {
-      width: 100%;
-      max-width: 900px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 1rem;
-    }
-    .food-card {
-      background: var(--card);
-      box-shadow: 0 2px 6px var(--shadow);
-      border-radius: 0.75rem;
-      padding: 1rem;
-      text-align: center;
-      cursor: pointer;
-      transition: transform 0.2s;
-      user-select: none;
-      position: relative;
-    }
-    .food-card:hover {
-      transform: scale(1.03);
-    }
-    .food-name {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.3rem;
-    }
-    .food-category {
-      font-size: 0.9rem;
-      opacity: 0.7;
-    }
-    #modal, #overlay, #editModal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.6);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-    }
-    .modal-content {
-      background: var(--card);
-      padding: 2rem;
-      border-radius: 1rem;
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-    .modal-content input, .modal-content textarea {
-      padding: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 0.5rem;
-      font-size: 1rem;
-    }
-    .modal-content button {
-      padding: 0.75rem;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 0.5rem;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    .timer-fullscreen {
-      background: var(--bg);
-      color: var(--text);
-      font-size: 5rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 2rem;
-    }
-    #cancelBtn {
-      margin-top: 2rem;
-      background: #ef4444;
-    }
-    label {
-      font-size: 0.9rem;
-      text-align: left;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <h1>D’s Timers</h1>
 
 <div id="top-bar">
-  <input type="text" id="searchInput" placeholder="Search...">
+  <input type="text" id="searchInput" placeholder="Search timers...">
   <button id="inHouseToggle">In-House</button>
   <button id="addTimer">➕ Add Timer</button>
 </div>
 
 <div id="buttons"></div>
 
-<!-- Pre-Cook Info Modal -->
-<div id="modal">
+<!-- Timer Preview Modal -->
+<div id="modal" class="hidden">
   <div class="modal-content">
     <h2 id="modalName"></h2>
     <p><strong>Category:</strong> <span id="modalCategory"></span></p>
-    <p><strong>Time:</strong> <span id="modalMinutes"></span> min</p>
+    <p><strong>Cook Time:</strong> <span id="modalMinutes"></span> min</p>
     <p id="modalTip"></p>
     <button id="startBtn">Start Timer</button>
-    <button id="cancelPreview" style="background: gray;">Cancel</button>
-  </div>
-</div>
-
-<!-- Edit/Add Timer Modal -->
-<div id="editModal">
-  <div class="modal-content" id="editContent">
-    <h2 id="editTitle">Add/Edit Timer</h2>
-    <input id="editName" placeholder="Food Name">
-    <input id="editCategory" placeholder="Category">
-    <input id="editMinutes" type="number" placeholder="Minutes">
-    <textarea id="editTip" placeholder="Cooking Tip (optional)"></textarea>
-    <label><input type="checkbox" id="editInHouse"> In House</label>
-    <button id="saveBtn">Save</button>
-    <button id="deleteBtn" style="background: #ef4444; display: none;">Delete</button>
-    <button id="cancelEdit" style="background: gray;">Cancel</button>
+    <button id="cancelPreview">Cancel</button>
   </div>
 </div>
 
 <!-- Timer Overlay -->
-<div id="overlay">
+<div id="overlay" class="hidden">
   <div class="timer-fullscreen">
     <div id="overlayTimer">0:00</div>
     <button id="cancelBtn">Cancel</button>
   </div>
 </div>
 
-<!-- Firebase Setup and Full Logic -->
+<!-- Firebase SDK & Script -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-
 <script src="script.js"></script>
 
 </body>

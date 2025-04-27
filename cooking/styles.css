@@ -1,0 +1,91 @@
+:root {
+  --bg: #f9fafb;
+  --text: #111827;
+  --card: #ffffff;
+  --primary: #4f46e5;
+  --shadow: rgba(0,0,0,0.12);
+}
+
+.dark {
+  --bg: #111827;
+  --text: #f9fafb;
+  --card: #1f2937;
+  --primary: #6366f1;
+  --shadow: rgba(0,0,0,0.4);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+#top-bar {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+button {
+  padding: 0.7rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: var(--shadow);
+}
+
+#buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+  max-width: 800px;
+}
+
+.food-card {
+  background: var(--card);
+  box-shadow: 0 2px 6px var(--shadow);
+  border-radius: 1rem;
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.food-card:hover {
+  transform: scale(1.05);
+}
+
+.hidden {
+  display: none;
+}
+
+.modal-content {
+  background: var(--card);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+}
