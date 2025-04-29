@@ -1,1 +1,1 @@
-export const SW_VERSION = 'v04.01.02';
+export const SW_VERSION = 'v04.04.04';
