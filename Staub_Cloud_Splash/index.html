@@ -1,0 +1,96 @@
+<!-- /web/cloud/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to DStaub.app</title>
+  <meta http-equiv="refresh" content="4; url=https://nasd.dstaub.app" />
+  <link rel="dns-prefetch" href="//nasd.dstaub.app">
+  <link rel="preconnect" href="https://nasd.dstaub.app">
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Arial Black', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: white;
+    color: black;
+    transition: background-color 0.3s, color 0.3s;
+    animation: fadeBG-light 3s ease-in-out forwards;
+  }
+
+  .label-box {
+    width: 86vw;
+    height: 66vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: left;
+    line-height: 1.2;
+    opacity: 0;
+    transform: translateY(-300px);
+  animation: fadeInUp 3.2s ease-out forwards;
+  padding-left: 1in; /* <<< The shift right you wanted */
+
+  }
+
+  .label-box h1 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin: -0.12em 0;
+    transition: color 0.3s ease-in-out;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeBG-light {
+    0% {
+      background-color: white;
+      color: black;
+    }
+    80% {
+      background-color: #A9A9A9 ;
+      color: black;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    html, body {
+      background-color: #000000;
+      color: white;
+      animation: fadeBG-dark 2s ease-in-out forwards;
+    }
+
+    @keyframes fadeBG-dark {
+      0% {
+        background-color: #000000;
+        color: white;
+      }
+      100% {
+        background-color: #A9A9A9;
+        color: black;
+      }
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="label-box">
+    <h1>D Staub</h1>
+    <h1>DStaub.app</h1>
+    <h1>DavidOS inside</h1>
+    <h1>Built for One</h1>
+  </div>
+  <p>If you're not redirected, <a href="https://nasd.dstaub.app">click here</a>.</p>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DStaub.app • OG Generic</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Arial Black', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .label-box {
+      width: 86vw;
+      height: 66vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      text-align: left;
+      line-height: 1.2;
+    }
+
+    .label-box h1 {
+      font-size: 2.5rem;
+      font-weight: 900;
+      margin: -0.12em 0;
+    }
+
+    /* Light mode (default) */
+    body {
+      background-color: white;
+      color: black;
+    }
+
+    /* Dark mode */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #000000;
+        color: #ffffff;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="label-box">
+    <h1>D Staub</h1>
+    <h1>DStaub.app</h1>
+    <h1>DavidOS inside</h1>
+    <h1>Built for One</h1>
+  </div>
+</body>
+</html>

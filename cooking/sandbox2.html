@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>D Staub • Resumé</title>
+
+  <!-- Meta + Icons -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
+  <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <!-- Tailwind still loads for utility classes -->
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+
+  <!-- Layout Scripts -->
+  <script src="/layout.js" defer></script>
+  <script src="/app.js" defer></script>
+
+  <!-- Override Styles to match OG Generic -->
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Arial Black', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 900;
+    transition: background-color 0.3s, color 0.3s;
+    background-color: white;
+    color: black;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    html, body {
+      background-color: #000000;
+      color: #ffffff;
+    }
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 900;
+    margin: 0.4em 0;
+  }
+
+  p, ul, li, a {
+    font-weight: 900;
+  }
+
+  section {
+    border: 2px solid currentColor;
+    background: inherit;
+    padding: 1.5rem;
+    border-radius: 0;
+    margin-bottom: 2rem;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: 2px solid currentColor;
+    font-weight: 900;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  .btn:hover {
+    background-color: currentColor;
+    color: white;
+  }
+</style>
+</head>
+
+<body>
+  <main class="space-y-6">
+
+    <!-- Professional Summary Card -->
+    <section>
+      <h2 id="summaryTitle" class="text-2xl text-orange-400"></h2>
+      <p id="summaryText"></p>
+    </section>
+
+    <!-- Relevant Experience Card -->
+    <section id="experienceSection">
+      <h2 class="text-2xl text-orange-400">Relevant Experience</h2>
+      <!-- Experience cards will be injected here -->
+    </section>
+
+    <!-- Education Card -->
+    <section id="educationSection">
+      <h2 id="educationTitle" class="text-2xl text-orange-400"></h2>
+      <ul id="educationList" class="list-disc pl-6 mt-2"></ul>
+    </section>
+
+    <!-- Skills Card -->
+    <section id="skillsSection">
+      <h2 id="skillsTitle" class="text-2xl text-orange-400"></h2>
+      <ul id="skillsList" class="list-disc pl-6 grid grid-cols-1 sm:grid-cols-2 gap-x-6"></ul>
+    </section>
+
+    <!-- Pre-Interview Q&A Button -->
+    <div class="text-center">
+      <a href="/pre-interview/index.html" class="btn">Pre-Interview Q&A</a>
+    </div>
+
+    <!-- Contact Card -->
+    <section id="contactSection">
+      <h2 id="contactTitle" class="text-2xl text-orange-400"></h2>
+      <ul id="contactList" class="space-y-1 text-sm"></ul>
+    </section>
+
+  </main>
+
+<script>
+  // Fetch Summary
+  fetch('/data/resume_cards/summary.json')
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('summaryTitle').textContent = data.title;
+      document.getElementById('summaryText').textContent = data.text;
+    })
+    .catch(error => {
+      console.error('Failed to load summary.json:', error);
+      document.getElementById('summaryTitle').textContent = 'Error loading summary';
+      document.getElementById('summaryText').textContent = 'The summary information could not be retrieved.';
+    });
+
+  // Fetch Experience
+  fetch('/data/resume_cards/experience.json')
+    .then(response => response.json())
+    .then(jobs => {
+      const container = document.getElementById('experienceSection');
+      jobs.forEach(job => {
+        const div = document.createElement('div');
+        div.className = 'mb-4';
+
+        const title = document.createElement('h3');
+        title.className = 'text-lg text-orange-600';
+        title.textContent = job.title;
+
+        const meta = document.createElement('p');
+        meta.className = 'text-sm italic';
+        meta.textContent = `${job.company}${job.location ? ' – ' + job.location : ''} | ${job.start} – ${job.end}`;
+
+        const ul = document.createElement('ul');
+        ul.className = 'list-disc pl-6 mt-2';
+        job.details.forEach(detail => {
+          const li = document.createElement('li');
+          li.textContent = detail;
+          ul.appendChild(li);
+        });
+
+        div.appendChild(title);
+        div.appendChild(meta);
+        div.appendChild(ul);
+        container.appendChild(div);
+      });
+    })
+    .catch(error => {
+      console.error('Failed to load experience.json:', error);
+      const container = document.getElementById('experienceSection');
+      container.innerHTML += '<p class="text-red-600">Could not load experience data.</p>';
+    });
+
+  // Fetch Education
+  fetch('/data/resume_cards/education.json')
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('educationTitle').textContent = data.title;
+
+      const ul = document.getElementById('educationList');
+      data.items.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.institution} -- ${item.credential}${item.year ? ', ' + item.year : ''}`;
+        ul.appendChild(li);
+      });
+    })
+    .catch(error => {
+      console.error('Failed to load education.json:', error);
+      const section = document.getElementById('educationSection');
+      section.innerHTML += '<p class="text-red-600">Could not load education info.</p>';
+    });
+
+  // Fetch Skills
+  fetch('/data/resume_cards/skills.json')
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('skillsTitle').textContent = data.title;
+
+      const ul = document.getElementById('skillsList');
+      data.items.forEach(skill => {
+        const li = document.createElement('li');
+        li.textContent = skill;
+        ul.appendChild(li);
+      });
+    })
+    .catch(error => {
+      console.error('Failed to load skills.json:', error);
+      const section = document.getElementById('skillsSection');
+      section.innerHTML += '<p class="text-red-600">Could not load skills list.</p>';
+    });
+
+  // Fetch Contact
+  fetch('/data/resume_cards/contact.json')
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('contactTitle').textContent = data.title;
+
+      const ul = document.getElementById('contactList');
+      data.items.forEach(item => {
+        const li = document.createElement('li');
+        li.innerHTML = `${item.type}: <a href="${item.href}" class="hover:underline"${item.href.startsWith('http') ? ' target="_blank"' : ''}>${item.text}</a>`;
+        ul.appendChild(li);
+      });
+    })
+    .catch(error => {
+      console.error('Failed to load contact.json:', error);
+      const section = document.getElementById('contactSection');
+      section.innerHTML += '<p class="text-red-600">Could not load contact info.</p>';
+    });
+
+</script>
+
+</body>
+</html>
